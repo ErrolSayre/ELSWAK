@@ -73,5 +73,8 @@ class ELSWebAppKit_HTML_Response
 			// create a new container for this content
 			$console->appendChild($this->document->createElement('div', $content));
 		}
+		
+		// dump the document content
+		echo $this->document->saveXML();
 	}
 }
