@@ -4,12 +4,15 @@
 	
 	This class defines an extension of the DOMDocument that provides generic helpful features specific to HTML. It is intended to be used with ELSWebAppKit HTML Response Container but can be used on its own.
 	
-	Please note that the uriPrefix is collected within the document to reflect the base prefix of the url this document will be served from. Since all views will require a document, and are tailored to that document, this is the easiest way to provide them with the required information to build URLs within the scope of this document.
+	This extension to the DOMDocument provides locateElementById as a replacement for the HTML specific getElementById because PHP only recognized the id attribute for elements that existed in the document at the time of the last validation (or on initial load of an HTML file). This method caches ALL ids that it finds, but whenever it doesn't have a cached reference for a given id, it searches the entire document tree. Since the DOM is not ordered in any particular way it must be iterated sequentially, however since most elements are appended to existing items it is most likely that new items will be at the "bottom" of the tree. For this reason, I start the search for items at the last child of a given node and work toward the first child. Please note that you can avoid this search by creating elements through the given methods of this class, or by registering a given element with the cache using the registerElementWithIdIndex method.
+	
+	Please note that the uriPrefix is collected within the document to reflect the base prefix of the url this document will be served from. This is an easy way to provide views operating on the response document with the required information to build URIs within the scope of this document-system-server context. Please note that using the default value will produce absolute URIs which are going to make your resulting document slightly to noticeably larger depending on the number of links you may have on page. Bear this in mind if you're building a list of a few thousand items that all have a view, edit, and delete links which could be represented as simply as "item/[view,edit,delete]" instead of "https://www.mydomain.com/application/item/[view,edit,delete]".
 */
 class ELSWebAppKit_HTML_Document
 	extends DOMDocument
 {
-	protected $uriPrefix;
+	protected $absoluteUriPrefix;
+	protected $serverRelativeUriPrefix;
 	protected $rootNode;
 	protected $headNode;
 	protected $bodyNode;
@@ -37,13 +40,26 @@ class ELSWebAppKit_HTML_Document
 		// setup the uri prefix for this document
 		if ($uriPrefix !== null)
 		{
-			$this->uriPrefix = $uriPrefix;
+			// determine if this uri prefix is relative or absolute
+			if (preg_match('/^https?:\/\//i', $uriPrefix))
+			{
+				// the uri is absolute
+				$this->absoluteUriPrefix = $uriPrefix;
+			}
+			else
+			{
+				// assume that this prefix is a server relative prefix
+				$this->absoluteUriPrefix = ((isset($_SERVER['HTTPS']))? 'https://': 'http://').$_SERVER['HTTP_HOST'].$uriPrefix;
+			}
 		}
 		else
 		{
-			// try to determine the uri prefix based on the folder containing the current entry point script
-			$this->uriPrefix = substr($_SERVER['SCRIPT_NAME'], 0 , strrpos($_SERVER['SCRIPT_NAME'], '/') + 1);
+			// try to determine the uri prefix automatically
+				// this document assumes that the prefix should be the directory of the current request so that calls to the index or any other script can simply be made as $this->uriPrefix.'script.php?args' regardless of the server your running on
+			$this->absoluteUriPrefix = ((isset($_SERVER['HTTPS']))? 'https://': 'http://').$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']);
 		}
+		
+		// now determine the server relative uri prefix based on what was provided
 		
 		// setup references to generic elements
 		$this->rootNode = $this->getElementsByTagName('html')->item(0);
@@ -86,6 +102,16 @@ class ELSWebAppKit_HTML_Document
 			else
 			{
 				// update the reference with the new location for this object
+				// save the current reference if the element has an id
+				if (($otherId = $this->elementIdIndex[$id]->getAttribute('id')) != '')
+				{
+					$this->elementIdIndex[$otherId] = $this->elementIdIndex[$id];
+				}
+				
+				// remove the current reference for the given id
+				$this->elementIdIndex[$id] = null;
+				
+				// search for a matching element in the tree
 				return $this->searchDomTreeForElementById($this->rootNode, $id);
 			}
 		}
@@ -95,7 +121,7 @@ class ELSWebAppKit_HTML_Document
 			return $this->searchDomTreeForElementById($this->rootNode, $id);
 		}
 	}
-	public function searchDomTreeForElementById($node, $id)
+	public function searchDomTreeForElementById(DOMNode $node, $id)
 	{
 		// start at the root of the document and process the tree
 		// determine if the current node has an id
@@ -118,7 +144,7 @@ class ELSWebAppKit_HTML_Document
 		if ($node->hasChildNodes())
 		{
 			// process each child
-			$currentNode = $node->firstChild;
+			$currentNode = $node->lastChild;
 			while ($currentNode !== null)
 			{
 				// search this node's tree
@@ -131,12 +157,27 @@ class ELSWebAppKit_HTML_Document
 				}
 				
 				// move on to the next node
-				$currentNode = $currentNode->nextSibling;
+				$currentNode = $currentNode->previousSibling;
 			}
 		}
 		
 		// the node wasn't found
 		return null;
+	}
+	public function registerElementWithIdIndex(DOMNode $node)
+	{
+		// determine if the current node has an id
+		if (($node->nodeType == XML_ELEMENT_NODE) && $node->hasAttribute('id'))
+		{
+			// this node has an id
+			
+			// save a reference in the index
+			$this->elementIdIndex[$node->getAttribute('id')] = $node;
+		}
+		else
+		{
+			throw new Exception('Element not registered: node must be a valid element with an id attribute.');
+		}
 	}
 	public function setPageTitle($title)
 	{
@@ -163,6 +204,10 @@ class ELSWebAppKit_HTML_Document
 			// since we have a reference to the title text node we can modify its value directly
 			$this->titleTextNode->nodeValue = $title;
 		}
+	}
+	public function createLink($href, $label = null, $title = null, $target = null, $name = null, $id = null, $relativity = 'absolute')
+	{
+		
 	}
 	public function createFormField($label, $input, $description = null)
 	{
@@ -256,7 +301,12 @@ class ELSWebAppKit_HTML_Document
 		$input->setAttribute('value', $value);
 		$input->setAttribute('size', $size);
 		if ($id !== null)
+		{
 			$input->setAttribute('id', $id);
+			
+			// register this element with the id index
+			$this->registerElementWithIdIndex($input);
+		}
 		
 		// determine if there are additional attributes
 		if ($maxLength > 0)
@@ -288,7 +338,12 @@ class ELSWebAppKit_HTML_Document
 		$input->setAttribute('name', $name);
 		$input->setAttribute('value', $value);
 		if ($id !== null)
+		{
 			$input->setAttribute('id', $id);
+			
+			// register this element with the id index
+			$this->registerElementWithIdIndex($input);
+		}
 		
 		// return this element
 		return $input;
@@ -337,7 +392,12 @@ class ELSWebAppKit_HTML_Document
 		$textarea->setAttribute('cols', $columns);
 		$textarea->appendChild($this->createTextNode($value));
 		if ($id !== null)
+		{
 			$input->setAttribute('id', $id);
+			
+			// register this element with the id index
+			$this->registerElementWithIdIndex($input);
+		}
 		
 		// determine if there are additional attributes
 		if ($tabIndex > 0)
@@ -356,7 +416,12 @@ class ELSWebAppKit_HTML_Document
 		$input->setAttribute('name', $name);
 		$input->setAttribute('value', $value);
 		if ($id !== null)
+		{
 			$input->setAttribute('id', $id);
+			
+			// register this element with the id index
+			$this->registerElementWithIdIndex($input);
+		}
 		if ($checked)
 			$input->setAttribute('checked', 'yes');
 		
@@ -403,7 +468,12 @@ class ELSWebAppKit_HTML_Document
 		$select = $this->createElement('select');
 		$select->setAttribute('name', $name);
 		if ($id !== null)
+		{
 			$select->setAttribute('id', $id);
+			
+			// register this element with the id index
+			$this->registerElementWithIdIndex($select);
+		}
 		
 		// set up the selected value
 		// determine if a selected value was provided
