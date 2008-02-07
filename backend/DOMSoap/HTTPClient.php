@@ -19,7 +19,7 @@ class ELSWebAppKit_DOMSoap_HTTPClient
 	protected $password;
 	protected $nameSpaceUri;
 	
-	function __construct($host, $port, $resource, $nameSpaceUri = 'http://localhost.localdomain/', $authentication = 'none', $username = null, $password = null)
+	function __construct($host, $port, $resource, $nameSpaceUri = 'http://localhost.localdomain/', $useSSL = false, $authentication = 'none', $username = null, $password = null)
 	{
 		$this->host = $host;
 		$this->port = intval($port);
@@ -31,14 +31,22 @@ class ELSWebAppKit_DOMSoap_HTTPClient
 			$this->username = $username;
 			$this->password = $password;
 		}
+		$this->useSSL = ($useSSL)?	true:	false;
 	}
 	function makeRequest($soapXML)
 	{
 		// set up the response
 		$responseXML = '';
 		
+		// determine if we should use ssl
+		$connectHost = $this->host;
+		if ($this->useSSL)
+		{
+			$connectHost = 'ssl://'.$this->host;
+		}
+		
 		// open a connection to the remote location and send the data
-		if (($httpConnection = fsockopen($this->host, $this->port, $errorNumber, $errorString, 30)) !== false)
+		if (($httpConnection = fsockopen($connectHost, $this->port, $errorNumber, $errorString, 30)) !== false)
 		{
 			// set up the request content
 			$requestContent = 'POST '.$this->resource.' HTTP/1.1'.CRLF;
@@ -63,10 +71,14 @@ class ELSWebAppKit_DOMSoap_HTTPClient
 			
 			// read the response content
 			$responseContent = '';
+			// suppress php warnings using an output buffer
+			ob_start();
 			while (!feof($httpConnection))
 			{
 				$responseContent .= fgets($httpConnection, 100);
 			}
+			// turn off the output buffer
+			ob_end_clean();
 			
 			// close the connection
 			fclose($httpConnection);
