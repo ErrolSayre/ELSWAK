@@ -11,8 +11,9 @@
 class ELSWebAppKit_HTML_Document
 	extends DOMDocument
 {
-	protected $absoluteUriPrefix;
-	protected $serverRelativeUriPrefix;
+	protected $uriPrefix;
+	protected $serverUri;
+	protected $applicationPath;
 	protected $rootNode;
 	protected $headNode;
 	protected $bodyNode;
@@ -37,26 +38,23 @@ class ELSWebAppKit_HTML_Document
 			$this->load($path['dirname'].'/Document/Template.xhtml');
 		}
 		
+		// setup the server uri
+		$this->serverUri = ((isset($_SERVER['HTTPS']))? 'https://': 'http://').$_SERVER['HTTP_HOST'];
+		
+		// setup the application uri
+		$this->applicationPath = dirname($_SERVER['PHP_SELF']);
+		
 		// setup the uri prefix for this document
 		if ($uriPrefix !== null)
 		{
-			// determine if this uri prefix is relative or absolute
-			if (preg_match('/^https?:\/\//i', $uriPrefix))
-			{
-				// the uri is absolute
-				$this->absoluteUriPrefix = $uriPrefix;
-			}
-			else
-			{
-				// assume that this prefix is a server relative prefix
-				$this->absoluteUriPrefix = ((isset($_SERVER['HTTPS']))? 'https://': 'http://').$_SERVER['HTTP_HOST'].$uriPrefix;
-			}
+			// use the supplied prefix
+			$this->uriPrefix = $uriPrefix;
 		}
 		else
 		{
 			// try to determine the uri prefix automatically
-				// this document assumes that the prefix should be the directory of the current request so that calls to the index or any other script can simply be made as $this->uriPrefix.'script.php?args' regardless of the server your running on
-			$this->absoluteUriPrefix = ((isset($_SERVER['HTTPS']))? 'https://': 'http://').$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']);
+				// this document assumes that the prefix should be the directory of the current request
+			$this->uriPrefix = $this->serverUri.$this->applicationPath;
 		}
 		
 		// now determine the server relative uri prefix based on what was provided
@@ -68,6 +66,18 @@ class ELSWebAppKit_HTML_Document
 		
 		// setup the element id index
 		$this->elementIdIndex = array();
+	}
+	public function serverUri()
+	{
+		return $this->serverUri;
+	}
+	public function applicationPath()
+	{
+		return $this->applicationPath;
+	}
+	public function applicationUri()
+	{
+		return $this->serverUri.$this->applicationPath;
 	}
 	public function uriPrefix()
 	{
@@ -110,6 +120,12 @@ class ELSWebAppKit_HTML_Document
 				
 				// remove the current reference for the given id
 				$this->elementIdIndex[$id] = null;
+				
+				// look for the element within the document's native mechanism
+				if ($this->getElementById($id) !== null)
+				{
+					return $this->searchDomTreeForElementById($this->getElementById($id), $id);
+				}
 				
 				// search for a matching element in the tree
 				return $this->searchDomTreeForElementById($this->rootNode, $id);
@@ -205,9 +221,36 @@ class ELSWebAppKit_HTML_Document
 			$this->titleTextNode->nodeValue = $title;
 		}
 	}
-	public function createLink($href, $label = null, $title = null, $target = null, $name = null, $id = null, $relativity = 'absolute')
+	public function createLink($href, $label = null, $title = null, $target = null, $name = null, $id = null)
 	{
+		// create a new anchor element
+		$a = $this->createElement('a');
 		
+		// add the text content
+		if ($label instanceof DOMElement)
+		{
+			$a->appendChild($label);
+		}
+		else
+		{
+			$a->appendChild($this->createTextNode($label));
+		}
+		
+		// set the appropriate attributes
+		$a->setAttribute('href', $href);
+		$a->setAttribute('title', $title);
+		$a->setAttribute('href', $href);
+		$a->setAttribute('name', $href);
+		if ($id !== null)
+		{
+			$a->setAttribute('id', $id);
+			
+			// register this element with the id index
+			$this->registerElementWithIdIndex($a);
+		}
+		
+		// return this element
+		return $a;
 	}
 	public function createFormField($label, $input, $description = null)
 	{
@@ -231,9 +274,7 @@ class ELSWebAppKit_HTML_Document
 			else
 			{
 				// add this element as the label within a container
-				$labelContainer = $fieldContainer->appendChild($this->createElement('div'));
-				$labelContainer->setAttribute('class', 'label');
-				$labelContainer->appendChild($label);
+				$fieldContainer->appendChild($this->createElement('label', $label));
 			}
 		}
 		else
