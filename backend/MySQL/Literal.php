@@ -26,6 +26,7 @@ class ELSWebAppKit_MySQL_Literal
 		{
 			$this->literal = $literal;
 		}
+		return $this;
 	}
 	public function sql($format = '', $indent = '')
 	{

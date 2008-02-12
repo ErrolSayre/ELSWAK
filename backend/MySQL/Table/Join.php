@@ -53,6 +53,7 @@ class ELSWebAppKit_MySQL_Table_Join
 		{
 			$this->type = null;
 		}
+		return $this;
 	}
 	public function direction()
 	{
@@ -102,6 +103,7 @@ class ELSWebAppKit_MySQL_Table_Join
 		{
 			$this->direction = 'STRAIGHT_JOIN';
 		}
+		return $this;
 	}
 	public function table()
 	{
@@ -110,7 +112,7 @@ class ELSWebAppKit_MySQL_Table_Join
 	public function setTable(ELSWebAppKit_MySQL_Table $table)
 	{
 		$this->table = $table;
-		return $this->table;
+		return $this;
 	}
 	public function conditions()
 	{
@@ -119,7 +121,7 @@ class ELSWebAppKit_MySQL_Table_Join
 	public function setConditions(ELSWebAppKit_MySQL_Conditional_Group $conditions)
 	{
 		$this->conditions = $conditions;
-		return $this->conditions;
+		return $this;
 	}
 	public function sql($format = '', $indent = '')
 	{

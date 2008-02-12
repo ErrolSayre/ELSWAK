@@ -21,6 +21,7 @@ class ELSWebAppKit_MySQL_LimitClause
 	public function setRowCount($rowCount)
 	{
 		$this->rowCount = intVal($rowCount);
+		return $this;
 	}
 	public function offset()
 	{
@@ -36,6 +37,7 @@ class ELSWebAppKit_MySQL_LimitClause
 		{
 			$this->offset = null;
 		}
+		return $this;
 	}
 	public function sql($format = '', $indent = '')
 	{

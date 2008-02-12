@@ -31,6 +31,7 @@ class ELSWebAppKit_Store_Search_Criteria
 	public function setProperty($property)
 	{
 		$this->property = $property;
+		return $this;
 	}
 	public function value()
 	{
@@ -39,6 +40,7 @@ class ELSWebAppKit_Store_Search_Criteria
 	public function setValue($value)
 	{
 		$this->value = $value;
+		return $this;
 	}
 	public function operation()
 	{
@@ -97,6 +99,7 @@ class ELSWebAppKit_Store_Search_Criteria
 			$this->operation = 'equalTo';
 			throw new Exception('Invalid operation: operation reset to "equal to" ('.$operation.').');
 		}
+		return $this;
 	}
 	public function operator()
 	{

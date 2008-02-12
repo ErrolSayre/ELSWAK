@@ -24,6 +24,7 @@ class ELSWebAppKit_MySQL_Conjunction
 		{
 			$this->conjunction = 'AND';
 		}
+		return $this;
 	}
 	public function sql($format = '', $indent = '')
 	{

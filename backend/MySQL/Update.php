@@ -60,7 +60,7 @@ class ELSWebAppKit_MySQL_Update
 	public function setTable(ELSWebAppKit_MySQL_Table $table)
 	{
 		$this->table = $table;
-		return $this->table;
+		return $this;
 	}
 	public function fieldValueForKey($index)
 	{
@@ -148,6 +148,7 @@ class ELSWebAppKit_MySQL_Update
 				$this->addFieldValue($fieldValue);
 			}
 		}
+		return $this;
 	}
 	public function whereClause()
 	{
@@ -156,7 +157,7 @@ class ELSWebAppKit_MySQL_Update
 	public function setWhereClause(ELSWebAppKit_MySQL_Where_Clause $whereClause = null)
 	{
 		$this->whereClause = $whereClause;
-		return $this->whereClause;
+		return $this;
 	}
 	public function orderClause()
 	{
@@ -165,7 +166,7 @@ class ELSWebAppKit_MySQL_Update
 	public function setOrderClause(ELSWebAppKit_MySQL_Order_Clause $orderClause = null)
 	{
 		$this->orderClause = $orderClause;
-		return $this->orderClause;
+		return $this;
 	}
 	public function limitClause()
 	{
@@ -174,7 +175,7 @@ class ELSWebAppKit_MySQL_Update
 	public function setLimitClause(ELSWebAppKit_MySQL_Limit_Clause $limitClause = null)
 	{
 		$this->limitClause = $limitClause;
-		return $this->limitClause;
+		return $this;
 	}
 	public function priority()
 	{
@@ -190,6 +191,7 @@ class ELSWebAppKit_MySQL_Update
 		{
 			$this->priority = 'LOW_PRIORITY';
 		}
+		return $this;
 	}
 	public function ignore()
 	{
@@ -205,6 +207,7 @@ class ELSWebAppKit_MySQL_Update
 		{
 			$this->ignore = false;
 		}
+		return $this;
 	}
 	public function sql($format = '', $indent = '')
 	{

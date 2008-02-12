@@ -26,6 +26,7 @@ class ELSWebAppKit_MySQL_Order
 		{
 			$this->order = 'DESC';
 		}
+		return $this;
 	}
 	public function sql($format = '', $order = '')
 	{

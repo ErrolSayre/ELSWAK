@@ -38,7 +38,7 @@ class ELSWebAppKit_MySQL_Insert
 	public function setTable(ELSWebAppKit_MySQL_Table $table)
 	{
 		$this->table = $table;
-		return $this->table;
+		return $this;
 	}
 	public function fieldValueForKey($index)
 	{
@@ -126,6 +126,7 @@ class ELSWebAppKit_MySQL_Insert
 				$this->addFieldValue($fieldValue);
 			}
 		}
+		return $this;
 	}
 	public function priority()
 	{
@@ -152,6 +153,7 @@ class ELSWebAppKit_MySQL_Insert
 		{
 			$this->priority = 'DELAYED';
 		}
+		return $this;
 	}
 	public function ignore()
 	{
@@ -167,6 +169,7 @@ class ELSWebAppKit_MySQL_Insert
 		{
 			$this->ignore = false;
 		}
+		return $this;
 	}
 	public function sql($format = '', $indent = '')
 	{

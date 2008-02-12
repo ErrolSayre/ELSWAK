@@ -76,6 +76,7 @@ class ELSWebAppKit_MySQL_Operator
 		{
 			$this->operator = '=';
 		}
+		return $this;
 	}
 	public function sql($format = '', $indent = '')
 	{

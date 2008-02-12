@@ -4,7 +4,7 @@
 	
 	This class is defined to provide a common base for objects with private members which wish to implement the Iterator interface. I use this primarily to make models with protected members iterable. Simply definte the members array as a list of your protected members' names.
 */
-class ELSWebAppKitIterable
+class ELSWebAppKit_Iterable
 	implements Iterator
 {
 	protected $members = array();

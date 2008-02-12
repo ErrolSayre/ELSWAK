@@ -35,6 +35,7 @@ class ELSWebAppKit_MySQL_Table
 			$this->prettyName .= ucfirst(strtolower($piece)).' ';
 		}
 		$this->prettyName = trim($this->prettyName);
+		return $this;
 	}
 	public function prettyName()
 	{
@@ -47,6 +48,7 @@ class ELSWebAppKit_MySQL_Table
 	protected function setDatabase(ELSWebAppKit_MySQL_Database $database)
 	{
 		$this->database = $database;
+		return $this;
 	}
 	protected function primaryKey()
 	{
@@ -94,6 +96,7 @@ class ELSWebAppKit_MySQL_Table
 				}
 			}
 		}
+		return $this;
 	}
 	public function sql($format = '', $indent = '')
 	{

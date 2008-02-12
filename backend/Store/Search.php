@@ -96,6 +96,7 @@ class ELSWebAppKit_Store_Search
 				$this->addCriteria($criteria);
 			}
 		}
+		return $this;
 	}
 	public function sortItemForKey($index)
 	{
@@ -147,6 +148,7 @@ class ELSWebAppKit_Store_Search
 				$this->addSort($sortItem);
 			}
 		}
+		return $this;
 	}
 	public function depth()
 	{
@@ -172,6 +174,7 @@ class ELSWebAppKit_Store_Search
 		{
 			throw new Exception('Invalid depth: depth not set.');
 		}
+		return $this;
 	}
 	public function limit()
 	{
@@ -180,6 +183,7 @@ class ELSWebAppKit_Store_Search
 	public function setLimit(ELSWebAppKit_Store_Search_Limit $limit)
 	{
 		$this->limit = $limit;
+		return $this;
 	}
 }
 ?>

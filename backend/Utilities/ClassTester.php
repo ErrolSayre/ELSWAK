@@ -47,7 +47,7 @@ if (class_exists($className))
 		{
 			$classDataCount++;
 			echo '<h2>Class Data Item '.$classDataCount.'</h2>'.LF;
-			echo '<p><b>Creating new '.$className.'</b>'.BR.LF;
+			echo '<h3>Creating new '.$className.'</h3>'.LF;
 			
 			// determine if this class contains constructor values
 			if (isset($objectData['constructor parameters']))
@@ -56,47 +56,52 @@ if (class_exists($className))
 				
 				// collect the parameters into a comma separated list
 				$parameterList = '';
+				$prettyParameterList = '';
 				foreach ($objectData['constructor parameters'] as $value)
 				{
 					if (is_array($value)	||
 						is_object($value))
 					{
 						$parameterList .= 'unserialize(\''.serialize($value).'\'), ';
+						$prettyParameterList .= 'serialized '.get_class($value).', ';
 					}
 					else if (is_null($value))
 					{
 						$parameterList .= 'null, ';
+						$prettyParameterList .= 'null, ';
 					}
 					else
 					{
 						$parameterList .= '"'.$value.'", ';
+						$prettyParameterList .= '"'.$value.'", ';
 					}
 				}
 				
 				// strip the last 2 characters off
 				$parameterList = substr($parameterList, 0, -2);
-				echo '&nbsp;&nbsp;&nbsp;&nbsp;Using arguments ('.$parameterList.')'.BR.LF;
+				$prettyParameterList = substr($prettyParameterList, 0, -2);
+				echo '<h4>Using arguments ('.$prettyParameterList.')</h4>'.LF;
 				try
 				{
 					$object = eval('return new '.$className.'('.$parameterList.');');
 				}
 				catch (Exception $e)
 				{
-					echo '&nbsp;&nbsp;&nbsp;&nbsp;Exception! '.$e->getMessage().BR.LF;
+					echo '<p>Exception! '.$e->getMessage().'</p>'.LF;
 					// just create the default object
-					echo '&nbsp;&nbsp;&nbsp;&nbsp;Using empty constructor.'.BR.LF;
+					echo '<h4>Using empty constructor</h4>'.LF;
 					$object = new $className();
 				}
 			}
 			else
 			{
 				// just create the default object
-				echo '&nbsp;&nbsp;&nbsp;&nbsp;Using empty constructor.'.BR.LF;
+				echo '<h4>Using empty constructor</h4>'.LF;
 				$object = new $className();
 			}
 			
 			// output the constructed object
-			echo '<b>Constructed Object</b>'.BR.LF;
+			echo '<h3>Constructed Object</h3>'.LF;
 			print_r_html($object);
 			
 			// test each of the supplied properties
@@ -106,8 +111,8 @@ if (class_exists($className))
 				foreach ($objectData['property values'] as $property => $value)
 				{
 					// try to set the value using the appropriate method
-					echo '<b>Testing Property: '.$property.'</b>'.BR.LF;
-					echo '&nbsp;&nbsp;&nbsp;&nbsp;Getting value: ';
+					echo '<h3>Testing Property: '.$property.'</h3>'.LF;
+					echo '<p>Getting value: ';
 					$result = $object->{$property}();
 					if ((is_array($result)) || (is_object($result)))
 					{
@@ -116,9 +121,10 @@ if (class_exists($className))
 					}
 					else
 					{
-						echo htmlentities($result).BR.LF;
+						echo htmlentities($result).LF;
 					}
-					echo '&nbsp;&nbsp;&nbsp;&nbsp;Setting value: ';
+					echo '</p>'.LF;
+					echo 'Setting value: ';
 					if ((is_array($value)) || (is_object($value)))
 					{
 						print_r_html($value);
@@ -126,12 +132,15 @@ if (class_exists($className))
 					}
 					else
 					{
-						echo htmlentities($value).BR.LF;
+						echo htmlentities($value).LF;
 					}
+					echo '</p>'.LF;
+					
+					echo '<p>'.LF;
 					try
 					{
 						$object->{'set'.$property}($value);
-						echo '&nbsp;&nbsp;&nbsp;&nbsp;Getting value: ';
+						echo 'Getting value: ';
 						$result = $object->{$property}();
 						if ((is_array($result)) || (is_object($result)))
 						{
@@ -147,6 +156,7 @@ if (class_exists($className))
 					{
 						echo $e->getMessage().BR.LF;
 					}
+					echo '</p>';
 				}
 			}
 			
@@ -157,25 +167,27 @@ if (class_exists($className))
 				foreach ($objectData['additional methods'] as $method => $value)
 				{
 					// try to call the method with the supplied value
-					echo '<b>Testing Method: '.$method.'</b>'.BR.LF;
+					echo '<h3>Testing Method: '.$method.'</h3>'.LF;
+					echo '<p>'.LF;
 					try
 					{
 						if ($value !== null)
 						{
-							echo '&nbsp;&nbsp;&nbsp;&nbsp;Method Returns:'.LF;
+							echo 'Method Returns:'.LF;
 							echo htmlentities($object->{$method}($value)).LF;
-							echo 'given value "'.htmlentities($value).'": '.BR.LF;
+							echo 'given value "'.htmlentities($value).'": '.LF;
 						}
 						else
 						{
-							echo '&nbsp;&nbsp;&nbsp;&nbsp;Method Returns: '.LF;
-							echo htmlentities($object->{$method}()).BR.LF;
+							echo 'Method Returns: '.LF;
+							echo htmlentities($object->{$method}()).LF;
 						}
 					}
 					catch (Exception $e)
 					{
-						echo $e->getMessage().BR.LF;
+						echo $e->getMessage().LF;
 					}
+					echo '</p>'.LF;
 				}
 			}
 			
@@ -186,12 +198,13 @@ if (class_exists($className))
 				foreach ($classMethods as $method => $value)
 				{
 					// try to call the method with the supplied value
-					echo '<b>Testing Method: '.$method.'</b>'.BR.LF;
+					echo '<h3>Testing Method: '.$method.'</h3>'.LF;
+					echo '<p>'.LF;
 					try
 					{
 						if ($value !== null)
 						{
-							echo '&nbsp;&nbsp;&nbsp;&nbsp;Method Returns:'.LF;
+							echo 'Method Returns:'.LF;
 							$result = $object->{$method}($value);
 							if ((is_array($result)) || (is_object($result)))
 							{
@@ -206,7 +219,7 @@ if (class_exists($className))
 						}
 						else
 						{
-							echo '&nbsp;&nbsp;&nbsp;&nbsp;Method Returns: '.LF;
+							echo 'Method Returns: '.LF;
 							$result = $object->{$method}();
 							if ((is_array($result)) || (is_object($result)))
 							{
@@ -221,15 +234,15 @@ if (class_exists($className))
 					}
 					catch (Exception $e)
 					{
-						echo $e->getMessage().BR.LF;
+						echo $e->getMessage().LF;
 					}
+					echo '</p>';
 				}
 			}
 			
 			// output the constructed object
-			echo '<b>Final Object</b>'.BR.LF;
+			echo '<h3>Final Object</h3>'.LF;
 			print_r_html($object);
-			echo '</p>'.LF;
 		}
 	}
 	else

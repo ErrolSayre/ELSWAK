@@ -28,7 +28,7 @@ class ELSWebAppKit_MySQL_Ordinal
 	public function setField(ELSWebAppKit_MySQL_Field $field)
 	{
 		$this->field = $field;
-		return $this->field;
+		return $this;
 	}
 	public function direction()
 	{
@@ -37,7 +37,7 @@ class ELSWebAppKit_MySQL_Ordinal
 	public function setDirection(ELSWebAppKit_MySQL_Order $direction)
 	{
 		$this->direction = $direction;
-		return $this->direction;
+		return $this;
 	}
 	public function sql($format = '', $indent = '')
 	{

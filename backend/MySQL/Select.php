@@ -51,7 +51,7 @@ class ELSWebAppKit_MySQL_Select
 	public function setSelectClause(ELSWebAppKit_MySQL_Select_Clause $selectClause)
 	{
 		$this->selectClause = $selectClause;
-		return $this->selectClause;
+		return $this;
 	}
 	public function fromClause()
 	{
@@ -60,7 +60,7 @@ class ELSWebAppKit_MySQL_Select
 	public function setFromClause(ELSWebAppKit_MySQL_From_Clause $fromClause)
 	{
 		$this->fromClause = $fromClause;
-		return $this->fromClause;
+		return $this;
 	}
 	public function whereClause()
 	{
@@ -69,7 +69,7 @@ class ELSWebAppKit_MySQL_Select
 	public function setWhereClause(ELSWebAppKit_MySQL_Where_Clause $whereClause)
 	{
 		$this->whereClause = $whereClause;
-		return $this->whereClause;
+		return $this;
 	}
 	public function orderClause()
 	{
@@ -78,7 +78,7 @@ class ELSWebAppKit_MySQL_Select
 	public function setOrderClause(ELSWebAppKit_MySQL_Order_Clause $orderClause)
 	{
 		$this->orderClause = $orderClause;
-		return $this->orderClause;
+		return $this;
 	}
 	public function limitClause()
 	{
@@ -87,7 +87,7 @@ class ELSWebAppKit_MySQL_Select
 	public function setLimitClause(ELSWebAppKit_MySQL_Limit_Clause $limitClause = null)
 	{
 		$this->limitClause = $limitClause;
-		return $this->limitClause;
+		return $this;
 	}
 	public function sql($format = '', $indent = '')
 	{

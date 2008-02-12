@@ -72,6 +72,7 @@ class ELSWebAppKit_MySQL_Select_Clause
 				$this->addField($field);
 			}
 		}
+		return $this;
 	}
 	public function sql($format = '', $indent = '')
 	{

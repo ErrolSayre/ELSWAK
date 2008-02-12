@@ -23,6 +23,7 @@ class ELSWebAppKit_MySQL_String
 	public function setString($string)
 	{
 		$this->string = strval($string);
+		return $this;
 	}
 	public function sql($format = '', $indent = '')
 	{

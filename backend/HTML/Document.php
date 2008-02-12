@@ -220,6 +220,7 @@ class ELSWebAppKit_HTML_Document
 			// since we have a reference to the title text node we can modify its value directly
 			$this->titleTextNode->nodeValue = $title;
 		}
+		return $this;
 	}
 	public function createLink($href, $label = null, $title = null, $target = null, $name = null, $id = null)
 	{

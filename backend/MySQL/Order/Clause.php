@@ -66,6 +66,7 @@ class ELSWebAppKit_MySQL_Order_Clause
 				$this->addOrdinal($ordinal);
 			}
 		}
+		return $this;
 	}
 	public function sql($format = '', $indent = '')
 	{

@@ -78,6 +78,7 @@ class ELSWebAppKit_MySQL_Conditional_Group
 				$this->addCondition($condition);
 			}
 		}
+		return $this;
 	}
 	public function conjunction()
 	{
@@ -86,7 +87,7 @@ class ELSWebAppKit_MySQL_Conditional_Group
 	public function setConjunction(ELSWebAppKit_MySQL_Conjunction $conjunction)
 	{
 		$this->conjunction = $conjunction;
-		return $this->conjunction;
+		return $this;
 	}
 	public function sql($format = '', $indent = '')
 	{

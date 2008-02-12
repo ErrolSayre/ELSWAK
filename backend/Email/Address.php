@@ -2,7 +2,7 @@
 /*
 	ELSWebAppKit Email Address
 */
-require_once('ELSWebAppKit/Iterable/Model.php');
+require_once('ELSWebAppKit/Iterable.php');
 class ELSWebAppKit_Email_Address
 	extends ELSWebAppKit_Iterable
 {
@@ -31,7 +31,7 @@ class ELSWebAppKit_Email_Address
 		// verify that this is a valid email address
 		if ($address !== null)
 		{
-			if (self::verifyEmail($address))
+			if (self::verify($address))
 			{
 				// this is a validly formatted email address
 				$this->address = $address;
@@ -48,8 +48,9 @@ class ELSWebAppKit_Email_Address
 			// set the address to null
 			$this->address = null;
 		}
+		return $this;
 	}
-	public static function verifyEmail($address)
+	public static function verify($address)
 	{
 		if (preg_match(self::EMAIL_ADDRESS_REGX, $address))
 		{

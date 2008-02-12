@@ -1,3 +1,3 @@
 <?php
-$db = new mysqli('localhost');
+$db = new mysqli('localhost', 'backup');
 ?>

@@ -23,7 +23,7 @@ class ELSWebAppKit_MySQL_Field_Value
 	public function setField(ELSWebAppKit_MySQL_Field $field)
 	{
 		$this->field = $field;
-		return $this->field;
+		return $this;
 	}
 	public function value()
 	{
@@ -32,7 +32,7 @@ class ELSWebAppKit_MySQL_Field_Value
 	public function setValue(ELSWebAppKit_MySQL_Expression $value)
 	{
 		$this->value = $value;
-		return $this->value;
+		return $this;
 	}
 	public function sql($format = '', $indent = '')
 	{

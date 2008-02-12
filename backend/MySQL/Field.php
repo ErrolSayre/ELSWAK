@@ -43,6 +43,7 @@ class ELSWebAppKit_MySQL_Field
 			$this->prettyName .= ucfirst(strtolower($piece)).' ';
 		}
 		$this->prettyName = trim($this->prettyName);
+		return $this;
 	}
 	public function prettyName()
 	{
@@ -55,7 +56,7 @@ class ELSWebAppKit_MySQL_Field
 	protected function setTable(ELSWebAppKit_MySQL_Table $table)
 	{
 		$this->table = $table;
-		return $this->table;
+		return $this;
 	}
 	public function database()
 	{
@@ -68,6 +69,7 @@ class ELSWebAppKit_MySQL_Field
 	protected function setDataType($dataType)
 	{
 		$this->dataType = $dataType;
+		return $this;
 	}
 	public function dataFormat()
 	{
@@ -76,6 +78,7 @@ class ELSWebAppKit_MySQL_Field
 	protected function setDataFormat($dataFormat)
 	{
 		$this->dataFormat = $dataFormat;
+		return $this;
 	}
 	public function dataLength()
 	{
@@ -84,6 +87,7 @@ class ELSWebAppKit_MySQL_Field
 	protected function setDataLength($dataLength)
 	{
 		$this->dataLength = $dataLength;
+		return $this;
 	}
 	public function permissibleValues()
 	{
@@ -112,6 +116,7 @@ class ELSWebAppKit_MySQL_Field
 	protected function setPresentationType($presentationType)
 	{
 		$this->presentationType = $presentationType;
+		return $this;
 	}
 	public function sql($format = '', $indent = '')
 	{
@@ -489,6 +494,7 @@ class ELSWebAppKit_MySQL_Field
 		{
 			$this->setPresentationType('string');
 		}
+		return $this;
 	}
 	public static function extractParentheticalString($string)
 	{

@@ -20,6 +20,7 @@ class ELSWebAppKit_MySQL_Database
 	protected function setName($name)
 	{
 		$this->name = $name;
+		return $this;
 	}
 	public function prettyName()
 	{

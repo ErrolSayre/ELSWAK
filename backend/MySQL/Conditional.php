@@ -38,7 +38,7 @@ class ELSWebAppKit_MySQL_Conditional
 	public function setLeftSide(ELSWebAppKit_MySQL_Expression $leftSide)
 	{
 		$this->leftSide = $leftSide;
-		return $this->leftSide;
+		return $this;
 	}
 	public function operator()
 	{
@@ -47,7 +47,7 @@ class ELSWebAppKit_MySQL_Conditional
 	public function setOperator(ELSWebAppKit_MySQL_Operator $operator)
 	{
 		$this->operator = $operator;
-		return $this->operator;
+		return $this;
 	}
 	public function rightSide()
 	{
@@ -56,7 +56,7 @@ class ELSWebAppKit_MySQL_Conditional
 	public function setRightSide(ELSWebAppKit_MySQL_Expression $rightSide)
 	{
 		$this->rightSide = $rightSide;
-		return $this->rightSide;
+		return $this;
 	}
 	public function sql($format = 'table.field', $indent = '')
 	{

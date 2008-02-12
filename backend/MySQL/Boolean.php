@@ -27,6 +27,7 @@ class ELSWebAppKit_MySQL_Boolean
 		{
 			$this->boolean = false;
 		}
+		return $this;
 	}
 	public function sql($format = '', $indent = '')
 	{

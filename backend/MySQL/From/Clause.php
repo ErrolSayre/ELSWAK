@@ -80,6 +80,7 @@ class ELSWebAppKit_MySQL_From_Clause
 				$this->addTable($table);
 			}
 		}
+		return $this;
 	}
 	public function tableJoinForKey($index)
 	{
@@ -131,6 +132,7 @@ class ELSWebAppKit_MySQL_From_Clause
 				$this->addTableJoin($tableJoins);
 			}
 		}
+		return $this;
 	}
 	public function sql($format = '', $indent = '')
 	{

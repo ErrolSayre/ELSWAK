@@ -30,6 +30,7 @@ class ELSWebAppKit_Store_Search_Sort
 	public function setProperty($property)
 	{
 		$this->property = $property;
+		return $this;
 	}
 	public function order()
 	{
@@ -52,5 +53,6 @@ class ELSWebAppKit_Store_Search_Sort
 			$this->order = 'ascending';
 			throw new Exception('Invalid sort order: order reset to ascending.');
 		}
+		return $this;
 	}
 }

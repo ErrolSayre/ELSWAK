@@ -28,6 +28,7 @@ class ELSWebAppKit_Store_Search_Limit
 	public function setCount($count)
 	{
 		$this->count = intval($count);
+		return $this;
 	}
 	public function offset()
 	{
@@ -36,5 +37,6 @@ class ELSWebAppKit_Store_Search_Limit
 	public function setOffset($offset)
 	{
 		$this->offset = intval($offset);
+		return $this;
 	}
 }
