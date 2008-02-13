@@ -75,6 +75,6 @@ class ELSWebAppKit_HTML_Response
 		}
 		
 		// dump the document content
-		echo $this->document->saveXML();
+		echo $this->document;
 	}
 }

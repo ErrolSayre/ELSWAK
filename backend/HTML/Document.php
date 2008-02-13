@@ -42,7 +42,7 @@ class ELSWebAppKit_HTML_Document
 		$this->serverUri = ((isset($_SERVER['HTTPS']))? 'https://': 'http://').$_SERVER['HTTP_HOST'];
 		
 		// setup the application uri
-		$this->applicationPath = dirname($_SERVER['PHP_SELF']);
+		$this->applicationPath = dirname($_SERVER['PHP_SELF']).'/';
 		
 		// setup the uri prefix for this document
 		if ($uriPrefix !== null)
@@ -588,17 +588,25 @@ class ELSWebAppKit_HTML_Document
 		// return this element
 		return $option;
 	}
-	public function addScriptToPageHeader($source, $type = 'text/javascript', $language = 'javascript', $characterSet = 'utf-8')
+	public function addScript($source, $type = 'text/javascript', $language = 'javascript', $characterSet = 'utf-8')
 	{
 		// create a script tag
-		$scriptContainer = $this->headNode->appendChild($this->createElement('script'));
-		$scriptContainer->setAttribute('src', $source);
-		$scriptContainer->setAttribute('type', $type);
-		$scriptContainer->setAttribute('language', $language);
+		$script = $this->headNode->appendChild($this->createElement('script'));
+		$script->setAttribute('src', $source);
+		$script->setAttribute('type', $type);
+		$script->setAttribute('language', $language);
 		if ($characterSet != '')
 		{
-			$scriptContainer->setAttribute('charset', $characterSet);
+			$script->setAttribute('charset', $characterSet);
 		}
+	}
+	public function addStylesheet($source, $media = 'all')
+	{
+		// create a link tag
+		$link = $this->headNode->appendChild($this->createElement('link'));
+		$link->setAttribute('href', $source);
+		$link->setAttribute('rel', 'stylesheet');
+		$link->setAttribute('media', $media);
 	}
 	public function debugDumpVariable($var, $label = '')
 	{
@@ -643,6 +651,34 @@ class ELSWebAppKit_HTML_Document
 			// this should be a discrete value
 			$container->appendChild($this->createTextNode($var));
 		}
+	}
+	public function __toString()
+	{
+		return self::saveXML();
+	}
+	public function saveXML()
+	{
+		// clean up references
+		// javascript
+		// css
+		
+		return parent::saveXML();
+	}
+	public function saveHTML()
+	{
+		return self::saveXML();
+	}
+	public function save()
+	{
+		// clean up references
+		// javascript
+		// css
+		
+		return parent::saveXML();
+	}
+	public function saveHTMLFile()
+	{
+		return self::save();
 	}
 }
 ?>
