@@ -95,6 +95,21 @@ class ELSWebAppKit_HTML_Document
 	{
 		return $this->bodyNode;
 	}
+	public function addContent($content)
+	{
+		if ($content instanceof DOMElement)
+		{
+			return $this->bodyNode->appendChild($content);
+		}
+		else
+		{
+			return $this->bodyNode->appendChild($this->createElement('div', $content));
+		}
+	}
+	public function addMessage($message)
+	{
+		return $this->addContent($message);
+	}
 	public function locateElementById($id)
 	{
 /*
@@ -221,6 +236,34 @@ class ELSWebAppKit_HTML_Document
 			$this->titleTextNode->nodeValue = $title;
 		}
 		return $this;
+	}
+	public function createElement($tagName, $content = null, $id = null, $class = null)
+	{
+		// create a new element as normal
+		$element = parent::createElement($tagName);
+		
+		// determine if any content was provided
+		if ($content instanceof DOMElement)
+		{
+			$element->appendChild($content);
+		}
+		else if ($content !== null)
+		{
+			$element->appendChild($this->createTextNode($content));
+		}
+		
+		// set appropriate attributes
+		if ($id !== null)
+		{
+			$element->setAttribute('id', $id);
+		}
+		if ($class !== null)
+		{
+			$element->setAttribute('class', $class);
+		}
+		
+		// return the finished element
+		return $element;
 	}
 	public function createLink($href, $label = null, $title = null, $target = null, $name = null, $id = null)
 	{
@@ -491,14 +534,16 @@ class ELSWebAppKit_HTML_Document
 	Labeled check box inputs are check boxes coupled with a label that has some javascript in it to trigger the click action of the checkbox when the text of the label is clicked.
 */
 		// create the label
-		$label = $this->createElement('label');
-		$label->appendChild($this->createTextNode(strval($label)));
+		$labelElement = $this->createElement('label');
 		
 		// add the checkbox
-		$label->appendChild($this->createCheckBoxInput($name, $value, $id, $checked, $tabIndex));
+		$labelElement->appendChild($this->createCheckBoxInput($name, $value, $id, $checked, $tabIndex));
+		
+		// add the text to the label
+		$labelElement->appendChild($this->createTextNode(strval($label)));
 		
 		// return this element
-		return $label;
+		return $labelElement;
 	}
 	public function createSelect($name, $value = '', $id = null, $options = null, $label = '', $tabIndex = 0)
 	{
@@ -654,7 +699,7 @@ class ELSWebAppKit_HTML_Document
 	}
 	public function __toString()
 	{
-		return self::saveXML();
+		return $this->saveXML();
 	}
 	public function saveXML()
 	{
@@ -666,7 +711,7 @@ class ELSWebAppKit_HTML_Document
 	}
 	public function saveHTML()
 	{
-		return self::saveXML();
+		return $this->saveXML();
 	}
 	public function save()
 	{
@@ -678,7 +723,7 @@ class ELSWebAppKit_HTML_Document
 	}
 	public function saveHTMLFile()
 	{
-		return self::save();
+		return $this->save();
 	}
 }
 ?>

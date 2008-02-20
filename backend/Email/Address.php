@@ -31,7 +31,7 @@ class ELSWebAppKit_Email_Address
 		// verify that this is a valid email address
 		if ($address !== null)
 		{
-			if (self::verify($address))
+			if ($this->verify($address))
 			{
 				// this is a validly formatted email address
 				$this->address = $address;

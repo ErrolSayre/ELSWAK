@@ -18,6 +18,6 @@ interface ELSWebAppKit_Store_Coordinator_Interface
 	public static function load($context, $depth = null);
 	public static function save($context, $depth = null);
 	public static function delete($context, $depth = null);
-	public static function search(StoreSearch $search);
+	public static function search(ELSWebAppKit_Store_Search $search);
 }
 ?>

@@ -67,7 +67,7 @@ class ELSWebAppKit_Phone_Number
 		{
 			// determine if the number is made up of the valid characters
 			// first replace letters with their number counter parts
-			$number = self::translateLettersToNumbers($number);
+			$number = $this->translateLettersToNumbers($number);
 			
 			// determine if the number is a 10 digit number
 			if (preg_match(self::TEN_DIGIT_REGEX, $number, $matches) == 1)
@@ -136,7 +136,7 @@ class ELSWebAppKit_Phone_Number
 	}
 	public static function verifyTenDigit($phoneNumber)
 	{
-		if (preg_match(self::TEN_DIGIT_REGEX, $number) == 1)
+		if (preg_match(self::TEN_DIGIT_REGEX, $phoneNumber) == 1)
 		{
 			return true;
 		}

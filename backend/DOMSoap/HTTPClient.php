@@ -84,7 +84,7 @@ class ELSWebAppKit_DOMSoap_HTTPClient
 			fclose($httpConnection);
 			
 			// extract the XML from the response
-			$reponseXML = substr($responseContent, strpos($responseContent, CRLF.CRLF));
+			$responseXML = substr($responseContent, strpos($responseContent, CRLF.CRLF));
 		}
 		else
 		{
@@ -92,7 +92,7 @@ class ELSWebAppKit_DOMSoap_HTTPClient
 		}
 		
 		// return our result
-		return $reponseXML;
+		return $responseXML;
 	}
 }
 ?>

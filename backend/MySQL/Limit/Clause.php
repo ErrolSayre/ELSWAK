@@ -4,7 +4,7 @@
 	
 	Represents a MySQL LIMIT clause.
 */
-class ELSWebAppKit_MySQL_LimitClause
+class ELSWebAppKit_MySQL_Limit_Clause
 {
 	protected $rowCount;
 	protected $offset;
