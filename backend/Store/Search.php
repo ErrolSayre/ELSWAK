@@ -145,7 +145,7 @@ class ELSWebAppKit_Store_Search
 		{
 			if ($sortItem instanceOf ELSWebAppKit_Store_Search_Sort)
 			{
-				$this->addSort($sortItem);
+				$this->addSortItem($sortItem);
 			}
 		}
 		return $this;
