@@ -77,6 +77,12 @@ class ELSWebAppKit_Store_Search
 	{
 		return count($this->criteriaList);
 	}
+	public function hasCriteria()
+	{
+		if ($this->criteriaCount() > 0)
+			return true;
+		return false;
+	}
 	public function criteriaKeys()
 	{
 		return array_keys($this->criteriaList);
@@ -128,6 +134,12 @@ class ELSWebAppKit_Store_Search
 	public function sortItemCount()
 	{
 		return count($this->sortItems);
+	}
+	public function hasSortItems()
+	{
+		if ($this->sortItemCount() > 0)
+			return true;
+		return false;
 	}
 	public function sortItemKeys()
 	{

@@ -6,7 +6,7 @@ require_once('ELSWebAppKit/HTML/Document.php');
 require_once('ELSWebAppKit/Postal/Address.php');
 class ELSWebAppKit_Postal_Address_HTML_FormWriter
 {
-	public static function standardForm(ELSWebAppKit_HTML_Document $document, ELSWebAppKit_Postal_Address $address = null, $inputNamePrefix = '', $inputIdPrefix = '')
+	public static function standardForm(ELSWebAppKit_HTML_Response $response, ELSWebAppKit_Postal_Address $address = null, $inputNamePrefix = '', $inputIdPrefix = '')
 	{
 		// create a default object if necessary
 		if ($address === null)
@@ -20,18 +20,18 @@ class ELSWebAppKit_Postal_Address_HTML_FormWriter
 			$inputIdPrefix = $inputNamePrefix;
 		}
 	}
-	public static function standardFields(ELSWebAppKit_HTML_Document $document, ELSWebAppKit_Postal_Address $address, $inputNamePrefix, $inputIdPrefix)
+	public static function standardFields(ELSWebAppKit_HTML_Response $response, ELSWebAppKit_Postal_Address $address, $inputNamePrefix, $inputIdPrefix)
 	{
 		// create a new fieldset element set to contain the fields
-		$container = $document->createElement('div');
+		$container = $response->document()->createElement('div');
 		
 		// add a form field for the lines
 		$field = $container->appendChild
 		(
-			$document->createFormField
+			$response->document()->createFormField
 			(
 				'Lines',
-				$document->createTextInput
+				$response->document()->createTextInput
 				(
 					$inputNamePrefix.'[lines][1]',
 					$address->line(1),
@@ -43,7 +43,7 @@ class ELSWebAppKit_Postal_Address_HTML_FormWriter
 		);
 		$field->appendChild
 		(
-			$document->createTextInput
+			$response->document()->createTextInput
 			(
 				$inputNamePrefix.'[lines][2]',
 				$address->line(2),
@@ -54,7 +54,7 @@ class ELSWebAppKit_Postal_Address_HTML_FormWriter
 		);
 		$field->appendChild
 		(
-			$document->createTextInput
+			$response->document()->createTextInput
 			(
 				$inputNamePrefix.'[lines][3]',
 				$address->line(3),
@@ -65,7 +65,7 @@ class ELSWebAppKit_Postal_Address_HTML_FormWriter
 		);
 		$field->appendChild
 		(
-			$document->createTextInput
+			$response->document()->createTextInput
 			(
 				$inputNamePrefix.'[lines][4]',
 				$address->line(4),

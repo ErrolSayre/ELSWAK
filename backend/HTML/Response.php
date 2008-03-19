@@ -12,6 +12,8 @@ class ELSWebAppKit_HTML_Response
 	
 	public function __construct(ELSWebAppKit_HTML_Document $document = null)
 	{
+		parent::__construct();
+		
 		$this->setDocument
 		(
 			($document !== null)?

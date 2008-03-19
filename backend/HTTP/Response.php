@@ -9,12 +9,34 @@ require_once('ELSWebAppKit/Iterable.php');
 class ELSWebAppKit_HTTP_Response
 	extends ELSWebAppKit_Iterable
 {
+	protected $serverUri;
+	protected $applicationPath;
 	protected $headers = array();
 	protected $rawHeaders = array();
 	protected $responseCode = 200;
 	protected $isRedirect = false;
 	protected $body = '';
 	
+	public function __construct()
+	{
+		// setup the server uri
+		$this->serverUri = ((isset($_SERVER['HTTPS']))? 'https://': 'http://').$_SERVER['HTTP_HOST'];
+		
+		// setup the application uri
+		$this->applicationPath = dirname($_SERVER['PHP_SELF']).'/';
+	}
+	public function serverUri()
+	{
+		return $this->serverUri;
+	}
+	public function applicationPath()
+	{
+		return $this->applicationPath;
+	}
+	public function applicationUri()
+	{
+		return $this->serverUri.$this->applicationPath;
+	}
 	public function headers()
 	{
 		return $this->headers;

@@ -5,22 +5,19 @@
 	This class defines an extension of the DOMDocument that provides generic helpful features specific to HTML. It is intended to be used with ELSWebAppKit HTML Response Container but can be used on its own.
 	
 	This extension to the DOMDocument provides locateElementById as a replacement for the HTML specific getElementById because PHP only recognized the id attribute for elements that existed in the document at the time of the last validation (or on initial load of an HTML file). This method caches ALL ids that it finds, but whenever it doesn't have a cached reference for a given id, it searches the entire document tree. Since the DOM is not ordered in any particular way it must be iterated sequentially, however since most elements are appended to existing items it is most likely that new items will be at the "bottom" of the tree. For this reason, I start the search for items at the last child of a given node and work toward the first child. Please note that you can avoid this search by creating elements through the given methods of this class, or by registering a given element with the cache using the registerElementWithIdIndex method.
-	
-	Please note that the uriPrefix is collected within the document to reflect the base prefix of the url this document will be served from. This is an easy way to provide views operating on the response document with the required information to build URIs within the scope of this document-system-server context. Please note that using the default value will produce absolute URIs which are going to make your resulting document slightly to noticeably larger depending on the number of links you may have on page. Bear this in mind if you're building a list of a few thousand items that all have a view, edit, and delete links which could be represented as simply as "item/[view,edit,delete]" instead of "https://www.mydomain.com/application/item/[view,edit,delete]".
 */
 class ELSWebAppKit_HTML_Document
 	extends DOMDocument
 {
-	protected $uriPrefix;
-	protected $serverUri;
-	protected $applicationPath;
 	protected $rootNode;
 	protected $headNode;
 	protected $bodyNode;
+	protected $scripts;
+	protected $stylesheets;
 	protected $titleTextNode;
 	protected $elementIdIndex;
 	
-	public function __construct($templateFile = null, $uriPrefix = null)
+	public function __construct($templateFile = null)
 	{
 		// create the DOMDocument
 		parent::__construct();
@@ -38,50 +35,32 @@ class ELSWebAppKit_HTML_Document
 			$this->load($path['dirname'].'/Document/Template.xhtml');
 		}
 		
-		// setup the server uri
-		$this->serverUri = ((isset($_SERVER['HTTPS']))? 'https://': 'http://').$_SERVER['HTTP_HOST'];
-		
-		// setup the application uri
-		$this->applicationPath = dirname($_SERVER['PHP_SELF']).'/';
-		
-		// setup the uri prefix for this document
-		if ($uriPrefix !== null)
-		{
-			// use the supplied prefix
-			$this->uriPrefix = $uriPrefix;
-		}
-		else
-		{
-			// try to determine the uri prefix automatically
-				// this document assumes that the prefix should be the directory of the current request
-			$this->uriPrefix = $this->serverUri.$this->applicationPath;
-		}
-		
-		// now determine the server relative uri prefix based on what was provided
-		
 		// setup references to generic elements
 		$this->rootNode = $this->getElementsByTagName('html')->item(0);
 		$this->headNode = $this->getElementsByTagName('head')->item(0);
 		$this->bodyNode = $this->getElementsByTagName('body')->item(0);
 		
+		// collect any scripts in the template
+		$this->scripts = array();
+		foreach ($this->getElementsByTagName('script') as $script)
+		{
+			$this->scripts[] = $script;
+		}
+		
+		// collect any stylesheets in the template
+		$this->stylesheets = array();
+		foreach ($this->getElementsByTagName('link') as $link)
+		{
+			if (strtolower($link->getAttribute('rel')) == 'stylesheet')
+				$this->stylesheets[] = $link;
+		}
+		
 		// setup the element id index
 		$this->elementIdIndex = array();
 	}
-	public function serverUri()
+	public function cleanup()
 	{
-		return $this->serverUri;
-	}
-	public function applicationPath()
-	{
-		return $this->applicationPath;
-	}
-	public function applicationUri()
-	{
-		return $this->serverUri.$this->applicationPath;
-	}
-	public function uriPrefix()
-	{
-		return $this->uriPrefix;
+		return $this;
 	}
 	public function root()
 	{
@@ -295,6 +274,24 @@ class ELSWebAppKit_HTML_Document
 		
 		// return this element
 		return $a;
+	}
+	public function createForm($action, $method = 'POST', $content = null, $id = null, $class = null)
+	{
+		// create a new form element
+		$form = $this->createElement('form', $content, $id, $class);
+		$form->setAttribute('action', $action);
+		$form->setAttribute('method', $method);
+		return $form;
+	}
+	public function createFieldset($legend = null, $content = null, $id = null, $class = null)
+	{
+		// create a new fieldset element
+		$fieldset = $this->createElement('fieldset', $content, $id, $class);
+		if ($legend !== null)
+		{
+			$fieldset->appendChild($this->createElement('legend', $legend));
+		}
+		return $fieldset;
 	}
 	public function createFormField($label, $input, $description = null)
 	{
@@ -633,25 +630,59 @@ class ELSWebAppKit_HTML_Document
 		// return this element
 		return $option;
 	}
-	public function addScript($source, $type = 'text/javascript', $language = 'javascript', $characterSet = 'utf-8')
+	public function addScript($source = null, $content = null, $type = 'text/javascript', $language = 'javascript', $characterSet = 'utf-8')
 	{
-		// create a script tag
-		$script = $this->headNode->appendChild($this->createElement('script'));
-		$script->setAttribute('src', $source);
-		$script->setAttribute('type', $type);
-		$script->setAttribute('language', $language);
-		if ($characterSet != '')
+		// determine if a script source was provided
+		$newScript = true;
+		if ($source !== null)
 		{
-			$script->setAttribute('charset', $characterSet);
+			// look in existing scripts to see if there is a match
+			foreach ($this->scripts as $script)
+			{
+				if ($script->getAttribute('src') == $source)
+					$newScript = false;
+			}
 		}
+		if ($newScript)
+		{
+			// create a script tag
+			$script = $this->headNode->appendChild($this->createElement('script'));
+			if ($source !== null)
+			{
+				$script->setAttribute('src', $source);
+			}
+			if ($content !== null)
+			{
+				$script->appendChild($this->createTextNode($content));
+			}
+			$script->setAttribute('type', $type);
+			$script->setAttribute('language', $language);
+			if ($characterSet != '')
+			{
+				$script->setAttribute('charset', $characterSet);
+			}
+		}
+		return $this;
 	}
 	public function addStylesheet($source, $media = 'all')
 	{
-		// create a link tag
-		$link = $this->headNode->appendChild($this->createElement('link'));
-		$link->setAttribute('href', $source);
-		$link->setAttribute('rel', 'stylesheet');
-		$link->setAttribute('media', $media);
+		// look in the existing links to see if there is a match
+		$newStylesheet = true;
+		foreach ($this->stylesheets as $link)
+		{
+			if ($link->getAttribute('href') == $source)
+				$newStylesheet = false;
+		}
+		if ($newStylesheet)
+		{
+			// create a link tag
+			$link = $this->headNode->appendChild($this->createElement('link'));
+			$link->setAttribute('href', $source);
+			$link->setAttribute('rel', 'stylesheet');
+			$link->setAttribute('media', $media);
+			$this->stylesheets[] = $link;
+		}
+		return $this;
 	}
 	public function debugDumpVariable($var, $label = '')
 	{
@@ -699,7 +730,7 @@ class ELSWebAppKit_HTML_Document
 	}
 	public function __toString()
 	{
-		return $this->saveXML();
+		return $this->cleanup()->saveXML();
 	}
 	public function saveXML()
 	{
