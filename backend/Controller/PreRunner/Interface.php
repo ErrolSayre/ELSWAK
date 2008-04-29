@@ -6,6 +6,6 @@
 */
 interface ELSWebAppKit_Controller_PreRunner_Interface
 {
-	public function preRun(ELSWebAppKit_HTTP_Response $response, array $request);
+	public function preRun(ELSWebAppKit_HTTP_Response $response, array $arguments);
 }
 ?>

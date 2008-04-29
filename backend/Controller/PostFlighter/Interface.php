@@ -7,6 +7,6 @@
 */
 interface ELSWebAppKit_Controller_PostFlighter_Interface
 {
-	public function postFlight(array $request);
+	public function postFlight(array $arguments);
 }
 ?>

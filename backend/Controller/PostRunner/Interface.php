@@ -6,6 +6,6 @@
 */
 interface ELSWebAppKit_Controller_PostRunner_Interface
 {
-	public function postRun(ELSWebAppKit_HTTP_Response $response, array $request);
+	public function postRun(ELSWebAppKit_HTTP_Response $response, array $arguments);
 }
 ?>

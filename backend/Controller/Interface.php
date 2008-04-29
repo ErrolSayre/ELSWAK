@@ -6,6 +6,6 @@
 */
 interface ELSWebAppKit_Controller_Interface
 {
-	public function run(ELSWebAppKit_HTTP_Response $response, array $request);
+	public function run(ELSWebAppKit_HTTP_Response $response, array $arguments);
 }
 ?>
