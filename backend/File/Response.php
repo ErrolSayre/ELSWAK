@@ -9,6 +9,15 @@ require_once('ELSWebAppKit/File/Type/Detector.php');
 class ELSWebAppKit_File_Response
 	extends ELSWebAppKit_HTTP_Response
 {
+	public function __construct($filePath = null, $fileName = null)
+	{
+		parent::__construct();
+		$this->setHeader('Content-Transfer-Encoding', 'binary', true);
+		if ($filePath !== null)
+			$this->addContent($filePath);
+		if ($fileName !== null)
+			$this->setDownload($fileName);
+	}
 	public function setDownload($fileName = null)
 	{
 		if ($fileName === false)
@@ -34,7 +43,10 @@ class ELSWebAppKit_File_Response
 	public function sendBody()
 	{
 		if (is_readable($this->body))
+		{
+			$this->setHeader('Content-Length', filesize($this->body), true);
 			readfile($this->body);
+		}
 	}
 }
 ?>
