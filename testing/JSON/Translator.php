@@ -1,5 +1,5 @@
 <?php
-require_once('DataGeneral/JSON/Translator/Model.php');
+require_once('ELSWebAppKit/JSON/Translator.php');
 $translator = new ELSWebAppKit_JSON_Translator();
 
 // create a complex array
@@ -22,7 +22,7 @@ echo $translator->encode($array).LF;
 // create a new object
 echo '<h1>Loading Person</h1>'.LF;
 require_once('DataGeneral/Person/MySQL/StoreCoordinator.php');
-$person = DataGeneral_Person_Store_Coordinator::load(1, 'complete');
+$person = DataGeneral_Person_MySQL_StoreCoordinator::load(1, 'complete');
 print_r_html($person);
 
 echo '<h1>JSON encode of person</h1>'.LF;

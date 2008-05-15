@@ -56,7 +56,7 @@ class ELSWebAppKit_JSON_Response
 	{
 		$this->payload = $payload;
 	}
-	public function output()
+	public function sendBody()
 	{
 		echo ELSWebAppKit_JSON_Translator::encode($this);
 	}
