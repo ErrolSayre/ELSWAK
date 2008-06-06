@@ -33,9 +33,10 @@ class ELSWebAppKit_DOMSoap_HTTPClient
 		}
 		$this->useSSL = ($useSSL)?	true:	false;
 	}
-	function makeRequest($soapXML)
+	function makeRequest($soapXML, $rawResponse = false)
 	{
 		// set up the response
+		$responseContent = '';
 		$responseXML = '';
 		
 		// determine if we should use ssl
@@ -70,7 +71,6 @@ class ELSWebAppKit_DOMSoap_HTTPClient
 			fputs($httpConnection, $requestContent, strlen($requestContent));
 			
 			// read the response content
-			$responseContent = '';
 			// suppress php warnings using an output buffer
 			ob_start();
 			while (!feof($httpConnection))
@@ -92,6 +92,8 @@ class ELSWebAppKit_DOMSoap_HTTPClient
 		}
 		
 		// return our result
+		if ($rawResponse)
+			return $responseContent;
 		return $responseXML;
 	}
 }

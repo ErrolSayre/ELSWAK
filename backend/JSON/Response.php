@@ -58,7 +58,7 @@ class ELSWebAppKit_JSON_Response
 	}
 	public function sendBody()
 	{
-		echo ELSWebAppKit_JSON_Translator::encode($this);
+		echo $this;
 	}
 	public function __toString()
 	{

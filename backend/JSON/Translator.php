@@ -40,8 +40,8 @@ class ELSWebAppKit_JSON_Translator
 			else
 			{
 				// this is not an object or array
-				// save the value to the result unmodified
-				$result[$key] = $value;
+				// save the value to the result escaping appropriate characters
+				$result[$key] = str_replace("\n", "\n", $value);
 			}
 		}
 		return $result;
