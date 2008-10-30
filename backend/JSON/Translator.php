@@ -9,9 +9,7 @@ class ELSWebAppKit_JSON_Translator
 	public static function encode($input)
 	{
 		if (is_object($input) || is_array($input))
-		{
 			$input = self::arrayForObject($input);
-		}
 		
 		return json_encode($input);
 	}
@@ -21,30 +19,12 @@ class ELSWebAppKit_JSON_Translator
 	}
 	public static function arrayForObject($object)
 	{
-		$result = array();
-		$references = array();
-	
-		// loop over elements / properties
-		foreach ($object as $key => $value)
-		{
-			// recursively convert objects
-			if (is_object($value) || is_array($value))
-			{
-				// but prevent cycles by caching object references
-				if (!in_array($value, $references))
-				{
-					$result[$key] = self::arrayForObject($value);
-					$references[] = $value;
-				}
-			}
-			else
-			{
-				// this is not an object or array
-				// save the value to the result escaping appropriate characters
-				$result[$key] = str_replace("\n", "\n", $value);
-			}
-		}
-		return $result;
+		$result = serialize($object);
+		$result = preg_replace('/O:\d+:".+?"/', 'a', $result);
+		if (preg_match_all('/s:\d+:"\\0.+?\\0(.+?)"/', $result, $matches, PREG_SET_ORDER))
+			foreach ($matches as $match)
+				$result = str_replace($match[0], 's:'.strlen($match[1]).':"'.$match[1].'"', $result);
+		return @unserialize($result);
 	}
 }
 ?>
