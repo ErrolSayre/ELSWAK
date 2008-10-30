@@ -9,7 +9,7 @@ class ELSWebAppKit_JSON_Response
 	protected $payload;
 	
 	// member listing for iterator methods
-	protected $members = array
+	protected $_iterables = array
 	(
 		'status',
 		'messages',
@@ -18,6 +18,7 @@ class ELSWebAppKit_JSON_Response
 	
 	public function __construct($status = 'OK', array $messages = null, $payload = null)
 	{
+		$this->setHeader('Content-Type', 'text/javascript', true);
 		$this->setStatus($status);
 		if ($messages != null)
 		{
@@ -39,6 +40,7 @@ class ELSWebAppKit_JSON_Response
 	public function setStatus($status)
 	{
 		$this->status = $status;
+		return $this;
 	}
 	public function messages()
 	{
@@ -47,6 +49,7 @@ class ELSWebAppKit_JSON_Response
 	public function addMessage($message)
 	{
 		$this->messages[] = trim($message);
+		return $this;
 	}
 	public function payload()
 	{
@@ -55,6 +58,7 @@ class ELSWebAppKit_JSON_Response
 	public function setPayload($payload)
 	{
 		$this->payload = $payload;
+		return $this;
 	}
 	public function sendBody()
 	{
@@ -62,7 +66,19 @@ class ELSWebAppKit_JSON_Response
 	}
 	public function __toString()
 	{
-		return ELSWebAppKit_JSON_Translator::encode($this);
+		// construct the json representation of this response
+		$json = '';
+		$json .= '"status":"'.$this->status.'",';
+		$json .= '"messages":'.ELSWebAppKit_JSON_Translator::encode($this->messages).',';
+		
+		// determine if the payload is a string
+		if (is_string($this->payload))
+			$json .= '"payload":'.$this->payload;
+		else
+			$json .= '"payload":'.ELSWebAppKit_JSON_Translator::encode($this->payload);
+		
+		// return the finished json
+		return '{'.$json.'}';
 	}
 }
 ?>
