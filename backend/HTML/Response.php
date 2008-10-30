@@ -38,6 +38,26 @@ class ELSWebAppKit_HTML_Response
 	{
 		return $this->document->addMessage($message);
 	}
+	public function status()
+	{
+		// this is a placeholder method to provide error free interchangeability with the JSON response until the HTML document has a means to support a status
+		return true;
+	}
+	public function setStatus($status)
+	{
+		// this is a placeholder method
+		return $this;
+	}
+	public function payload()
+	{
+		// this is a placeholder method
+		return true;
+	}
+	public function setPayload($payload)
+	{
+		// this is a placeholder method
+		return $this->document->addMessage($this->document->debugDumpVariable($payload, 'Payload'));
+	}
 	public function sendBody()
 	{
 		// determine if this is a redirect
