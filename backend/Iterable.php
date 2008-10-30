@@ -7,27 +7,27 @@
 class ELSWebAppKit_Iterable
 	implements Iterator
 {
-	protected $members = array();
+	protected $_iterables = array();
 	
 	public function rewind()
 	{
-		reset($this->members);
+		reset($this->_iterables);
 	}
 	public function current()
 	{
-		return $this->{current($this->members)};
+		return $this->{current($this->_iterables)};
 	}
 	public function key()
 	{
-		return current($this->members);
+		return current($this->_iterables);
 	}
 	public function next()
 	{
-		return next($this->members);
+		return next($this->_iterables);
 	}
 	public function valid()
 	{
-		return (current($this->members) !== false)? true: false;
+		return (current($this->_iterables) !== false)? true: false;
 	}
 }
 ?>
