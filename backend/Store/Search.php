@@ -16,7 +16,7 @@ class ELSWebAppKit_Store_Search
 	protected $limit;
 	
 	// member listing for iterator methods
-	protected $members = array
+	protected $_iterables = array
 	(
 		'criteriaList',
 		'sortItems',

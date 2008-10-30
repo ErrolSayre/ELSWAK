@@ -23,10 +23,10 @@ class ELSWebAppKit_Database_StoredObject
 	public function __construct()
 	{
 		// set up the iterable members
-		$this->members[] = 'id';
-		$this->members[] = 'creator';
-		$this->members[] = 'timeModified';
-		$this->members[] = 'timeSaved';
+		$this->_iterables[] = 'id';
+		$this->_iterables[] = 'creator';
+		$this->_iterables[] = 'timeModified';
+		$this->_iterables[] = 'timeSaved';
 	}
 	
 	public function id()

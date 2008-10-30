@@ -2,7 +2,7 @@
 /*
 	ELSWebAppKit Email Address
 */
-require_once('ELSWebAppKit/Iterable.php');
+require_once('ELSWebAppKit/Primitive.php');
 class ELSWebAppKit_Email_Address
 	extends ELSWebAppKit_Iterable
 {
@@ -12,7 +12,7 @@ class ELSWebAppKit_Email_Address
 	protected $address;
 	
 	// member listing for iterator methods
-	protected $members = array
+	protected $_iterables = array
 	(
 		'address'
 	);

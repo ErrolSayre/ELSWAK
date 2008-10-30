@@ -13,7 +13,7 @@ class ELSWebAppKit_Postal_Address
 	protected $country;
 	
 	// member listing for iterator methods
-	protected $members = array
+	protected $_iterables = array
 	(
 		'lines',
 		'city',

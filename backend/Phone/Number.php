@@ -22,7 +22,7 @@ class ELSWebAppKit_Phone_Number
 	protected $extension;
 	
 	// member listing for iterator methods
-	protected $members = array
+	protected $_iterables = array
 	(
 		'countryCode',
 		'areaCode',

@@ -12,7 +12,7 @@ class ELSWebAppKit_Store_Search_Sort
 	protected $order;
 	
 	// member listing for iterator methods
-	protected $members = array
+	protected $_iterables = array
 	(
 		'property',
 		'order'

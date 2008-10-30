@@ -11,7 +11,7 @@ class ELSWebAppKit_Store_Search_Criteria
 	protected $operation;
 	
 	// member listing for iterator methods
-	protected $members = array
+	protected $_iterables = array
 	(
 		'property',
 		'value',

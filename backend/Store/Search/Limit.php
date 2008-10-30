@@ -10,7 +10,7 @@ class ELSWebAppKit_Store_Search_Limit
 	protected $offset;
 	
 	// member listing for iterator methods
-	protected $members = array
+	protected $_iterables = array
 	(
 		'count',
 		'offset'
