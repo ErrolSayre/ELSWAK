@@ -23,7 +23,7 @@ class ELSWebAppKit_HTTP_Response
 		$this->serverUri = ((isset($_SERVER['HTTPS']))? 'https://': 'http://').$_SERVER['HTTP_HOST'];
 		
 		// setup the application uri
-		$this->applicationPath = dirname($_SERVER['PHP_SELF']).'/';
+		$this->applicationPath = dirname($_SERVER['PHP_SELF']);
 	}
 	public function serverUri()
 	{
