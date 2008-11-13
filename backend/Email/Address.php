@@ -2,7 +2,6 @@
 /*
 	ELSWebAppKit Email Address
 */
-require_once('ELSWebAppKit/Primitive.php');
 class ELSWebAppKit_Email_Address
 	extends ELSWebAppKit_Iterable
 {
