@@ -4,19 +4,10 @@
 	
 	Sorts are made up of an object property name and a sort order.
 */
-require_once('ELSWebAppKit/Iterable.php');
 class ELSWebAppKit_Store_Search_Sort
-	extends ELSWebAppKit_Iterable
 {
 	protected $property;
 	protected $order;
-	
-	// member listing for iterator methods
-	protected $_iterables = array
-	(
-		'property',
-		'order'
-	);
 	
 	public function __construct($property, $order = 'ASC')
 	{

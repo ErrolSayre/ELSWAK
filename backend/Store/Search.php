@@ -8,21 +8,11 @@ require_once('ELSWebAppKit/Store/Search/Criteria.php');
 require_once('ELSWebAppKit/Store/Search/Sort.php');
 require_once('ELSWebAppKit/Store/Search/Limit.php');
 class ELSWebAppKit_Store_Search
-	extends ELSWebAppKit_Iterable
 {
 	protected $criteriaList;
 	protected $sortItems;
 	protected $depth;
 	protected $limit;
-	
-	// member listing for iterator methods
-	protected $_iterables = array
-	(
-		'criteriaList',
-		'sortItems',
-		'depth',
-		'limit'
-	);
 	
 	public function __construct(array $criteriaList = null, array $sortItems = null, $depth = 'deep', ELSWebAppKit_Store_Search_Limit $limit = null)
 	{

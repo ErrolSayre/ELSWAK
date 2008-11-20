@@ -2,21 +2,11 @@
 /*
 	ELSWebAppKit Store Search Criteria
 */
-require_once('ELSWebAppKit/Iterable.php');
 class ELSWebAppKit_Store_Search_Criteria
-	extends ELSWebAppKit_Iterable
 {
 	protected $property;
 	protected $value;
 	protected $operation;
-	
-	// member listing for iterator methods
-	protected $_iterables = array
-	(
-		'property',
-		'value',
-		'operation'
-	);
 	
 	public function __construct($property, $value = '', $operation = 'equalTo')
 	{

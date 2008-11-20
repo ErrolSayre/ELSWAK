@@ -6,9 +6,7 @@
 	
 	Letters are converted to numbers according to the standard phone keypad. The parse does take into account the possibility that a 9 immediately follows the last 4 digits of the number and assumes that this is an "x" that has been converted to a 9. For this reason you should always add a delimiter if your extension begins with a 9, though most internal phone systems don't allow extensions to begin with 9 since it is commonly used as the external access prefix.
 */
-require_once('ELSWebAppKit/Iterable.php');
 class ELSWebAppKit_Phone_Number
-	extends ELSWebAppKit_Iterable
 {
 	const TEN_DIGIT_REGEX_BASE = '/(1?)[\s\-\.]?[\(]?([[2-9]\d{2}]?)[\)]?[\s\-\.]?([[2-9]\d{2}]?)[\s\-\.]?(\d{4})[9\s\-\.]?(\d*)/';
 	const TEN_DIGIT_REGEX = '/^(1?)[\s\-\.]?[\(]?([[2-9]\d{2}]?)[\)]?[\s\-\.]?([[2-9]\d{2}]?)[\s\-\.]?(\d{4})[9\s\-\.]?(\d*)$/';
@@ -20,16 +18,6 @@ class ELSWebAppKit_Phone_Number
 	protected $localPrefix;
 	protected $localSuffix;
 	protected $extension;
-	
-	// member listing for iterator methods
-	protected $_iterables = array
-	(
-		'countryCode',
-		'areaCode',
-		'localPrefix',
-		'localSuffix',
-		'extension'
-	);
 	
 	public function __construct($number = null)
 	{

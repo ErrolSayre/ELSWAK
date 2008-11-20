@@ -2,19 +2,10 @@
 /*
 	ELSWebAppKit Store Search Limit
 */
-require_once('ELSWebAppKit/Iterable.php');
 class ELSWebAppKit_Store_Search_Limit
-	extends ELSWebAppKit_Iterable
 {
 	protected $count;
 	protected $offset;
-	
-	// member listing for iterator methods
-	protected $_iterables = array
-	(
-		'count',
-		'offset'
-	);
 	
 	public function __construct($count = 0, $offset = 0)
 	{

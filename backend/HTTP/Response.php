@@ -5,9 +5,7 @@
 	This class was derived from the Zend Controller Response Abstract in order to provide some of the low level HTTP response items (such as headers) to the HTML, XML, and JSON response objects. It also serves as a common ancestor for those classes.
 	If you need the advanced features this class is lacking, it is recommended that you use the Zend class.
 */
-require_once('ELSWebAppKit/Iterable.php');
 class ELSWebAppKit_HTTP_Response
-	extends ELSWebAppKit_Iterable
 {
 	protected $serverUri;
 	protected $applicationPath;
@@ -222,7 +220,6 @@ class ELSWebAppKit_HTTP_Response
 		$this->sendHeaders();
 		
 		// output the body
-		$this->sendBody();
-		return $this;
+		return $this->sendBody();
 	}
 }

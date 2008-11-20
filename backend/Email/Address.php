@@ -3,18 +3,11 @@
 	ELSWebAppKit Email Address
 */
 class ELSWebAppKit_Email_Address
-	extends ELSWebAppKit_Iterable
 {
 	const EMAIL_ADDRESS_REGX_BASE = '/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i';
 	const EMAIL_ADDRESS_REGX = '/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i';
 	
 	protected $address;
-	
-	// member listing for iterator methods
-	protected $_iterables = array
-	(
-		'address'
-	);
 	
 	public function __construct($address = null)
 	{

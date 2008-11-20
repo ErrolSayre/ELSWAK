@@ -2,25 +2,13 @@
 /*
 	ELSWebAppKit Postal Address
 */
-require_once('ELSWebAppKit/Iterable.php');
 class ELSWebAppKit_Postal_Address
-	extends ELSWebAppKit_Iterable
 {
 	protected $lines;
 	protected $city;
 	protected $state;
 	protected $postal;
 	protected $country;
-	
-	// member listing for iterator methods
-	protected $_iterables = array
-	(
-		'lines',
-		'city',
-		'state',
-		'postal',
-		'country'
-	);
 	
 	public function __construct($line1 = '', $line2 = '', $city = '', $state = '', $postal = '', $country = '')
 	{
