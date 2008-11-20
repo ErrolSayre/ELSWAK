@@ -4,9 +4,13 @@
 */
 require_once('ELSWebAppKit/File/Response.php');
 $response = new ELSWebAppKit_File_Response();
-$response->addContent('test.txt');
-$response->setDownload('theFile.txt');
-//$response->setDownload(false);
-//$response->setDownload();
-$response->send();
-?>
+$response->setFile('test.txt');
+$response->setFileName('SuperFile.txt');
+$response->setDownload();
+//$response->setInline();
+$response->addContent('WHOO HOO');
+
+if (true)
+	$response->send();
+else
+	print_r_html($response);
