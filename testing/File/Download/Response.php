@@ -5,7 +5,7 @@ $response->setFileName('Test.csv');
 $response->addContent('"Investigator ID","First Name"');
 $response->addContent('"23","John"');
 $response->addContent('"45","Mark"');
-if (false)
+if (true)
 	$response->send();
 else if (true)
 	$response->sendBody();
