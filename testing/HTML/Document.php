@@ -1,10 +1,31 @@
 <?php
+$input = array();
+$input['phone'] = '';
+$input['pin'] = '';
+$input['TheRadio'] = '';
+$input['TheCheckBox1'] = '';
+$input['TheCheckBox2'] = '';
+$input['TheCheckBox3'] = '';
+$input['TheCheckBox4'] = '';
+$input['TheLabeledCheckBox1'] = '';
+$input['TheLabeledCheckBox2'] = '';
+$input['TheLabeledCheckBox3'] = '';
+$input['TheLabeledCheckBox4'] = '';
+$input['TheSelect1'] = '';
+$input['TheSelect2'] = '';
+$input['TheSelect3'] = '';
+$input['TheSelect4'] = '';
+
+// load the input if it's available
+foreach ($_REQUEST as $key => $value)
+	$input[$key] = $value;
+
 require_once('ELSWebAppKit/HTML/Document.php');
 // create a new document
 $document = new ELSWebAppKit_HTML_Document();
 
 // set the title
-$document->setPageTitle('Element search test with large document');
+$document->setPageTitle('Document Test');
 
 // add an element with an id
 $h1 = $document->body()->appendChild($document->createElement('h1'));
@@ -12,13 +33,10 @@ $h1->appendChild($document->createTextNode('Adding "firstHeader" node'));
 $h1->setAttribute('id','firstHeader');
 
 // add another element with an id
-$h1 = $document->body()->appendChild($document->createElement('h1'));
-$h1->appendChild($document->createTextNode('Adding "secondHeader" node'));
-$h1->setAttribute('id','secondHeader');
+$h1 = $document->body()->appendChild($document->createElement('h1', 'Adding "secondHeader" node', array('id' => 'secondHeader')));
 
 // add another element with an id
-$h1 = $document->body()->appendChild($document->createElement('h1'));
-$h1->appendChild($document->createTextNode('Adding "thirdHeader" node'));
+$h1 = $document->body()->appendChild($document->createElement('h1', 'Adding "thirdHeader" node'));
 $h1->setAttribute('id','thirdHeader');
 
 // add another element with an id and register it
@@ -27,65 +45,64 @@ $h1->appendChild($document->createTextNode('Adding "fourthHeader" node'));
 $h1->setAttribute('id','fouthHeader');
 $document->registerElementWithIdIndex($h1);
 
-// search for the first header
-$start = microtime(true);
-$firstHeader = $document->locateElementById('firstHeader');
-$end = microtime(true);
-$document->body()->appendChild($document->createElement('h2'))->appendChild($document->createTextNode('Found "firstHeader" node in '.number_format($end - $start, 10).' seconds'));
-if ($firstHeader !== null)
-{
-	// style the text red
-	$firstHeader->setAttribute('style','color:#E00000;');
-}
-
-// search for the third header (it should not be cached)
-$start = microtime(true);
-$thirdHeader = $document->locateElementById('thirdHeader');
-$end = microtime(true);
-$document->body()->appendChild($document->createElement('h2'))->appendChild($document->createTextNode('Found "thirdHeader" node in '.number_format($end - $start, 10).' seconds'));
-if ($thirdHeader !== null)
-{
-	// style the text red
-	$thirdHeader->setAttribute('style','color:#0000E0;');
-}
-
-// search for the fourth header (it should not be cached)
-$start = microtime(true);
-$thirdHeader = $document->locateElementById('thirdHeader');
-$end = microtime(true);
-$document->body()->appendChild($document->createElement('h2'))->appendChild($document->createTextNode('Found "thirdHeader" node in '.number_format($end - $start, 10).' seconds'));
-if ($thirdHeader !== null)
-{
-	// style the text red
-	$thirdHeader->setAttribute('style','color:#0000E0;');
-}
-
-// search for the second header (it should now be cached)
-$start = microtime(true);
-$secondHeader = $document->locateElementById('secondHeader');
-$end = microtime(true);
-$document->body()->appendChild($document->createElement('h2'))->appendChild($document->createTextNode('Found "secondHeader" node in '.number_format($end - $start, 10).' seconds'));
-if ($secondHeader !== null)
-{
-	// style the text red
-	$secondHeader->setAttribute('style','color:#00E000;');
-}
-
-// remove everything up to the first header we added
-if (isset($_REQUEST['big']))
-{
-	$document->body()->appendChild($document->createElement('h2'))->appendChild($document->createTextNode('Removing prior content from large file (4MB @ 15,000 lines)'));
-	$currentNode = $firstHeader->previousSibling;
-	while ($currentNode != null)
-	{
-		$previous = $currentNode->previousSibling;
-		$currentNode->parentNode->removeChild($currentNode);
-		$currentNode = $previous;
-	}
-}
-
 // create some other elements using the built-in functions
+$a = $document->addContent($document->createLink('http://www.apple.com', 'Amazing Computer Company', array('id' => 'TheAppleLink', 'title' => 'A REALLY COOL SITE')));
+$form = $document->addContent($document->createForm($_SERVER['PHP_SELF'], 'POST'));
+$fieldset = $form->appendChild($document->createFieldset('Some inputs'));
+$fieldset->appendChild($document->createFormField
+(
+	'Phone Number',
+	$document->createTextInput('phone', $input['phone'], array('id' => 'the phone input')),
+	'Please enter your phone here'
+));
+$fieldset->appendChild($document->createFormField
+(
+	'PIN Number',
+	$document->createPasswordInput('pin', $input['pin'], array('id' => 'the pin input')),
+	'Please enter your PIN here'
+));
+
+$fieldset = $form->appendChild($document->createFieldset('Some radios'));
+$fieldset->appendChild($document->createRadioInput('TheRadio', $value = 'A', ($input['TheRadio'] == 'A')? true: false));
+$fieldset->appendChild($document->createRadioInput('TheRadio', $value = 'B', ($input['TheRadio'] == 'B')? true: false));
+$fieldset->appendChild($document->createRadioInput('TheRadio', $value = 'C', ($input['TheRadio'] == 'C')? true: false));
+$fieldset->appendChild($document->createRadioInput('TheRadio', $value = 'D', ($input['TheRadio'] == 'D')? true: false));
+
+$fieldset = $form->appendChild($document->createFieldset('Some chcekboxes'));
+$fieldset->appendChild($document->createCheckboxInput('TheCheckBox1', $value = 'YES', ($input['TheCheckBox1'] == 'YES')? true: false));
+$fieldset->appendChild($document->createCheckboxInput('TheCheckBox2', $value = 'YES', ($input['TheCheckBox2'] == 'YES')? true: false));
+$fieldset->appendChild($document->createCheckboxInput('TheCheckBox3', $value = 'YES', ($input['TheCheckBox3'] == 'YES')? true: false));
+$fieldset->appendChild($document->createCheckboxInput('TheCheckBox4', $value = 'YES', ($input['TheCheckBox4'] == 'YES')? true: false));
+
+$fieldset = $form->appendChild($document->createFieldset('Some labeled checkboxes'));
+$fieldset->appendChild($document->createLabeledCheckboxInput('TheLabeledCheckBox1', $value = 'YES', 'Checkboxes are great', ($input['TheLabeledCheckBox1'] == 'YES')? true: false));
+$fieldset->appendChild($document->createLabeledCheckboxInput('TheLabeledCheckBox2', $value = 'YES', 'Checkboxes are awesome', ($input['TheLabeledCheckBox2'] == 'YES')? true: false));
+$fieldset->appendChild($document->createLabeledCheckboxInput('TheLabeledCheckBox3', $value = 'YES', 'Checkboxes are stupendous', ($input['TheLabeledCheckBox3'] == 'YES')? true: false));
+$fieldset->appendChild($document->createLabeledCheckboxInput('TheLabeledCheckBox4', $value = 'YES', 'Checkboxes are just ok', ($input['TheLabeledCheckBox4'] == 'YES')? true: false));
+
+$options = array();
+$options[] = array('value' => 'MS', 'content' => 'Mississippi');
+$options[] = array('value' => 'KY', 'content' => 'Kentucky');
+$options[] = array('value' => 'TN', 'content' => 'Tennessee');
+$options[] = array('value' => 'AL', 'content' => 'Alabama');
+
+$fieldset = $form->appendChild($document->createFieldset('Some selects'));
+if (!empty($input['TheSelect1']))
+	$fieldset->appendChild($document->createSelect('TheSelect1', array('value' => $input['TheSelect1'], 'content' => $input['TheSelect1']), $options, 'Please select a State'));
+else
+	$fieldset->appendChild($document->createSelect('TheSelect1', null, $options, 'Please select a State'));
+$fieldset->appendChild($document->createSelect('TheSelect2', array('value' => $input['TheSelect2']), $options, 'Please select a State'));
+$fieldset->appendChild($document->createSelect('TheSelect3', $input['TheSelect3'], $options, 'Please select a different State'));
+$fieldset->appendChild($document->createSelect('TheSelect4', array('value' => $input['TheSelect4'], 'content' => ''), $options, 'Please select a State'));
+
+$fieldset = $form->appendChild($document->createFieldset());
+$fieldset->appendChild($document->createButtonInput('Button', 'The Button'));
+$fieldset->appendChild($document->createResetButtonInput('Reset', 'The Reset'));
+$fieldset->appendChild($document->createSubmitButtonInput('Submit', 'The Submit'));
+
+$document->addStylesheet('/DataGeneral/css/main.css');
+
+$document->addContent($document->debugDumpVariable($_POST, 'Post Data'));
 
 // output the document content
 echo $document->saveXML();
-?>

@@ -68,7 +68,7 @@ class ELSWebAppKit_HTML_Document
 	}
 	public function head()
 	{
-		return $this->bodyNode;
+		return $this->headNode;
 	}
 	public function body()
 	{
@@ -76,14 +76,10 @@ class ELSWebAppKit_HTML_Document
 	}
 	public function addContent($content)
 	{
-		if ($content instanceof DOMElement)
-		{
+		if ($content instanceof DOMNode)
 			return $this->bodyNode->appendChild($content);
-		}
 		else
-		{
 			return $this->bodyNode->appendChild($this->createElement('div', $content));
-		}
 	}
 	public function addMessage($message)
 	{
@@ -108,18 +104,14 @@ class ELSWebAppKit_HTML_Document
 				// update the reference with the new location for this object
 				// save the current reference if the element has an id
 				if (($otherId = $this->elementIdIndex[$id]->getAttribute('id')) != '')
-				{
 					$this->elementIdIndex[$otherId] = $this->elementIdIndex[$id];
-				}
 				
 				// remove the current reference for the given id
 				$this->elementIdIndex[$id] = null;
 				
 				// look for the element within the document's native mechanism
 				if ($this->getElementById($id) !== null)
-				{
 					return $this->searchDomTreeForElementById($this->getElementById($id), $id);
-				}
 				
 				// search for a matching element in the tree
 				return $this->searchDomTreeForElementById($this->rootNode, $id);
@@ -144,10 +136,7 @@ class ELSWebAppKit_HTML_Document
 			
 			// determine if this node is the requested node
 			if ($node->getAttribute('id') == $id)
-			{
-				// return the element
 				return $node;
-			}
 		}
 		
 		// determine if the current node has children
@@ -162,9 +151,7 @@ class ELSWebAppKit_HTML_Document
 				
 				// determine if the requested node was found
 				if ($found !== null)
-				{
 					return $found;
-				}
 				
 				// move on to the next node
 				$currentNode = $currentNode->previousSibling;
@@ -178,16 +165,9 @@ class ELSWebAppKit_HTML_Document
 	{
 		// determine if the current node has an id
 		if (($node->nodeType == XML_ELEMENT_NODE) && $node->hasAttribute('id'))
-		{
-			// this node has an id
-			
-			// save a reference in the index
 			$this->elementIdIndex[$node->getAttribute('id')] = $node;
-		}
 		else
-		{
 			throw new Exception('Element not registered: node must be a valid element with an id attribute.');
-		}
 	}
 	public function setPageTitle($title)
 	{
@@ -199,9 +179,7 @@ class ELSWebAppKit_HTML_Document
 			
 			// remove each
 			foreach ($titleElements as $titleElement)
-			{
 				$this->headNode->removeChild($titleElement);
-			}
 			
 			// create a new title
 			$titleElement = $this->headNode->appendChild($this->createElement('title'));
@@ -216,87 +194,56 @@ class ELSWebAppKit_HTML_Document
 		}
 		return $this;
 	}
-	public function createElement($tagName, $content = null, $id = null, $class = null)
+	public function createElement($tagName, $content = null, array $attributes = null)
 	{
-		// create a new element as normal
 		$element = parent::createElement($tagName);
 		
 		// determine if any content was provided
 		if ($content instanceof DOMElement)
-		{
 			$element->appendChild($content);
-		}
 		else if ($content !== null)
-		{
 			$element->appendChild($this->createTextNode($content));
-		}
 		
-		// set appropriate attributes
-		if ($id !== null)
+		// set attributes
+		if (is_array($attributes))
 		{
-			$element->setAttribute('id', $id);
+			foreach ($attributes as $attributeKey => $attributeValue)
+				$element->setAttribute($attributeKey, $attributeValue);
+			if (in_array('id', array_keys($attributes)))
+				$this->registerElementWithIdIndex($element);
 		}
-		if ($class !== null)
-		{
-			$element->setAttribute('class', $class);
-		}
-		
-		// return the finished element
 		return $element;
 	}
-	public function createLink($href, $label = null, $title = null, $target = null, $name = null, $id = null)
+	public function createLink($href, $content = null, array $attributes = null)
 	{
-		// create a new anchor element
-		$a = $this->createElement('a');
-		
-		// add the text content
-		if ($label instanceof DOMElement)
-		{
-			$a->appendChild($label);
-		}
-		else
-		{
-			$a->appendChild($this->createTextNode($label));
-		}
-		
-		// set the appropriate attributes
-		$a->setAttribute('href', $href);
-		$a->setAttribute('title', $title);
-		$a->setAttribute('href', $href);
-		$a->setAttribute('name', $href);
-		if ($id !== null)
-		{
-			$a->setAttribute('id', $id);
-			
-			// register this element with the id index
-			$this->registerElementWithIdIndex($a);
-		}
-		
-		// return this element
-		return $a;
+		if (!is_array($attributes))
+			$attributes = array();
+		if (empty($attributes['href']))
+			$attributes['href'] = $href;
+		return $this->createElement('a', $content, $attributes);
 	}
-	public function createForm($action, $method = 'POST', $content = null, $id = null, $class = null)
+	public function createForm($action, $method = 'POST', $content = null, array $attributes = null)
 	{
-		// create a new form element
-		$form = $this->createElement('form', $content, $id, $class);
-		$form->setAttribute('action', $action);
-		$form->setAttribute('method', $method);
-		return $form;
+		if (!is_array($attributes))
+			$attributes = array();
+		if (empty($attributes['action']))
+			$attributes['action'] = $action;
+		if (empty($attributes['method']))
+			$attributes['method'] = $method;
+		return $this->createElement('form', $content, $attributes);
 	}
-	public function createFieldset($legend = null, $content = null, $id = null, $class = null)
+	public function createFieldset($legend = null, $content = null, array $attributes = null)
 	{
 		// create a new fieldset element
-		$fieldset = $this->createElement('fieldset', $content, $id, $class);
-		if ($legend !== null)
-		{
-			$fieldset->appendChild($this->createElement('legend', $legend));
-		}
+		$fieldset = $this->createElement('fieldset', $content, $attributes);
+		if (!empty($legend))
+			$fieldset->insertBefore($this->createElement('legend', $legend), $fieldset->firstChild);
 		return $fieldset;
 	}
 	public function createFormField($label, $input, $description = null)
 	{
 /*
-	A "form field" in this document is made of a "field" container, which has a "label", "input" and "description". This function accepts 3 arguments corresponding to these three attributes.
+	A "form field" in this document is made of a "field" container, which has a "label", "input" and "description".
 */
 		// create the field container
 		$fieldContainer = $this->createElement('div');
@@ -372,315 +319,220 @@ class ELSWebAppKit_HTML_Document
 		// return this element
 		return $fieldContainer;
 	}
-	public function createTextInput($name, $value = '', $id = null, $size = 20, $maxLength = 0, $tabIndex = 0)
+	public function createTextArea($name, $value = null,  array $attributes = null)
 	{
-		// create an input element
-		$input = $this->createElement('input');
-		
-		// set the appropriate attributes
-		$input->setAttribute('type', 'text');
-		$input->setAttribute('name', $name);
-		$input->setAttribute('value', $value);
-		$input->setAttribute('size', $size);
-		if ($id !== null)
-		{
-			$input->setAttribute('id', $id);
-			
-			// register this element with the id index
-			$this->registerElementWithIdIndex($input);
-		}
-		
-		// determine if there are additional attributes
-		if ($maxLength > 0)
-			$input->setAttribute('maxlength', $maxLength);
-		if ($tabIndex > 0)
-			$input->setAttribute('tabindex', $tabIndex);
-		
-		// return this element
-		return $input;
+		if (!is_array($attributes))
+			$attributes = array();
+		if (empty($attributes['columns']))
+			$attributes['columns'] = 40;
+		if (empty($attributes['rows']))
+			$attributes['rows'] = 5;
+		return $this->createElement('textarea', $value, $attributes);
 	}
-	public function createPasswordInput($name, $value = '', $id = null, $size = 20, $maxLength = 0, $tabIndex = 0)
+	public function createHiddenInput($name, $value = null, array $attributes = null)
 	{
-		// create a text input
-		$input = $this->createTextInput($name, $value, $id, $size, $maxLength, $tabIndex);
-		
-		// change the type to password
-		$input->setAttribute('type', 'password');
-		
-		// return this element
-		return $input;
+		if (!is_array($attributes))
+			$attributes = array();
+		if (empty($attributes['type']))
+			$attributes['type'] = 'hidden';
+		if (empty($attributes['name']))
+			$attributes['name'] = $name;
+		if (empty($attributes['value']))
+			$attributes['value'] = $value;
+		return $this->createElement('input', null, $attributes);
 	}
-	public function createHiddenInput($name, $value = '', $id = null)
+	public function createTextInput($name, $value = null, array $attributes = null)
 	{
-		// create an input element
-		$input = $this->createElement('input');
-		
-		// set the appropriate attributes
-		$input->setAttribute('type', 'hidden');
-		$input->setAttribute('name', $name);
-		$input->setAttribute('value', $value);
-		if ($id !== null)
-		{
-			$input->setAttribute('id', $id);
-			
-			// register this element with the id index
-			$this->registerElementWithIdIndex($input);
-		}
-		
-		// return this element
-		return $input;
+		if (!is_array($attributes))
+			$attributes = array();
+		if (empty($attributes['type']))
+			$attributes['type'] = 'text';
+		if (empty($attributes['size']))
+			$attributes['size'] = 20;
+		return $this->createHiddenInput($name, $value, $attributes);
 	}
-	public function createButtonInput($name, $value = '', $id = null, $tabIndex = 0)
+	public function createPasswordInput($name, $value = null, array $attributes = null)
 	{
-		// create a text input
-		$input = $this->createTextInput($name, $value, $id, null, null, $tabIndex);
-		
-		// change the type to button
-		$input->setAttribute('type', 'button');
-		
-		// return this element
-		return $input;
+		if (!is_array($attributes))
+			$attributes = array();
+		if (empty($attributes['type']))
+			$attributes['type'] = 'password';
+		return $this->createTextInput($name, $value, $attributes);
 	}
-	public function createSubmitButtonInput($name, $value = '', $id = null, $tabIndex = 0)
+	public function createButtonInput($name, $value = null, array $attributes = null)
 	{
-		// create a text input
-		$input = $this->createTextInput($name, $value, $id, null, null, $tabIndex);
-		
-		// change the type to submit
-		$input->setAttribute('type', 'submit');
-		
-		// return this element
-		return $input;
+		if (!is_array($attributes))
+			$attributes = array();
+		if (empty($attributes['type']))
+			$attributes['type'] = 'button';
+		return $this->createHiddenInput($name, $value, $attributes);
 	}
-	public function createResetButtonInput($name, $value = '', $id = null, $tabIndex = 0)
+	public function createSubmitButtonInput($name, $value = null, array $attributes = null)
 	{
-		// create a text input
-		$input = $this->createTextInput($name, $value, $id, null, null, $tabIndex);
-		
-		// change the type to reset
-		$input->setAttribute('type', 'reset');
-		
-		// return this element
-		return $input;
+		if (!is_array($attributes))
+			$attributes = array();
+		if (empty($attributes['type']))
+			$attributes['type'] = 'submit';
+		return $this->createHiddenInput($name, $value, $attributes);
 	}
-	public function createTextArea($name, $value = '',  $id = null, $columns = 40, $rows = 5, $tabIndex)
+	public function createResetButtonInput($name, $value = null, array $attributes = null)
 	{
-		// create a textarea element
-		$textarea = $this->createElement('textarea');
-		
-		// set the appropriate attributes
-		$textarea->setAttribute('name', $name);
-		$textarea->setAttribute('rows', $rows);
-		$textarea->setAttribute('cols', $columns);
-		$textarea->appendChild($this->createTextNode($value));
-		if ($id !== null)
-		{
-			$input->setAttribute('id', $id);
-			
-			// register this element with the id index
-			$this->registerElementWithIdIndex($input);
-		}
-		
-		// determine if there are additional attributes
-		if ($tabIndex > 0)
-			$input->setAttribute('tabindex', $tabIndex);
-		
-		// return this element
-		return $textarea;
+		if (!is_array($attributes))
+			$attributes = array();
+		if (empty($attributes['type']))
+			$attributes['type'] = 'reset';
+		return $this->createHiddenInput($name, $value, $attributes);
 	}
-	public function createRadioInput($name, $value = '', $id = null, $checked = false, $tabIndex = 0)
+	public function createRadioInput($name, $value = null, $checked = false, array $attributes = null)
 	{
-		// create an input element
-		$input = $this->createElement('input');
-		
-		// set the appropriate attributes
-		$input->setAttribute('type', 'radio');
-		$input->setAttribute('name', $name);
-		$input->setAttribute('value', $value);
-		if ($id !== null)
-		{
-			$input->setAttribute('id', $id);
-			
-			// register this element with the id index
-			$this->registerElementWithIdIndex($input);
-		}
-		if ($checked)
-			$input->setAttribute('checked', 'yes');
-		
-		// determine if there are additional attributes
-		if ($tabIndex > 0)
-			$input->setAttribute('tabindex', $tabIndex);
-		
-		// return this element
-		return $input;
+		if (!is_array($attributes))
+			$attributes = array();
+		if (empty($attributes['type']))
+			$attributes['type'] = 'radio';
+		if (empty($attributes['checked']) && $checked)
+			$attributes['checked'] = 'yes';
+		return $this->createHiddenInput($name, $value, $attributes);
 	}
-	public function createCheckboxInput($name, $value, $id = null, $checked = false, $tabIndex = 0)
+	public function createCheckboxInput($name, $value, $checked = false, array $attributes = null)
 	{
-		// create an input element
-		$input = $this->createRadioInput($name, $value, $id, $checked, $tabIndex);
-		
-		// set the appropriate attributes
-		$input->setAttribute('type', 'checkbox');
-		
-		// return this element
-		return $input;				
+		if (!is_array($attributes))
+			$attributes = array();
+		if (empty($attributes['type']))
+			$attributes['type'] = 'checkbox';
+		if (empty($attributes['checked']) && $checked)
+			$attributes['checked'] = 'yes';
+		return $this->createHiddenInput($name, $value, $attributes);
 	}
-	public function createLabeledCheckBoxInput($name, $value, $label, $id = null, $checked = false, $tabIndex = 0)
+	public function createLabeledCheckBoxInput($name, $value, $label, $checked = false, array $attributes = null)
 	{
 /*
-	Labeled check box inputs are check boxes coupled with a label that has some javascript in it to trigger the click action of the checkbox when the text of the label is clicked.
+	Labeled check box inputs are check boxes coupled with a label so that the checkbox is toggled when the text of the label is clicked.
 */
-		// create the label
 		$labelElement = $this->createElement('label');
-		
-		// add the checkbox
-		$labelElement->appendChild($this->createCheckBoxInput($name, $value, $id, $checked, $tabIndex));
-		
-		// add the text to the label
+		$labelElement->appendChild($this->createCheckBoxInput($name, $value, $checked, $attributes));
 		$labelElement->appendChild($this->createTextNode(strval($label)));
-		
-		// return this element
 		return $labelElement;
 	}
-	public function createSelect($name, $value = '', $id = null, $options = null, $label = '', $tabIndex = 0)
+	public function createSelect($name, $selectedValue = null, array $options = null, $noValueLabel = null, array $attributes = null)
 	{
 /*
-	Select menu options should be provided in a one dimensional associative array where the index is the intended option value and the value at that index is the intended option label. Please note that this does require that each option in the select have a unique value.
-	The default option should be provided as the options.
+	Select menu options should be provided in a multi-dimensional array where the intended option value and content are provided in an associative array e.g. array('value'=>'asdf','content'=>'ASDF').
+	A selected value can be provided as an option array or as a scalar value. If a scalar is provided, the given options will be searched, or the value will be used as it's own label.
+	If no selected value is provided, a "label" can be provided that can serve as the first option e.g. "Please select an option".
 */
-		// create a select element
-		$select = $this->createElement('select');
-		$select->setAttribute('name', $name);
-		if ($id !== null)
-		{
-			$select->setAttribute('id', $id);
-			
-			// register this element with the id index
-			$this->registerElementWithIdIndex($select);
-		}
+		if (!is_array($attributes))
+			$attributes = array();
+		if (empty($attributes['name']))
+			$attributes['name'] = $name;
+		$select = $this->createElement('select', null, $attributes);
 		
-		// set up the selected value
-		// determine if a selected value was provided
-		if ($value != '')
+		// set up the first value
+		if (is_array($selectedValue))
 		{
-			// add an option for this label
-			$select->appendChild
-			(
-				$this->createSelectOption
-				(
-					$value,
-					isset($options[$value])?
-						$options[$value]:
-						''
-				)
-			);
-			
-			// add a spacer between the label and the rest
-			$select->appendChild($this->createSelectOption('', '', true));
+			$optionValue = isset($selectedValue['value'])? $selectedValue['value']: '';
+			$optionContent = isset($selectedValue['content'])? $selectedValue['content']: $noValueLabel;
+			$select->appendChild($this->createSelectOption($optionValue, $optionContent));
 		}
-		else if ($label != '')
-		{
-			// add an option for this label
-			$select->appendChild($this->createSelectOption('', $label));
-			
-			// add a spacer between the label and the rest
-			$select->appendChild($this->createSelectOption('', '', true));
-		}
+		else if (!empty($selectedValue) && (is_array($options) && !empty($options[$selectedValue])))
+			$select->appendChild($this->createSelectOption($selectedValue, $options[$selectedValue]));
+		else if (!empty($noValueLabel))
+			$select->appendChild($this->createSelectOption(null, $noValueLabel));
+		
+		// add a spacer between the label and the rest
+		$select->appendChild($this->createSelectOption(null, null, array('disabled' => true)));
 		
 		// create the options
-		foreach ($options as $optionValue => $optionLabel)
-		{
-			// add the provided label
-			$select->appendChild($this->createSelectOption($optionValue, $optionLabel));
-		}
-		
-		// determine if there are additional attributes
-		if ($tabIndex > 0)
-			$select->setAttribute('tabindex', $tabIndex);
-		
-		// return this element
+		if (is_array($options))
+			foreach ($options as $option)
+			{
+				$optionValue = !empty($option['value'])? $option['value']: '';
+				$optionContent = !empty($option['content'])? $option['content']: '';
+				$attributes = array();
+				if (is_array($selectedValue) && !empty($selectedValue['value']) && ($optionValue == $selectedValue['value']))
+					$attributes['selected'] = 'true';
+				else if (!empty($selectedValue) && ($optionValue == $selectedValue))
+					$attributes['selected'] = 'true';
+				$select->appendChild($this->createSelectOption($optionValue, $optionContent, $attributes));
+			}
 		return $select;
 	}
-	public function createSelectOption($value = '', $label = '', $disabled = false)
+	public function createSelectOption($value = null, $content = null, array $attributes = null)
 	{
-		// create an option element
-		$option = $this->createElement('option');
+		$option = $this->createElement('option', null, $attributes);
 		
-		// add the value
-		$option->setAttribute('value', $value);
-		
-		// determine if we have a label for this value
-		if ($label != '')
+		// determine how to label this option
+		if (!empty($value) && !empty($content))
 		{
-			// add the provided label
-			$option->appendChild($this->createTextNode($label));
+			$option->appendChild($this->createTextNode($content));
+			$option->setAttribute('value', $value);
 		}
-		else
-		{
-			// add the value as the label
+		else if (!empty($content))
+			$option->appendChild($this->createTextNode($content));
+		else if (!empty($value))
 			$option->appendChild($this->createTextNode($value));
-		}
-		
-		// determine if this option should be disabled
-		if ($disabled === true)
-		{
-			$option->setAttribute('disabled', 'true');
-		}
-		
-		// return this element
+
 		return $option;
 	}
-	public function addScript($source = null, $content = null, $type = 'text/javascript', $language = 'javascript', $characterSet = 'utf-8')
+	public function addScript($source = null, $content = null, $useHeader = false, array $attributes = null)
 	{
-		// determine if a script source was provided
-		$newScript = true;
+		// determine if a script source was provided and prevent duplicates
+		$uniqueScript = true;
 		if ($source !== null)
-		{
-			// look in existing scripts to see if there is a match
 			foreach ($this->scripts as $script)
-			{
 				if ($script->getAttribute('src') == $source)
-					$newScript = false;
-			}
-		}
-		if ($newScript)
+					$uniqueScript = false;
+		
+		if ($uniqueScript)
 		{
-			// create a script tag
-			$script = $this->headNode->appendChild($this->createElement('script'));
-			if ($source !== null)
-			{
-				$script->setAttribute('src', $source);
-			}
-			if ($content !== null)
-			{
-				$script->appendChild($this->createTextNode($content));
-			}
-			$script->setAttribute('type', $type);
-			$script->setAttribute('language', $language);
-			if ($characterSet != '')
-			{
-				$script->setAttribute('charset', $characterSet);
-			}
+			if (!is_array($attributes))
+				$attributes = array();
+			if (empty($attributes['src']))
+				$attributes['src'] = $source;
+			if (empty($attributes['type']))
+				$attributes['type'] = 'text/javascript';
+			if (empty($attributes['language']))
+				$attributes['language'] = 'javascript';
+			if (empty($attributes['charset']))
+				$attributes['charset'] = 'utf-8';
+			
+			// defaultly add scripts to the end of the document, unless requested to add it to the header
+			$targetNode = $this->bodyNode;
+			if ($useHeader)
+				$targetNode = $this->headNode;
+			$this->scripts[] = $targetNode->appendChild($this->createElement('script', $content, $attributes));
 		}
 		return $this;
 	}
-	public function addStylesheet($source, $media = 'all')
+	public function addStyle($content, $type = 'text/css', $media = 'all', array $attributes = null)
 	{
-		// look in the existing links to see if there is a match
-		$newStylesheet = true;
+		if (!is_array($attributes))
+			$attributes = array();
+		if (empty($attributes['type']))
+			$attributes['type'] = $type;
+		if (empty($attributes['media']))
+			$attributes['media'] = $media;
+		$this->headNode->appendChild($this->createElement('style', $content, $attributes));
+		return $this;
+	}
+	public function addStylesheet($source, $media = 'all', array $attributes = null)
+	{
+		// prevent duplicate stylesheets from being added
+		$uniqueStylesheet = true;
 		foreach ($this->stylesheets as $link)
-		{
 			if ($link->getAttribute('href') == $source)
-				$newStylesheet = false;
-		}
-		if ($newStylesheet)
+				$uniqueStylesheet = false;
+		
+		if ($uniqueStylesheet)
 		{
-			// create a link tag
-			$link = $this->headNode->appendChild($this->createElement('link'));
-			$link->setAttribute('href', $source);
-			$link->setAttribute('rel', 'stylesheet');
-			$link->setAttribute('media', $media);
-			$this->stylesheets[] = $link;
+			if (!is_array($attributes))
+				$attributes = array();
+			if (empty($attributes['href']))
+				$attributes['href'] = $source;
+			if (empty($attributes['rel']))
+				$attributes['rel'] = 'stylesheet';
+			if (empty($attributes['media']))
+				$attributes['media'] = $media;
+			$this->stylesheets[] = $this->headNode->appendChild($this->createElement('link', null, $attributes));
 		}
 		return $this;
 	}
@@ -688,20 +540,13 @@ class ELSWebAppKit_HTML_Document
 	{
 		// create a new element to contain the variable
 		$div = $this->createElement('div');
-		
-		// add a label
 		if ($label != null)
-		{
 			$div->appendChild($this->createElement('h1', $label));
-		}
-		
 		// recurse through the variable contents
 		$this->debugRecurseDumpVariable($var, $div);
-		
-		// return the finished dom tree
 		return $div;
 	}
-	public function debugRecurseDumpVariable($var, DomElement $container)
+	public function debugRecurseDumpVariable($var, DOMElement $container)
 	{
 		// process this variable
 		if (is_array($var) || is_object($var))
@@ -734,10 +579,6 @@ class ELSWebAppKit_HTML_Document
 	}
 	public function saveXML()
 	{
-		// clean up references
-		// javascript
-		// css
-		
 		return parent::saveXML();
 	}
 	public function saveHTML()
@@ -746,10 +587,6 @@ class ELSWebAppKit_HTML_Document
 	}
 	public function save()
 	{
-		// clean up references
-		// javascript
-		// css
-		
 		return parent::saveXML();
 	}
 	public function saveHTMLFile()
@@ -757,4 +594,3 @@ class ELSWebAppKit_HTML_Document
 		return $this->save();
 	}
 }
-?>
