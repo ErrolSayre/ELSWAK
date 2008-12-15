@@ -214,6 +214,10 @@ class ELSWebAppKit_HTML_Document
 		}
 		return $element;
 	}
+	public function createDiv($content = null, array $attributes = null)
+	{
+		return $this->createElement('div', $content, $attributes);
+	}
 	public function createLink($href, $content = null, array $attributes = null)
 	{
 		if (!is_array($attributes))
