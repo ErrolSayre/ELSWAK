@@ -222,7 +222,7 @@ class ELSWebAppKit_HTML_Document
 			$attributes['href'] = $href;
 		return $this->createElement('a', $content, $attributes);
 	}
-	public function createForm($action, $method = 'POST', $content = null, array $attributes = null)
+	public function createForm($action = '', $method = 'POST', $content = null, array $attributes = null)
 	{
 		if (!is_array($attributes))
 			$attributes = array();
