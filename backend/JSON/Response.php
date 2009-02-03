@@ -8,14 +8,6 @@ class ELSWebAppKit_JSON_Response
 	protected $messages;
 	protected $payload;
 	
-	// member listing for iterator methods
-	protected $_iterables = array
-	(
-		'status',
-		'messages',
-		'payload'
-	);
-	
 	public function __construct($status = 'OK', array $messages = null, $payload = null)
 	{
 		$this->setHeader('Content-Type', 'text/javascript', true);
