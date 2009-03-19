@@ -95,47 +95,24 @@ class ELSWebAppKit_Phone_Number
 	}
 	public static function translateLettersToNumbers($phoneNumber)
 	{
-		return
-			preg_replace('/[AaBbCc]/', 2,
-				preg_replace('/[DdEeFf]/', 3,
-					preg_replace('/[GgHhIi]/', 4,
-						preg_replace('/[JjKkLl]/', 5,
-							preg_replace('/[MmNnOo]/', 6,
-								preg_replace('/[PpRrSs]/', 7,
-									preg_replace('/[TtUuVv]/', 8,
-										preg_replace('/[WwXxYyZz]/', 9,
-											preg_replace('/\s/', '', $phoneNumber)
-										)
-									)
-								)
-							)
-						)
-					)
-				)
-			);
+		return preg_replace('/[AaBbCc]/', 2, preg_replace('/[DdEeFf]/', 3, preg_replace('/[GgHhIi]/', 4, preg_replace('/[JjKkLl]/', 5, preg_replace('/[MmNnOo]/', 6, preg_replace('/[PpRrSs]/', 7, preg_replace('/[TtUuVv]/', 8, preg_replace('/[WwXxYyZz]/', 9, preg_replace('/\s/', '', $phoneNumber)))))))));
 	}
 	public static function verify($phoneNumber)
 	{
 		if (self::verifyTenDigit($phoneNumber) || self::verifySevenDigit($phoneNumber))
-		{
 			return true;
-		}
 		return false;
 	}
 	public static function verifyTenDigit($phoneNumber)
 	{
 		if (preg_match(self::TEN_DIGIT_REGEX, $phoneNumber) == 1)
-		{
 			return true;
-		}
 		return false;
 	}
 	public static function verifySevenDigit($phoneNumber)
 	{
 		if (preg_match(self::SEVEN_DIGIT_REGEX, $number) == 1)
-		{
 			return true;
-		}
 		return false;
 	}
 	public function __toString()

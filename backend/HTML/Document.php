@@ -24,9 +24,7 @@ class ELSWebAppKit_HTML_Document
 		
 		// load our template file
 		if (($templateFile !== null) && is_file($templateFile))
-		{
 			$this->load($templateFile);
-		}
 		else
 		{
 			// set up the default xhtml content
@@ -40,20 +38,19 @@ class ELSWebAppKit_HTML_Document
 		$this->headNode = $this->getElementsByTagName('head')->item(0);
 		$this->bodyNode = $this->getElementsByTagName('body')->item(0);
 		
+		// setup the primary content container
+		$this->contentNode = $this->bodyNode;
+		
 		// collect any scripts in the template
 		$this->scripts = array();
 		foreach ($this->getElementsByTagName('script') as $script)
-		{
 			$this->scripts[] = $script;
-		}
 		
 		// collect any stylesheets in the template
 		$this->stylesheets = array();
 		foreach ($this->getElementsByTagName('link') as $link)
-		{
 			if (strtolower($link->getAttribute('rel')) == 'stylesheet')
 				$this->stylesheets[] = $link;
-		}
 		
 		// setup the element id index
 		$this->elementIdIndex = array();
@@ -74,16 +71,98 @@ class ELSWebAppKit_HTML_Document
 	{
 		return $this->bodyNode;
 	}
-	public function addContent($content)
+	public function messages($delimiter = null)
+	{
+		// since the messages are stored directly into the document, none are kept separate
+		return false;
+	}
+	public function addMessage($message, $key = null, $type = null)
+	{
+		return $this->addContent($message, $key, $type);
+	}
+	public function setContent($content = null, $key = null, $type = null)
+	{
+		// like the original function in the HTTP response, overwrite the existing content within the document with that provided
+		$this->removeChildren($this->contentNode);
+		return $this->addContent($content, $key, $type);
+	}
+	public function addContent($content, $key = null, $type = null)
+	{
+		// append content to the body or set/overwrite the value of a given key if provided
+		if ($key !== null)
+			return $this->setContentForKey($content, $key, $type);
+		else
+			$this->contentNode->appendChild($this->importContent($content, $key, $type));
+		return $this;
+	}
+	public function setContentForKey($content, $key, $type = null)
+	{
+		// overwrite content matching the given key
+		$element = $this->locateElementById($key);
+		if ($element instanceof DOMElement)
+			// replace this element with the provided content
+			$this->contentNode->replaceChild($this->importContent($content, $key, $type), $element);
+		else
+			$this->contentNode->appendChild($this->importContent($content, $key, $type));
+		return $this;
+	}
+	protected function importContent($content, $key, $type)
 	{
 		if ($content instanceof DOMNode)
-			return $this->bodyNode->appendChild($content);
-		else
-			return $this->bodyNode->appendChild($this->createElement('div', $content));
+		{
+			// determine if the node is an element
+			if ($content instanceof DOMElement)
+				if (!empty($key))
+				{
+					$content->setAttribute('id', $key);
+					$this->registerElementWithIdIndex($content);
+				}
+			return $content;
+		}
+		else if (is_string($content) && strtolower($type) == 'html')
+			return $this->convertHTML($content, $key);
+		return $this->convertVariable($content, $key);
 	}
-	public function addMessage($message)
+	public function convertHTML($html, $key = null)
 	{
-		return $this->addContent($message);
+		// convert the supplied html/xml string into a dom tree and import to the local document
+		// wrap the provided html in proper tags and create a new dom
+		$document = new DOMDocument();
+		$document->loadHTML('<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8" /></head><body>'.$html.'</body></html>');
+		
+		// grab the body of the new document
+		$body = $document->getElementsByTagName('body')->item(0);
+		
+		// determine how many children the body has
+		if ((count($body->childNodes) == 1) && ($body->firstChild instanceof DOMElement))
+		{
+			$element = $this->importNode($body->firstChild, true);
+			$element->setAttribute('id', $key);
+			$this->registerElementWithIdIndex($element);
+			return $element;
+		}
+		
+		// create a container for the new content
+		$container = $this->createDiv(null, array('id' => $key));
+		$this->registerElementWithIdIndex($container);
+		
+		// import all the children of the new document's body into this container
+		while ($body->hasChildNodes())
+		{
+			$container->appendChild($this->importNode($body->firstChild, true));
+			$body->removeChild($body->firstChild);
+		}
+		return $container;
+	}
+	public function convertVariable($content, $key = null)
+	{
+		// convert the supplied variable into a dom tree on the local document
+		if (is_array($content) ||
+			(is_object($content) && !method_exists($content, '__toString')))
+			return $this->debugDumpVariable($content, $key);
+		
+		// try to import the contents of the variable into a div
+		return $this->createDiv($content, array('id' => $key));
 	}
 	public function locateElementById($id)
 	{
@@ -161,10 +240,10 @@ class ELSWebAppKit_HTML_Document
 		// the node wasn't found
 		return null;
 	}
-	public function registerElementWithIdIndex(DOMNode $node)
+	public function registerElementWithIdIndex(DOMElement $node)
 	{
 		// determine if the current node has an id
-		if (($node->nodeType == XML_ELEMENT_NODE) && $node->hasAttribute('id'))
+		if ($node->hasAttribute('id'))
 			$this->elementIdIndex[$node->getAttribute('id')] = $node;
 		else
 			throw new Exception('Element not registered: node must be a valid element with an id attribute.');
@@ -208,11 +287,34 @@ class ELSWebAppKit_HTML_Document
 		if (is_array($attributes))
 		{
 			foreach ($attributes as $attributeKey => $attributeValue)
-				$element->setAttribute($attributeKey, $attributeValue);
-			if (in_array('id', array_keys($attributes)))
+			{
+				// format boolean values properly
+				if (is_bool($attributeValue))
+					$element->setAttribute($attributeKey, ($attributeValue)? 'true': 'false');
+				else
+					$element->setAttribute($attributeKey, $attributeValue);
+			}
+			if (array_key_exists('id', $attributes) == true)
+			{
+				$element->setAttribute('id', $attributes['id']);
 				$this->registerElementWithIdIndex($element);
+			}
 		}
 		return $element;
+	}
+	public function addClassToElement($class, DOMElement $element)
+	{
+		// setup the existing classes
+		$classes = array();
+		if ($element->hasAttribute('class'))
+			$classes = explode(' ', $element->getAttribute('class'));
+		
+		// determine if this class is new
+		if (!in_array($class, $classes))
+			$classes[] = $class;
+		
+		// set the class
+		$element->setAttribute('class', implode(' ', $classes));
 	}
 	public function createDiv($content = null, array $attributes = null)
 	{
@@ -244,14 +346,21 @@ class ELSWebAppKit_HTML_Document
 			$fieldset->insertBefore($this->createElement('legend', $legend), $fieldset->firstChild);
 		return $fieldset;
 	}
-	public function createFormField($label, $input, $description = null)
+	public function createFormField($label, $input, $description = null, array $attributes = null)
 	{
 /*
 	A "form field" in this document is made of a "field" container, which has a "label", "input" and "description".
 */
+		// set up the class
+		if ($attributes == null)
+			$attributes = array();
+		if (empty($attributes['class']))
+			$attributes['class'] = '';
+		$attributes['class'] = 'field '.$attributes['class'];
+		
 		// create the field container
-		$fieldContainer = $this->createElement('div');
-		$fieldContainer->setAttribute('class', 'field');
+		$fieldContainer = $this->createElement('div', null, $attributes);
+		$this->addClassToElement('field', $fieldContainer);
 		
 		// add the label
 		// determine if the label provided is a DOM element
@@ -280,7 +389,8 @@ class ELSWebAppKit_HTML_Document
 		if ($input instanceof DOMElement)
 		{
 			// determine if this is an input
-			if (strtolower($input->tagName) == 'input')
+			if ((strtolower($input->tagName) == 'input') ||
+				($input->tagName == 'div' && $input->hasAttribute('class') && $input->getAttribute('class') == 'input'))
 			{
 				// add this element as the input for this form item
 				$fieldContainer->appendChild($input);
@@ -327,6 +437,8 @@ class ELSWebAppKit_HTML_Document
 	{
 		if (!is_array($attributes))
 			$attributes = array();
+		if (empty($attributes['name']))
+			$attributes['name'] = $name;
 		if (empty($attributes['columns']))
 			$attributes['columns'] = 40;
 		if (empty($attributes['rows']))
@@ -397,6 +509,19 @@ class ELSWebAppKit_HTML_Document
 			$attributes['checked'] = 'yes';
 		return $this->createHiddenInput($name, $value, $attributes);
 	}
+	public function createLabeledRadioInput($name, $value, $label, $checked = false, array $attributes = null)
+	{
+/*
+	Labeled check box inputs are check boxes coupled with a label so that the radio is toggled when the text of the label is clicked.
+*/
+		$labelElement = $this->createElement('label');
+		$labelElement->appendChild($this->createRadioInput($name, $value, $checked, $attributes));
+		if ($label instanceof DOMElement)
+			$labelElement->appendChild($label);
+		else
+			$labelElement->appendChild($this->createTextNode(strval($label)));
+		return $labelElement;
+	}
 	public function createCheckboxInput($name, $value, $checked = false, array $attributes = null)
 	{
 		if (!is_array($attributes))
@@ -407,14 +532,17 @@ class ELSWebAppKit_HTML_Document
 			$attributes['checked'] = 'yes';
 		return $this->createHiddenInput($name, $value, $attributes);
 	}
-	public function createLabeledCheckBoxInput($name, $value, $label, $checked = false, array $attributes = null)
+	public function createLabeledCheckboxInput($name, $value, $label, $checked = false, array $attributes = null)
 	{
 /*
 	Labeled check box inputs are check boxes coupled with a label so that the checkbox is toggled when the text of the label is clicked.
 */
 		$labelElement = $this->createElement('label');
-		$labelElement->appendChild($this->createCheckBoxInput($name, $value, $checked, $attributes));
-		$labelElement->appendChild($this->createTextNode(strval($label)));
+		$labelElement->appendChild($this->createCheckboxInput($name, $value, $checked, $attributes));
+		if ($label instanceof DOMElement)
+			$labelElement->appendChild($label);
+		else
+			$labelElement->appendChild($this->createTextNode(strval($label)));
 		return $labelElement;
 	}
 	public function createSelect($name, $selectedValue = null, array $options = null, $noValueLabel = null, array $attributes = null)
@@ -490,7 +618,7 @@ class ELSWebAppKit_HTML_Document
 		{
 			if (!is_array($attributes))
 				$attributes = array();
-			if (empty($attributes['src']))
+			if (empty($attributes['src']) && !empty($source))
 				$attributes['src'] = $source;
 			if (empty($attributes['type']))
 				$attributes['type'] = 'text/javascript';
@@ -503,7 +631,10 @@ class ELSWebAppKit_HTML_Document
 			$targetNode = $this->bodyNode;
 			if ($useHeader)
 				$targetNode = $this->headNode;
-			$this->scripts[] = $targetNode->appendChild($this->createElement('script', $content, $attributes));
+			$script = $targetNode->appendChild($this->createElement('script', null, $attributes));
+			if ($content !== null)
+				$script->appendChild($this->createTextNode($content));
+			$this->scripts[] = $script;
 		}
 		return $this;
 	}
@@ -577,17 +708,14 @@ class ELSWebAppKit_HTML_Document
 			$container->appendChild($this->createTextNode($var));
 		}
 	}
+	public function removeChildren(DOMNode $node)
+	{
+		while ($node->hasChildNodes())
+			$node->removeChild($node->firstChild);
+	}
 	public function __toString()
 	{
-		return $this->cleanup()->saveXML();
-	}
-	public function saveXML()
-	{
-		return parent::saveXML();
-	}
-	public function saveHTML()
-	{
-		return $this->saveXML();
+		return $this->cleanup()->save();
 	}
 	public function save()
 	{

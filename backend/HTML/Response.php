@@ -7,9 +7,6 @@ require_once('ELSWebAppKit/HTTP/Response.php');
 class ELSWebAppKit_HTML_Response
 	extends ELSWebAppKit_HTTP_Response
 {
-	// the DOM document
-	protected $document;
-	
 	public function __construct(ELSWebAppKit_HTML_Document $document = null)
 	{
 		parent::__construct();
@@ -23,48 +20,57 @@ class ELSWebAppKit_HTML_Response
 	}
 	public function document()
 	{
-		return $this->document;
+		return $this->body;
 	}
 	public function setDocument(ELSWebAppKit_HTML_Document $document)
 	{
-		$this->document = $document;
+		$this->body = $document;
 		return $this;
 	}
-	public function addContent($content)
+	public function messages($delimiter = null)
 	{
-		return $this->document->addContent($content);
+		return $this->body->messages($delimiter = null);
 	}
 	public function addMessage($message)
 	{
-		return $this->document->addMessage($message);
-	}
-	public function status()
-	{
-		// this is a placeholder method to provide error free interchangeability with the JSON response until the HTML document has a means to support a status
-		return true;
-	}
-	public function setStatus($status)
-	{
-		// this is a placeholder method
+		$this->body->addMessage($message);
 		return $this;
 	}
-	public function payload()
+	public function content()
 	{
-		// this is a placeholder method
-		return true;
+		return (string) $this->body;
 	}
-	public function setPayload($payload)
+	public function setContent($content = null, $key = null, $type = null)
 	{
-		// this is a placeholder method
-		return $this->document->addMessage($this->document->debugDumpVariable($payload, 'Payload'));
+		// pass the call on to the document object
+		$this->body->setContent($content, $key, $type);
+		return $this;
 	}
-	public function sendBody()
+	public function addContent($content, $key = null, $type = null)
 	{
-		// determine if this is a redirect
-		if (!$this->isRedirect())
-		{
-			// dump the document content
-			echo $this->document;
-		}
+		// pass the call on to the document object
+		$this->body->addContent($content, $key, $type);
+		return $this;
+	}
+	public function setContentForKey($content, $key, $type = null)
+	{
+		// pass the call on to the document object
+		$this->body->setContentForKey($content, $key, $type);
+		return $this;
+	}
+	public function sendCustomHeaders()
+	{
+		// override this method since the custom headers are handled within the document
+		return $this;
+	}
+	protected function __call($method, array $arguments = null)
+	{
+/*
+	This magic method is implemented to provide a way for this object to be used as an alias for its (DOMDocument) body member.
+*/
+		// determine if the method is a method from the document
+		if (method_exists($this->body, $method))
+			return call_user_func_array(array($this->body, $method), $arguments);
+		throw new Exception('Unable to handle method call. Method does not exist in '.__CLASS__.' nor '.get_class($this->body));
 	}
 }

@@ -4,73 +4,42 @@ require_once('ELSWebAppKit/JSON/Translator.php');
 class ELSWebAppKit_JSON_Response
 	extends ELSWebAppKit_HTTP_Response
 {
-	protected $status;
-	protected $messages;
-	protected $payload;
-	
-	public function __construct($status = 'OK', array $messages = null, $payload = null)
+	public function __construct()
 	{
-		$this->setHeader('Content-Type', 'text/javascript', true);
-		$this->setStatus($status);
-		if ($messages != null)
-		{
-			foreach ($messages as $message)
-			{
-				$this->addMessage($message);
-			}
-		}
-		$this->setPayload($payload);
+		$this->setContentType('text/javascript');
+		$this->setStatus('OK');
 	}
-	public function type()
+	protected function filterContentByType($content, $type)
 	{
-		return 'json';
+		if (is_string($content) && strtolower($type) == 'json')
+			return json_decode($content, true);
+		return $content;
 	}
-	public function status()
-	{
-		return $this->status;
-	}
-	public function setStatus($status)
-	{
-		$this->status = $status;
-		return $this;
-	}
-	public function messages()
-	{
-		return implode(LF, $this->messages);
-	}
-	public function addMessage($message)
-	{
-		$this->messages[] = trim($message);
-		return $this;
-	}
-	public function payload()
-	{
-		return $this->payload;
-	}
-	public function setPayload($payload)
-	{
-		$this->payload = $payload;
-		return $this;
-	}
-	public function sendBody()
-	{
-		echo $this;
-	}
-	public function __toString()
+	public function content()
 	{
 		// construct the json representation of this response
 		$json = '';
 		$json .= '"status":"'.$this->status.'",';
-		$json .= '"messages":'.ELSWebAppKit_JSON_Translator::encode($this->messages).',';
-		
-		// determine if the payload is a string
-		if (is_string($this->payload))
-			$json .= '"payload":'.$this->payload;
+		if (count($this->messages))
+			$json .= '"messages":'.ELSWebAppKit_JSON_Translator::encode($this->messages).',';
 		else
-			$json .= '"payload":'.ELSWebAppKit_JSON_Translator::encode($this->payload);
+			$json .= '"messages":null,';
+		if (count($this->body))
+			$json .= '"body":'.ELSWebAppKit_JSON_Translator::encode($this->body);
+		else
+			$json .= '"body":null';
 		
 		// return the finished json
 		return '{'.$json.'}';
+	}
+	public function sendCustomHeaders()
+	{
+		// override this method since the custom headers are included in the JSON response
+		return $this;
+	}
+	public function __toString()
+	{
+		return $this->content();
 	}
 }
 ?>

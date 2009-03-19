@@ -8,6 +8,6 @@ $response->addContent('"45","Mark"');
 if (true)
 	$response->send();
 else if (true)
-	$response->sendBody();
+	$response->sendContent();
 else
 	print_r_html($response);

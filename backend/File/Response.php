@@ -72,7 +72,13 @@ class ELSWebAppKit_File_Response
 	{
 		return $this;
 	}
-	public function sendBody()
+	public function content()
+	{
+		if (is_readable($this->filePath))
+			return file_get_contents($this->filePath);
+		return false;
+	}
+	public function sendContent()
 	{
 		if (is_readable($this->filePath))
 		{

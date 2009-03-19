@@ -42,4 +42,3 @@ $classMethods = array
 
 // include the class tester
 include('ELSWebAppKit/Utilities/ClassTester.php');
-?>

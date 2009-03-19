@@ -10,10 +10,12 @@ class ELSWebAppKit_HTTP_Response
 	protected $serverUri;
 	protected $applicationPath;
 	protected $headers = array();
-	protected $rawHeaders = array();
+	protected $status = '';
+	protected $messages = array();
+	protected $body = array();
 	protected $responseCode = 200;
 	protected $isRedirect = false;
-	protected $body = '';
+	protected $isModified = true;
 	
 	public function __construct()
 	{
@@ -35,82 +37,122 @@ class ELSWebAppKit_HTTP_Response
 	{
 		return $this->serverUri.$this->applicationPath;
 	}
-	public function headers()
+	public function messages($delimiter = '')
 	{
-		return $this->headers;
+		return implode($delimiter, $this->messages);
 	}
-	public function setHeader($name, $value, $replace = false)
+	public function addMessage($message)
 	{
-		// check to see if we can send headers
-		$this->canSendHeaders();
-		
-		// cleanup the inputs
-		$name = (string) $name;
-		$value = (string) $value;
-
-		if ($replace)
+		// append the message to our list of messages
+		$this->messages[] = str_replace(CRLF, LF, $message);
+		return $this;
+	}
+	public function status()
+	{
+		return $this->status;
+	}
+	public function setStatus($status)
+	{
+		$this->status = str_replace(CRLF, LF, $status);
+		return $this;
+	}
+	public function content($delimiter = '')
+	{
+		// string together the various bits of content
+		return implode($delimiter, $this->body);
+	}
+	public function setContent($content = null, $key = null, $type = null)
+	{
+		// overwrite all existing content and replace with the supplied content
+		$this->body = array();
+		if ($content !== null)
 		{
-			// remove any current headers matching this name
-			foreach ($this->headers as $key => $header)
-			{
-				if ($name == $header['name'])
-				{
-					unset($this->headers[$key]);
-				}
-			}
+			if ($key !== null)
+				$this->body[$key] = $this->filterContentByType($content, $type);
+			else
+				$this->body[] = $this->filterContentByType($content, $type);
 		}
-		
-		// add the header to the list
-		$this->headers[] = array
-		(
-			'name'	=> $name,
-			'value'   => $value,
-			'replace' => $replace
-		);
 		return $this;
 	}
-	public function setRedirect($url, $code = 302)
+	public function addContent($content, $key = null, $type = null)
 	{
-		// check to see if we can send headers
-		$this->canSendHeaders();
-		
-		// set the location header using the given url
-		$this->setHeader('Location', $url, true)
-			->setResponseCode($code);
+		// append content to the body or set/overwrite the value of a given key if provided
+		if ($key !== null)
+			return $this->setContentForKey($content, $key, $type);
+		else
+			$this->body[] = $this->filterContentByType($content, $type);
 		return $this;
 	}
-	public function isRedirect()
+	public function setContentForKey($content, $key, $type = null)
 	{
-		return $this->isRedirect;
+		// set or unset a value for a given key
+		if ($content !== null)
+			$this->body[$key] = $this->filterContentByType($content, $type);
+		else
+			unset($this->body[$key]);
+		return $this;
+	}
+	protected function filterContentByType($content, $type)
+	{
+		return $content;
+	}
+	public function headers($delimeter = CRLF)
+	{
+		return implode($delimiter, $this->headers);
 	}
 	public function clearHeaders()
 	{
 		$this->headers = array();
 		return $this;
 	}
-	public function rawHeaders()
+	public function header($name)
 	{
-		return $this->rawHeaders;
+		if (isset($this->headers[$name]))
+			return $this->headers[$name];
+		return false;
 	}
-	public function setRawHeader($value)
+	public function setHeader($name, $value = null, $replace = true)
 	{
-		$this->canSendHeaders();
-		if ('Location' == substr($value, 0, 8))
+		if ($value !== null)
+			$this->headers[$name] = array
+			(
+				'name' => str_replace(CRLF, LF, $name),
+				'value' => str_replace(CRLF, LF, $value),
+				'replace' => (bool) $replace
+			);
+		else
+			unset($this->header[$name]);
+		return $this;
+	}
+	public function isRedirect()
+	{
+		return $this->isRedirect;
+	}
+	public function setRedirect($url, $code = 302)
+	{
+		// set the location header using the given url
+		$this->setHeader('Location', $url, true)
+			->setResponseCode($code);
+		return $this;
+	}
+	public function isModified()
+	{
+		return $this->isModified;
+	}
+	public function setIsModified($modified = true)
+	{
+		if (!$modified)
 		{
-			$this->isRedirect = true;
+			$this->setResponseCode(304);
+			$this->isModified = false;
 		}
-		$this->rawHeaders[] = (string) $value;
+		else
+		{
+			if ($this->responseCode == 304)
+				$this->setResponseCode(200);
+			$this->isModified = true;
+		}
 		return $this;
-	}
-	public function clearRawHeaders()
-	{
-		$this->rawHeaders = array();
-		return $this;
-	}
-	public function clearAllHeaders()
-	{
-		return $this->clearHeaders()
-					->clearRawHeaders();
 	}
 	public function responseCode()
 	{
@@ -119,107 +161,96 @@ class ELSWebAppKit_HTTP_Response
 	public function setResponseCode($code)
 	{
 		if (!is_int($code) || (100 > $code) || (599 < $code))
-		{
 			throw new Exception('Invalid HTTP response code.');
-		}
 		
 		// determine if this code corresponds to a redirect
 		if ((300 <= $code) && (307 >= $code))
-		{
 			$this->isRedirect = true;
-		}
 		else
-		{
 			$this->isRedirect = false;
-		}
 		$this->responseCode = $code;
 		return $this;
 	}
-	public function canSendHeaders()
+	public function setContentType($type = 'text/html', $set = 'utf-8')
+	{
+		if (!empty($set))
+			$this->setHeader('Content-Type', $type.'; charset='.$set, true);
+		else
+			$this->setHeader('Content-Type', $type, true);
+	}
+	public function setExpires($time)
+	{
+		$this->setHeader('Expires', date('r', $time), true);
+	}
+	public function generateETag()
+	{
+		// use the md5 sum of the content to produce an ETag for this repsonse
+		$this->setHeader('ETag', md5($this->content()), true);
+	}
+	public function utilizeCache()
+	{
+		// generate an entity tag for the current response
+		$this->generateETag();
+		
+		// look for a provided entity tag from the client
+		$headers = apache_request_headers();
+		$etag = '';
+		if (!empty($headers['If-None-Match']))
+			$etag = str_replace('-gzip', '', $headers['If-None-Match']);
+		
+		if ($etag == $this->header('ETag'))
+			// report that this response has not changed
+			$this->setHeader('ETag', $this->header('ETag').'-gzip', true)
+				->setIsModified(false);
+	}
+	public function send()
+	{
+		// verify that headers have not been sent
+		$this->canSendHeaders();
+		
+		// output the headers
+		$this->sendHeaders();
+		
+		// output the custom headers if
+		$this->sendCustomHeaders();
+		
+		// output the content if modified from the indicators sent by the client
+		if ($this->isModified)
+			$this->sendContent();
+		return $this;
+	}
+	protected function canSendHeaders()
 	{
 		// check to see if the headers have been sent
 		$headersSent = headers_sent($file, $line);
 		
 		// if the headers have been sent, throw and exception
 		if ($headersSent)
-		{
 			throw new Exception('Unable to send headers. Headers already sent in ' . $file . ' on line ' . $line);
-		}
 		return !$headersSent;
 	}
-	public function sendHeaders()
+	protected function sendHeaders()
 	{
-		// Only check if we can send headers if we have headers to send
-		if (count($this->rawHeaders) || count($this->headers) || (200 != $this->responseCode))
-		{
-			$this->canSendHeaders();
-		}
-		else if (200 == $this->responseCode)
-		{
-			return $this;
-		}
+		// send the header code
+		header('HTTP/1.1 '.$this->responseCode);
 		
-		// make sure we only send the response code once
-		$httpCodeSent = false;
-		
-		// process the raw headers
-		foreach ($this->rawHeaders as $header)
-		{
-			if (!$httpCodeSent && $this->responseCode)
-			{
-				header($header, true, $this->responseCode);
-				$httpCodeSent = true;
-			}
-			else
-			{
-				header($header);
-			}
-		}
-		
-		// process the named headers
+		// process the headers
 		foreach ($this->headers as $header)
-		{
-			if (!$httpCodeSent && $this->responseCode)
-			{
-				header($header['name'].': '.$header['value'], $header['replace'], $this->responseCode);
-				$httpCodeSent = true;
-			}
-			else
-			{
-				header($header['name']. ': '.$header['value'], $header['replace']);
-			}
-		}
-		
-		// determine if the response code was sent with another header
-		if (!$httpCodeSent)
-		{
-			// send it
-			header('HTTP/1.1 ' . $this->responseCode);
-			$httpCodeSent = true;
-		}
+			header($header['name'].': '.$header['value'], $header['replace']);
 		return $this;
 	}
-	public function addContent($content)
+	protected function sendCustomHeaders()
 	{
-		$this->body .= $content;
+		// send custom headers created by this content type
+		if (!empty($this->status))
+			header('ELSWebAppKit-Status: '.$this->status, true);
+		if (count($this->messages) > 0)
+			header('ELSWebAppKit-Messages: '.$this->messages('|'), true);
 		return $this;
 	}
-	public function addMessage($message)
+	public function sendContent()
 	{
-		$this->body .= $message;
+		echo $this->content();
 		return $this;
-	}
-	public function sendBody()
-	{
-		echo $this->body;
-		return $this;
-	}
-	public function send()
-	{
-		// send the headers
-		$this->sendHeaders();
-		
-		// output the body
-		return $this->sendBody();
 	}
 }

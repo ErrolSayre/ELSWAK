@@ -33,17 +33,25 @@ $h1->appendChild($document->createTextNode('Adding "firstHeader" node'));
 $h1->setAttribute('id','firstHeader');
 
 // add another element with an id
-$h1 = $document->body()->appendChild($document->createElement('h1', 'Adding "secondHeader" node', array('id' => 'secondHeader')));
+$h1 = $document->addContent($document->createElement('h1', 'Adding "secondHeader" node', array('id' => 'secondHeader')));
 
 // add another element with an id
-$h1 = $document->body()->appendChild($document->createElement('h1', 'Adding "thirdHeader" node'));
-$h1->setAttribute('id','thirdHeader');
+$document->addContent($document->createElement('h1', 'Adding "thirdHeader" node'), 'thirdHeader');
 
 // add another element with an id and register it
 $h1 = $document->body()->appendChild($document->createElement('h1'));
 $h1->appendChild($document->createTextNode('Adding "fourthHeader" node'));
 $h1->setAttribute('id','fouthHeader');
 $document->registerElementWithIdIndex($h1);
+
+// add another element by html
+$document->addContent('<h1>Adding "fifthHeader" node</h1>', 'fifthHeader', 'html');
+
+// add another element by string
+$document->addContent('<h1>Adding "sixthHeader" node</h1>', 'sixthHeader');
+
+// add another element by html
+$document->addContent('Adding "seventhHeader" node', 'seventhHeader', 'html');
 
 // create some other elements using the built-in functions
 $a = $document->addContent($document->createLink('http://www.apple.com', 'Amazing Computer Company', array('id' => 'TheAppleLink', 'title' => 'A REALLY COOL SITE')));
@@ -61,6 +69,12 @@ $fieldset->appendChild($document->createFormField
 	$document->createPasswordInput('pin', $input['pin'], array('id' => 'the pin input')),
 	'Please enter your PIN here'
 ));
+
+$div = $document->createElement('div', null, array('class' => 'input'));
+$div->appendChild($document->createTextInput('start', date('m/d/y')));
+$div->appendChild($document->createTextNode(' to '));
+$div->appendChild($document->createTextInput('start', date('m/d/y', time() + 256390)));
+$fieldset->appendChild($document->createFormField('Period', $div));
 
 $fieldset = $form->appendChild($document->createFieldset('Some radios'));
 $fieldset->appendChild($document->createRadioInput('TheRadio', $value = 'A', ($input['TheRadio'] == 'A')? true: false));
