@@ -55,6 +55,54 @@ class ELSWebAppKit_Settable
 		if (is_array($import) || is_object($import))
 		foreach ($import as $property => $value)
 			try { $this->__set($property, $value); } catch (Exception $e) {}
+		return $this;
+	}
+	public function export()
+	{
+		$export = array();
+		$keys = array_keys(get_object_vars($this));
+		foreach ($keys as $property)
+			try { $export[$property] = $this->__get($property); } catch (Exception $e) {}
+		return $export;
+	}
+	protected function _setPropertyAsInteger($property, $value)
+	{
+		$this->{$property} = intval($value);
+		return $this;
+	}
+	protected function _setPropertyAsPositiveInteger($property, $value)
+	{
+		$value = intval($value);
+		if ($value >= 0)
+			$this->{$property} = $value;
+		return $this;
+	}
+	protected function _setPropertyAsId($property, $value)
+	{
+		return $this->_setPropertyAsPositiveInteger($property, $value);
+	}
+	protected function _setPropertyAsTimestamp($property, $value)
+	{
+		if (is_numeric($value))
+			$this->{$property} = intval($value);
+		else
+			$this->{$property} = strtotime($value);
+		return $this;
+	}
+	protected function _setPropertyAsFloat($property, $value)
+	{
+		$this->{$property} = floatval($value);
+		return $this;
+	}
+	protected function _getPropertyAsDate($property, $format = 'm/d/Y')
+	{
+		if (is_int($this->{$property}))
+			return date($format, $this->{$property});
+		return date($format, strtotime($this->{$property}));
+	}
+	protected function _getPropertyAsDatetime($property, $format = 'Y-m-d H:i:s')
+	{
+		return $this->_getPropertyAsDate($property, $format);
 	}
 }
 class ELSWebAppKit_Settable_Model_Helper
