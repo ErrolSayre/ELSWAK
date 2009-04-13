@@ -50,14 +50,14 @@ class ELSWebAppKit_Settable
 			throw new Exception('Unable to get property "'.$property.'". Property is not defined within the class.');
 		return $this;
 	}
-	public function import($import)
+	public function _import($import)
 	{
 		if (is_array($import) || is_object($import))
 		foreach ($import as $property => $value)
 			try { $this->__set($property, $value); } catch (Exception $e) {}
 		return $this;
 	}
-	public function export()
+	public function _export()
 	{
 		$export = array();
 		$keys = array_keys(get_object_vars($this));

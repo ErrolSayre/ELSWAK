@@ -84,14 +84,14 @@ echo '<h2>Resulting object</h2>'.LF;
 print_r_html($var1);
 
 echo '<h2>Exporting object to array</h2>'.LF;
-print_r_html($var1->export);
+print_r_html($var1->_export);
 
 echo '<h1>Creating var2 by import of associative array</h1>'.LF;
 $var2 = new example();
-$var2->import(array('date' => time(), 'name' => 'George McDudal', 'settable' => 'Your mom', 'gettable' => 'Horray'));
+$var2->_import(array('date' => time(), 'name' => 'George McDudal', 'settable' => 'Your mom', 'gettable' => 'Horray'));
 
 echo '<h2>Resulting object</h2>'.LF;
 print_r_html($var2);
 
 echo '<h2>Exporting object to array</h2>'.LF;
-print_r_html($var2->export);
+print_r_html($var2->_export);
