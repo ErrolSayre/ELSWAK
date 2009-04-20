@@ -65,6 +65,65 @@ class ELSWebAppKit_Settable
 			try { $export[$property] = $this->__get($property); } catch (Exception $e) {}
 		return $export;
 	}
+/*
+	public static function _factory($import)
+	{
+		echo self::_class();
+	}
+	public static function _class()
+	{
+		return get_called_class();
+	}
+*/
+	protected function _setArrayProperty($property, $value)
+	{
+		$this->{$property} = array();
+		if (is_array($value))
+		{
+			foreach ($value as $item)
+			{
+				if (method_exists($this, '_verify'.$property.'Item'))
+				{
+					if (call_user_func(array($this, '_verify'.$property.'Item'), $value))
+						$this->_addArrayPropertyItem($property, $value);
+				}
+				else
+					$this->_addArrayPropertyItem($property, $value);
+			}
+		}
+		else if (method_exists($this, '_verify'.$property.'Item'))
+		{
+			if (call_user_func(array($this, '_verify'.$property.'Item'), $value))
+				$this->_addArrayPropertyItem($property, $value);
+		}
+		else
+			$this->_addArrayPropertyItem($property, $value);
+	}
+	protected function _addArrayPropertyItem($property, $value)
+	{
+		$this->{$property}[] = $value;
+		return $this;
+	}
+	protected function _arrayPropertyItemForKey($property, $key)
+	{
+		if (!empty($this->{$property}[$key]))
+			return $this->{$property}[$key];
+		return null;
+	}
+	protected function _setArrayPropertyItemForKey($property, $value, $key)
+	{
+		if (!empty($this->{$property}[$key]))
+			$this->{$property}[$key] = $value;
+		else
+			throw new Exception('Unable to set '.$property.' for key “'.$key.'”. Provided key is out of bounds.');
+		return $this;
+	}
+	protected function _removeArrayPropertyItemForKey($property, $key)
+	{
+		if (!empty($this->{$property}[$key]))
+			array_splice($this->{$property}, $key, 1);
+		return $this;
+	}
 	protected function _setPropertyAsInteger($property, $value)
 	{
 		$this->{$property} = intval($value);
