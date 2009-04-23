@@ -95,3 +95,7 @@ print_r_html($var2);
 
 echo '<h2>Exporting object to array</h2>'.LF;
 print_r_html($var2->_export);
+/*
+echo '<h1>Creating var3 via factory method with associative array</h1>'.LF;
+$var3 = example::_factory(array('date' => time(), 'name' => 'Another Person', 'settable' => 'Is it really settable?', 'gettable' => 'Doubt it’s gettable'));
+*/
