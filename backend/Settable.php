@@ -50,6 +50,27 @@ class ELSWebAppKit_Settable
 			throw new Exception('Unable to get property "'.$property.'". Property is not defined within the class.');
 		return $this;
 	}
+	public function __call($method, $arguments)
+	{
+		// search for a property that matches the method name
+		// determine if this method is a protected internal method
+		if (method_exists($this, $method))
+			// the method exists but is inaccessible, protect it
+			throw new Exception('Unable to call method "'.$method.'". Method is protected.');
+		
+		// determine if the method name includes "set" or "get"
+		if ((stripos($method, 'set') === 0))
+		{
+			return $this->__set(strtolower(substr($method, 3, 1)).substr($method, 4), $arguments[0]);
+		}
+		if ((stripos($method, 'get') === 0))
+			return $this->__get(strtolower(substr($method, 3, 1)).substr($method, 4));
+		
+		// look for this method as a property
+		if (count($arguments) == 1)
+			return $this->__set($method, $arguments[0]);
+		return $this->__get($method);
+	}
 	public function _import($import)
 	{
 		if (is_array($import) || is_object($import))
@@ -139,6 +160,14 @@ class ELSWebAppKit_Settable
 	protected function _setPropertyAsId($property, $value)
 	{
 		return $this->_setPropertyAsPositiveInteger($property, $value);
+	}
+	protected function _setPropertyAsBoolean($property, $value)
+	{
+		if ($value)
+			$this->{$property} = true;
+		else
+			$this->{$property} = false;
+		return $this;
 	}
 	protected function _setPropertyAsTimestamp($property, $value)
 	{

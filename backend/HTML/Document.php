@@ -29,8 +29,7 @@ class ELSWebAppKit_HTML_Document
 		{
 			// set up the default xhtml content
 			// determine the installation path
-			$path = pathinfo(__FILE__);
-			$this->load($path['dirname'].'/Document/Template.xhtml');
+			$this->load(dirname(__FILE__).'/Document/Template.xhtml');
 		}
 		
 		// setup references to generic elements
@@ -248,29 +247,57 @@ class ELSWebAppKit_HTML_Document
 		else
 			throw new Exception('Element not registered: node must be a valid element with an id attribute.');
 	}
-	public function setPageTitle($title)
+	public function title()
 	{
-		// determine if we have a reference to the title textnode
+		// determine if we have a reference to the title text node
 		if ($this->titleTextNode == null)
 		{
-			// locate the existing title tags
-			$titleElements = $this->headNode->getElementsByTagName('title');
-			
-			// remove each
-			foreach ($titleElements as $titleElement)
-				$this->headNode->removeChild($titleElement);
-			
-			// create a new title
-			$titleElement = $this->headNode->appendChild($this->createElement('title'));
-			
-			// setup the title text node
-			$this->titleTextNode = $titleElement->appendChild($this->createTextNode($title));
+			$this->locateTitleTextNode();
 		}
-		else
+		return $this->titleTextNode->nodeValue;
+	}
+	public function pageTitle()
+	{
+		return $this->title();
+	}
+	public function setTitle($title)
+	{
+		// determine if we have a reference to the title text node
+		if ($this->titleTextNode == null)
 		{
-			// since we have a reference to the title text node we can modify its value directly
-			$this->titleTextNode->nodeValue = $title;
+			$this->locateTitleTextNode();
 		}
+		$this->titleTextNode->nodeValue = $title;
+		
+		return $this;
+	}
+	public function setPageTitle($title)
+	{
+		return $this->setTitle($title);
+	}
+	public function locateTitleTextNode()
+	{
+		// locate the existing title tags
+		$titleElements = $this->headNode->getElementsByTagName('title');
+		$titleElement = $titleElements->item(0);
+		
+		// remove all but the first
+		while ($titleElements->length > 1)
+		{
+			$element = $titleElements->item($titleElements->length - 1);
+			$element->parentNode->removeChild($element);
+		}
+		
+		// create a new title if necessary
+		if ($titleElement == null)
+			$titleElement = $this->headNode->appendChild($this->createElement('title'));
+		
+		// setup the title text node
+		$title = $titleElement->textContent;
+		while ($titleElement->hasChildNodes())
+			$titleElement->removeChild($titleElement->firstChild);
+		$this->titleTextNode = $titleElement->appendChild($this->createTextNode($title));
+		
 		return $this;
 	}
 	public function createElement($tagName, $content = null, array $attributes = null)
@@ -330,6 +357,8 @@ class ELSWebAppKit_HTML_Document
 	}
 	public function createForm($action = '', $method = 'POST', $content = null, array $attributes = null)
 	{
+		if (strtolower($method) != 'get')
+			$method = 'POST';
 		if (!is_array($attributes))
 			$attributes = array();
 		if (empty($attributes['action']))

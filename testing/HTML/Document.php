@@ -25,7 +25,9 @@ require_once('ELSWebAppKit/HTML/Document.php');
 $document = new ELSWebAppKit_HTML_Document();
 
 // set the title
-$document->setPageTitle('Document Test');
+echo $document->title().BR.LF;
+$document->setTitle('Document Test');
+echo $document->title().BR.LF;
 
 // add an element with an id
 $h1 = $document->body()->appendChild($document->createElement('h1'));

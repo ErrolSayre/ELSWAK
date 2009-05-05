@@ -27,25 +27,15 @@ class ELSWebAppKit_Phone_Number
 	{
 		$number = '';
 		if ($this->countryCode != '')
-		{
 			$number = $this->countryCode.' ';
-		}
 		if ($this->areaCode != '')
-		{
 			$number .= '('.$this->areaCode.') ';
-		}
 		if ($this->localPrefix != '')
-		{
 			$number .= $this->localPrefix.'-';
-		}
 		if ($this->localSuffix != '')
-		{
 			$number .= $this->localSuffix;
-		}
 		if ($this->extension != '')
-		{
 			$number .= ' '.$this->extension;
-		}
 		
 		return $number;
 	}
@@ -111,7 +101,7 @@ class ELSWebAppKit_Phone_Number
 	}
 	public static function verifySevenDigit($phoneNumber)
 	{
-		if (preg_match(self::SEVEN_DIGIT_REGEX, $number) == 1)
+		if (preg_match(self::SEVEN_DIGIT_REGEX, $phoneNumber) == 1)
 			return true;
 		return false;
 	}

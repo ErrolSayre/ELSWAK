@@ -113,17 +113,18 @@ if (class_exists($className))
 					// try to set the value using the appropriate method
 					echo '<h3>Testing Property: '.$property.'</h3>'.LF;
 					echo '<p>Getting value: ';
-					$result = $object->{$property}();
-					if ((is_array($result)) || (is_object($result)))
+					$result = $object->{$property};
+					if ($result === $object)
+						echo 'self'.LF;
+					else if ((is_array($result)) || (is_object($result)))
 					{
 						print_r_html($result);
 						echo LF;
 					}
 					else
-					{
 						echo htmlentities($result).LF;
-					}
 					echo '</p>'.LF;
+					
 					echo 'Setting value: ';
 					if ((is_array($value)) || (is_object($value)))
 					{
@@ -131,26 +132,24 @@ if (class_exists($className))
 						echo LF;
 					}
 					else
-					{
 						echo htmlentities($value).LF;
-					}
+					$object->{$property} = $value;
 					echo '</p>'.LF;
 					
 					echo '<p>'.LF;
 					try
 					{
-						$object->{'set'.$property}($value);
 						echo 'Getting value: ';
-						$result = $object->{$property}();
-						if ((is_array($result)) || (is_object($result)))
+						$result = $object->{$property};
+						if ($result === $object)
+							echo 'self'.LF;
+						else if ((is_array($result)) || (is_object($result)))
 						{
 							print_r_html($result);
 							echo LF;
 						}
 						else
-						{
 							echo htmlentities($result).BR.LF;
-						}
 					}
 					catch (Exception $e)
 					{
@@ -174,13 +173,31 @@ if (class_exists($className))
 						if ($value !== null)
 						{
 							echo 'Method Returns:'.LF;
-							echo htmlentities($object->{$method}($value)).LF;
-							echo 'given value "'.htmlentities($value).'": '.LF;
+							$result = $object->{$method}($value);
+							if ($result === $object)
+								echo 'self'.LF;
+							else if ((is_array($result)) || (is_object($result)))
+							{
+								print_r_html($result);
+								echo LF;
+							}
+							else
+								echo htmlentities($result).BR.LF;
+							echo 'given value "'.htmlentities($value).'": '.BR.LF;
 						}
 						else
 						{
 							echo 'Method Returns: '.LF;
-							echo htmlentities($object->{$method}()).LF;
+							$result = $object->{$method}();
+							if ($result === $object)
+								echo 'self'.LF;
+							else if ((is_array($result)) || (is_object($result)))
+							{
+								print_r_html($result);
+								echo LF;
+							}
+							else
+								echo htmlentities($result).BR.LF;
 						}
 					}
 					catch (Exception $e)
@@ -191,7 +208,7 @@ if (class_exists($className))
 				}
 			}
 			
-			// now test the standard suite of methods
+			// test the specified suite of methods
 			if (isset($classMethods)	&&
 				is_array($classMethods))
 			{
@@ -206,35 +223,134 @@ if (class_exists($className))
 						{
 							echo 'Method Returns:'.LF;
 							$result = $object->{$method}($value);
-							if ((is_array($result)) || (is_object($result)))
+							if ($result === $object)
+								echo 'self'.LF;
+							else if ((is_array($result)) || (is_object($result)))
 							{
 								print_r_html($result);
 								echo LF;
 							}
 							else
-							{
 								echo htmlentities($result).BR.LF;
-							}
 							echo 'given value "'.htmlentities($value).'": '.BR.LF;
 						}
 						else
 						{
 							echo 'Method Returns: '.LF;
 							$result = $object->{$method}();
-							if ((is_array($result)) || (is_object($result)))
+							if ($result === $object)
+								echo 'self'.LF;
+							else if ((is_array($result)) || (is_object($result)))
 							{
 								print_r_html($result);
 								echo LF;
 							}
 							else
-							{
 								echo htmlentities($result).BR.LF;
-							}
 						}
 					}
 					catch (Exception $e)
 					{
 						echo $e->getMessage().LF;
+					}
+					echo '</p>';
+				}
+			}
+			
+			// test the supplied properties
+			if (isset($classProperties)	&&
+				is_array($classProperties))
+			{
+				foreach ($classProperties as $property => $value)
+				{
+					// try to set the value using the appropriate method
+					echo '<h3>Testing Property: '.$property.'</h3>'.LF;
+					if ($value !== null)
+					{
+						echo '<p>Setting value: ';
+						if ((is_array($value)) || (is_object($value)))
+						{
+							print_r_html($value);
+							echo LF;
+						}
+						else
+							echo htmlentities($value).LF;
+						try
+						{
+							$object->{$property} = $value;
+						}
+						catch (Exception $e)
+						{
+							echo $e->getMessage();
+						}
+						echo '</p>'.LF;
+						echo '<p>'.LF;
+						try
+						{
+							echo 'Setting value as method: ';
+							if ((is_array($value)) || (is_object($value)))
+							{
+								print_r_html($value);
+								echo LF;
+							}
+							else
+								echo htmlentities($value).LF;
+							echo 'returns:'.LF;
+							$result = $object->{$property}($value);
+							if ($result === $object)
+								echo 'self'.LF;
+							else if ((is_array($result)) || (is_object($result)))
+							{
+								print_r_html($result);
+								echo LF;
+							}
+							else
+								echo htmlentities($result).BR.LF;
+						}
+						catch (Exception $e)
+						{
+							echo $e->getMessage().BR.LF;
+						}
+						echo '</p>';
+					}
+					echo '<p>Getting value: ';
+					try
+					{
+						$result = $object->{$property};
+						if ($result === $object)
+							echo 'self'.LF;
+						else if ((is_array($result)) || (is_object($result)))
+						{
+							print_r_html($result);
+							echo LF;
+						}
+						else
+							echo htmlentities($result).LF;
+					}
+					catch (Exception $e)
+					{
+						echo $e->getMessage();
+					}
+					echo '</p>'.LF;
+					
+					echo '<p>'.LF;
+					try
+					{
+						echo 'Getting value as method: ';
+						$result = $object->{$property}();
+						if ($result === $object)
+							echo 'self'.LF;
+						else if ((is_array($result)) || (is_object($result)))
+						{
+							print_r_html($result);
+							echo LF;
+						}
+						else
+							echo htmlentities($result).BR.LF;
+					}
+					catch (Exception $e)
+					{
+						echo $e->getMessage().BR.LF;
 					}
 					echo '</p>';
 				}

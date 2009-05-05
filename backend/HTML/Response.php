@@ -7,6 +7,7 @@ require_once('ELSWebAppKit/HTTP/Response.php');
 class ELSWebAppKit_HTML_Response
 	extends ELSWebAppKit_HTTP_Response
 {
+	protected $sendHtml = false;
 	public function __construct(ELSWebAppKit_HTML_Document $document = null)
 	{
 		parent::__construct();
@@ -27,6 +28,14 @@ class ELSWebAppKit_HTML_Response
 		$this->body = $document;
 		return $this;
 	}
+	public function sendHtml($value = true)
+	{
+		if ($value)
+			$this->sendHtml = true;
+		else
+			$this->sendHtml = false;
+		return $this;
+	}
 	public function messages($delimiter = null)
 	{
 		return $this->body->messages($delimiter = null);
@@ -38,6 +47,8 @@ class ELSWebAppKit_HTML_Response
 	}
 	public function content()
 	{
+		if ($this->sendHtml)
+			return $this->body->saveHTML();
 		return (string) $this->body;
 	}
 	public function setContent($content = null, $key = null, $type = null)
