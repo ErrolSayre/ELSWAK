@@ -182,6 +182,22 @@ class ELSWebAppKit_Settable
 		$this->{$property} = floatval($value);
 		return $this;
 	}
+	protected function _setPropertyAsEnumeratedValue($property, $value, $values)
+	{
+		if (in_array($value, $values))
+			$this->{$property} = $value;
+		else
+			throw new Exception('Unable to set '.$property.'. Value does not match accepted values list.');
+		return $this;
+	}
+	protected function _setPropertyAsObjectOfClass($property, $value, $class)
+	{
+		if ($value instanceof $class)
+			$this->{$property} = $value;
+		else
+			throw new Exception('Unable to set '.$property.'. Value is not an instance of '.$class.'.');
+		return $this;
+	}
 	protected function _getPropertyAsDate($property, $format = 'm/d/Y')
 	{
 		if (is_int($this->{$property}))
