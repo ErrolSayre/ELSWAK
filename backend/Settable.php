@@ -114,6 +114,9 @@ class ELSWebAppKit_Settable
 			if (call_user_func(array($this, '_verify'.$property.'Item'), $value)) {
 				$this->{$property}[] = $value;
 			}
+			else {
+				throw new Exception('Unable to add '.$property.' item. Provided value is invalid.');
+			}
 		}
 		else {
 			$this->{$property}[] = $value;
@@ -122,24 +125,28 @@ class ELSWebAppKit_Settable
 	}
 	protected function _arrayPropertyItemForKey($property, $key)
 	{
-		if (!empty($this->{$property}[$key]))
+		if (isset($this->{$property}[$key]))
 			return $this->{$property}[$key];
 		return null;
 	}
 	protected function _setArrayPropertyItemForKey($property, $value, $key)
 	{
-		if (!empty($this->{$property}[$key])) {
+		if (is_numeric($key) && ($key < 0 || $key > count($this->{$property})) {
+			throw new Exception('Unable to set '.$property.' for key “'.$key.'”. Provided key is out of bounds.');
+		}
+		else {
 			if (method_exists($this, '_verify'.$property.'Item')) {
 				if (call_user_func(array($this, '_verify'.$property.'Item'), $value)) {
 					$this->{$property}[$key] = $value;
+				}
+				else {
+					throw new Exception('Unable to set '.$property.' for key “'.$key.'”. Provided value is invalid.');
 				}
 			}
 			else {
 				$this->{$property}[$key] = $value;
 			}
 		}
-		else
-			throw new Exception('Unable to set '.$property.' for key “'.$key.'”. Provided key is out of bounds.');
 		return $this;
 	}
 	protected function _removeArrayPropertyItemForKey($property, $key)
@@ -148,9 +155,11 @@ class ELSWebAppKit_Settable
 			array_splice($this->{$property}, $key, 1);
 		return $this;
 	}
-	protected function _arrayPropertyKeys($property)
-	{
+	protected function _arrayPropertyKeys($property) {
 		return array_keys($this->{$property});
+	}
+	protected function _arrayPropertyCount($property) {
+		return count($this->{$property});
 	}
 	protected function _setPropertyAsInteger($property, $value)
 	{
