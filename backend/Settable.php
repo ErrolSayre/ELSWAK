@@ -99,30 +99,25 @@ class ELSWebAppKit_Settable
 	protected function _setArrayProperty($property, $value)
 	{
 		$this->{$property} = array();
-		if (is_array($value))
-		{
-			foreach ($value as $item)
-			{
-				if (method_exists($this, '_verify'.$property.'Item'))
-				{
-					if (call_user_func(array($this, '_verify'.$property.'Item'), $value))
-						$this->_addArrayPropertyItem($property, $value);
-				}
-				else
-					$this->_addArrayPropertyItem($property, $value);
+		if (is_array($value)) {
+			foreach ($value as $item) {
+				$this->_addArrayPropertyItem($property, $item);
 			}
 		}
-		else if (method_exists($this, '_verify'.$property.'Item'))
-		{
-			if (call_user_func(array($this, '_verify'.$property.'Item'), $value))
-				$this->_addArrayPropertyItem($property, $value);
-		}
-		else
+		else {
 			$this->_addArrayPropertyItem($property, $value);
+		}
 	}
 	protected function _addArrayPropertyItem($property, $value)
 	{
-		$this->{$property}[] = $value;
+		if (method_exists($this, '_verify'.$property.'Item')) {
+			if (call_user_func(array($this, '_verify'.$property.'Item'), $value)) {
+				$this->{$property}[] = $value;
+			}
+		}
+		else {
+			$this->{$property}[] = $value;
+		}
 		return $this;
 	}
 	protected function _arrayPropertyItemForKey($property, $key)
@@ -133,8 +128,16 @@ class ELSWebAppKit_Settable
 	}
 	protected function _setArrayPropertyItemForKey($property, $value, $key)
 	{
-		if (!empty($this->{$property}[$key]))
-			$this->{$property}[$key] = $value;
+		if (!empty($this->{$property}[$key])) {
+			if (method_exists($this, '_verify'.$property.'Item')) {
+				if (call_user_func(array($this, '_verify'.$property.'Item'), $value)) {
+					$this->{$property}[$key] = $value;
+				}
+			}
+			else {
+				$this->{$property}[$key] = $value;
+			}
+		}
 		else
 			throw new Exception('Unable to set '.$property.' for key “'.$key.'”. Provided key is out of bounds.');
 		return $this;
@@ -144,6 +147,10 @@ class ELSWebAppKit_Settable
 		if (!empty($this->{$property}[$key]))
 			array_splice($this->{$property}, $key, 1);
 		return $this;
+	}
+	protected function _arrayPropertyKeys($property)
+	{
+		return array_keys($this->{$property});
 	}
 	protected function _setPropertyAsInteger($property, $value)
 	{

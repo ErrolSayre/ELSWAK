@@ -70,6 +70,11 @@ if (class_exists($className))
 						$parameterList .= 'null, ';
 						$prettyParameterList .= 'null, ';
 					}
+					else if (is_numeric($value))
+					{
+						$parameterList .= $value.', ';
+						$prettyParameterList .= $value.', ';
+					}
 					else
 					{
 						$parameterList .= '"'.$value.'", ';
@@ -112,34 +117,9 @@ if (class_exists($className))
 				{
 					// try to set the value using the appropriate method
 					echo '<h3>Testing Property: '.$property.'</h3>'.LF;
-					echo '<p>Getting value: ';
-					$result = $object->{$property};
-					if ($result === $object)
-						echo 'self'.LF;
-					else if ((is_array($result)) || (is_object($result)))
-					{
-						print_r_html($result);
-						echo LF;
-					}
-					else
-						echo htmlentities($result).LF;
-					echo '</p>'.LF;
-					
-					echo 'Setting value: ';
-					if ((is_array($value)) || (is_object($value)))
-					{
-						print_r_html($value);
-						echo LF;
-					}
-					else
-						echo htmlentities($value).LF;
-					$object->{$property} = $value;
-					echo '</p>'.LF;
-					
-					echo '<p>'.LF;
 					try
 					{
-						echo 'Getting value: ';
+						echo '<p>Getting value: ';
 						$result = $object->{$property};
 						if ($result === $object)
 							echo 'self'.LF;
@@ -149,13 +129,45 @@ if (class_exists($className))
 							echo LF;
 						}
 						else
-							echo htmlentities($result).BR.LF;
+							echo htmlentities($result).LF;
+						echo '</p>'.LF;
+						
+						echo 'Setting value: ';
+						if ((is_array($value)) || (is_object($value)))
+						{
+							print_r_html($value);
+							echo LF;
+						}
+						else
+							echo htmlentities($value).LF;
+						$object->{$property} = $value;
+						echo '</p>'.LF;
+						
+						echo '<p>'.LF;
+						try
+						{
+							echo 'Getting value: ';
+							$result = $object->{$property};
+							if ($result === $object)
+								echo 'self'.LF;
+							else if ((is_array($result)) || (is_object($result)))
+							{
+								print_r_html($result);
+								echo LF;
+							}
+							else
+								echo htmlentities($result).BR.LF;
+						}
+						catch (Exception $e)
+						{
+							echo $e->getMessage().BR.LF;
+						}
+						echo '</p>';
 					}
 					catch (Exception $e)
 					{
-						echo $e->getMessage().BR.LF;
+						echo '<p>'.$e->getMessage().'</p>'.LF;
 					}
-					echo '</p>';
 				}
 			}
 			
@@ -358,6 +370,7 @@ if (class_exists($className))
 			
 			// output the constructed object
 			echo '<h3>Final Object</h3>'.LF;
+			echo '<p>To String: '.$object.'</p>'.LF;
 			print_r_html($object);
 		}
 	}

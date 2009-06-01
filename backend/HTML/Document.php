@@ -361,7 +361,7 @@ class ELSWebAppKit_HTML_Document
 			$method = 'POST';
 		if (!is_array($attributes))
 			$attributes = array();
-		if (empty($attributes['action']))
+		if (empty($attributes['action']) && !empty($action))
 			$attributes['action'] = $action;
 		if (empty($attributes['method']))
 			$attributes['method'] = $method;
@@ -594,8 +594,8 @@ class ELSWebAppKit_HTML_Document
 			$optionContent = isset($selectedValue['content'])? $selectedValue['content']: $noValueLabel;
 			$select->appendChild($this->createSelectOption($optionValue, $optionContent));
 		}
-		else if (!empty($selectedValue) && (is_array($options) && !empty($options[$selectedValue])))
-			$select->appendChild($this->createSelectOption($selectedValue, $options[$selectedValue]));
+		else if (!empty($selectedValue))
+			$select->appendChild($this->createSelectOption($selectedValue, $selectedValue));
 		else if (!empty($noValueLabel))
 			$select->appendChild($this->createSelectOption(null, $noValueLabel));
 		
@@ -622,15 +622,15 @@ class ELSWebAppKit_HTML_Document
 		$option = $this->createElement('option', null, $attributes);
 		
 		// determine how to label this option
-		if (!empty($value) && !empty($content))
+		if ($value !== null && $content !== null)
 		{
-			$option->appendChild($this->createTextNode($content));
+			$option->appendChild($this->createTextNode(strval($content)));
 			$option->setAttribute('value', $value);
 		}
-		else if (!empty($content))
-			$option->appendChild($this->createTextNode($content));
-		else if (!empty($value))
-			$option->appendChild($this->createTextNode($value));
+		else if ($content !== null)
+			$option->appendChild($this->createTextNode(strval($content)));
+		else if ($value !== null)
+			$option->appendChild($this->createTextNode(strval($value)));
 
 		return $option;
 	}
