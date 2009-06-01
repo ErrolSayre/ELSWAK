@@ -131,21 +131,16 @@ class ELSWebAppKit_Settable
 	}
 	protected function _setArrayPropertyItemForKey($property, $value, $key)
 	{
-		if (is_numeric($key) && ($key < 0 || $key > count($this->{$property})) {
-			throw new Exception('Unable to set '.$property.' for key “'.$key.'”. Provided key is out of bounds.');
-		}
-		else {
-			if (method_exists($this, '_verify'.$property.'Item')) {
-				if (call_user_func(array($this, '_verify'.$property.'Item'), $value)) {
-					$this->{$property}[$key] = $value;
-				}
-				else {
-					throw new Exception('Unable to set '.$property.' for key “'.$key.'”. Provided value is invalid.');
-				}
-			}
-			else {
+		if (method_exists($this, '_verify'.$property.'Item')) {
+			if (call_user_func(array($this, '_verify'.$property.'Item'), $value)) {
 				$this->{$property}[$key] = $value;
 			}
+			else {
+				throw new Exception('Unable to set '.$property.' for key “'.$key.'”. Provided value is invalid.');
+			}
+		}
+		else {
+			$this->{$property}[$key] = $value;
 		}
 		return $this;
 	}
