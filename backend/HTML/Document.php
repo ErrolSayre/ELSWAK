@@ -577,7 +577,7 @@ class ELSWebAppKit_HTML_Document
 	public function createSelect($name, $selectedValue = null, array $options = null, $noValueLabel = null, array $attributes = null)
 	{
 /*
-	Select menu options should be provided in a multi-dimensional array where the intended option value and content are provided in an associative array e.g. array('value'=>'asdf','content'=>'ASDF').
+	Select menu options should be provided in an associative array where the array key is the option value and the array value the option content or a multi-dimensional array where the intended option value and content are provided in an associative array e.g. array('value'=>'asdf','content'=>'ASDF').
 	A selected value can be provided as an option array or as a scalar value. If a scalar is provided, the given options will be searched, or the value will be used as it's own label.
 	If no selected value is provided, a "label" can be provided that can serve as the first option e.g. "Please select an option".
 */
@@ -588,8 +588,7 @@ class ELSWebAppKit_HTML_Document
 		$select = $this->createElement('select', null, $attributes);
 		
 		// set up the first value
-		if (is_array($selectedValue))
-		{
+		if (is_array($selectedValue)) {
 			$optionValue = isset($selectedValue['value'])? $selectedValue['value']: '';
 			$optionContent = isset($selectedValue['content'])? $selectedValue['content']: $noValueLabel;
 			$select->appendChild($this->createSelectOption($optionValue, $optionContent));
@@ -604,15 +603,24 @@ class ELSWebAppKit_HTML_Document
 		
 		// create the options
 		if (is_array($options))
-			foreach ($options as $option)
+			foreach ($options as $key => $option)
 			{
-				$optionValue = !empty($option['value'])? $option['value']: '';
-				$optionContent = !empty($option['content'])? $option['content']: '';
+				$optionValue = $optionContent = '';
+				if (is_array($option)) {
+					if (isset($option['value']))
+						$optionValue = $option['value'];
+					if (isset($option['content']))
+						$optionValue = $option['content'];
+				} else {
+					$optionValue = $key;
+					$optionContent = $option;
+				}
 				$attributes = array();
-				if (is_array($selectedValue) && !empty($selectedValue['value']) && ($optionValue == $selectedValue['value']))
+				if (is_array($selectedValue) && !empty($selectedValue['value']) && ($optionValue == $selectedValue['value'])) {
 					$attributes['selected'] = 'true';
-				else if (!empty($selectedValue) && ($optionValue == $selectedValue))
+				} else if (!empty($selectedValue) && ($optionValue == $selectedValue)) {
 					$attributes['selected'] = 'true';
+				}
 				$select->appendChild($this->createSelectOption($optionValue, $optionContent, $attributes));
 			}
 		return $select;
