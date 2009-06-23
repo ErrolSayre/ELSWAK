@@ -252,6 +252,10 @@ class ELSWebAppKit_Settable {
 		$this->{$property} = floatval($value);
 		return $this;
 	}
+	protected function _setPropertyAsDollarAmount($property, $value) {
+		$this->{$property} = round(floatval($value), 2);
+		return $this;
+	}
 	protected function _setPropertyAsEnumeratedValue($property, $value, $values) {
 		if (in_array($value, $values)) {
 			$this->{$property} = $value;
