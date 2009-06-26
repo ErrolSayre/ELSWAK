@@ -256,13 +256,19 @@ class ELSWebAppKit_Settable {
 		$this->{$property} = round(floatval($value), 2);
 		return $this;
 	}
-	protected function _setPropertyAsEnumeratedValue($property, $value, $values) {
-		if (in_array($value, $values)) {
-			$this->{$property} = $value;
-		} else {
-			throw new Exception('Unable to set '.$property.'. Supplied value does not match accepted values list.');
+	protected function _setPropertyAsEnumeratedValue($property, $value, $values, $ignoreCase = true) {
+		if ($ignoreCase)
+			$value = strtolower($value);
+		foreach ($values as $validValue) {
+			$compareValue = $validValue;
+			if ($ignoreCase)
+				$compareValue = strtolower($validValue);
+			if ($value == $compareValue) {
+				$this->{$property} = $validValue;
+				return $this;
+			}
 		}
-		return $this;
+		throw new Exception('Unable to set '.$property.'. Supplied value does not match accepted values list.');
 	}
 	protected function _setPropertyAsObjectOfClass($property, $value, $class) {
 		if ($this->_verifyItemAsObjectOfClass($value, $class)) {
