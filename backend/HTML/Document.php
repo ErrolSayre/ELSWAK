@@ -610,7 +610,7 @@ class ELSWebAppKit_HTML_Document
 					if (isset($option['value']))
 						$optionValue = $option['value'];
 					if (isset($option['content']))
-						$optionValue = $option['content'];
+						$optionContent = $option['content'];
 				} else {
 					$optionValue = $key;
 					$optionContent = $option;
