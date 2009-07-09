@@ -133,17 +133,22 @@ class ELSWebAppKit_HTML_Document
 		$body = $document->getElementsByTagName('body')->item(0);
 		
 		// determine how many children the body has
-		if ((count($body->childNodes) == 1) && ($body->firstChild instanceof DOMElement))
-		{
+		if ((count($body->childNodes) == 1) && ($body->firstChild instanceof DOMElement)) {
 			$element = $this->importNode($body->firstChild, true);
-			$element->setAttribute('id', $key);
-			$this->registerElementWithIdIndex($element);
+			if ($key !== null) {
+				$element->setAttribute('id', $key);
+				$this->registerElementWithIdIndex($element);
+			}
 			return $element;
 		}
 		
 		// create a container for the new content
-		$container = $this->createDiv(null, array('id' => $key));
-		$this->registerElementWithIdIndex($container);
+		if ($key !== null) {
+			$container = $this->createDiv(null, array('id' => $key));
+			$this->registerElementWithIdIndex($container);
+		} else {
+			$container = $this->createDiv();
+		}
 		
 		// import all the children of the new document's body into this container
 		while ($body->hasChildNodes())
