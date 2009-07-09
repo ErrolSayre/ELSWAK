@@ -253,19 +253,28 @@ class ELSWebAppKit_Settable {
 		return $this;
 	}
 	protected function _setPropertyAsDollarAmount($property, $value) {
-		$this->{$property} = round(floatval($value), 2);
+		$this->{$property} = round(floatval(str_replace(array(',', '$'), '', $value)), 2);
 		return $this;
 	}
 	protected function _setPropertyAsEnumeratedValue($property, $value, $values, $ignoreCase = true) {
 		if ($ignoreCase)
 			$value = strtolower($value);
-		foreach ($values as $validValue) {
+		foreach ($values as $validKey => $validValue) {
 			$compareValue = $validValue;
 			if ($ignoreCase)
-				$compareValue = strtolower($validValue);
+				$compareValue = strtolower($compareValue);
 			if ($value == $compareValue) {
 				$this->{$property} = $validValue;
 				return $this;
+			} else if (!is_numeric($validKey)) {
+				// try to compare the value against the key
+				$compareValue = $validKey;
+				if ($ignoreCase)
+					$compareValue = strtolower($compareValue);
+				if ($value == $compareValue) {
+					$this->{$property} = $validValue;
+					return $this;
+				}
 			}
 		}
 		throw new Exception('Unable to set '.$property.'. Supplied value does not match accepted values list.');
