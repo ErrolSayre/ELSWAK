@@ -16,57 +16,47 @@ class ELSWebAppKit_HTTP_Response
 	protected $responseCode = 200;
 	protected $isRedirect = false;
 	protected $isModified = true;
+	protected $debugRedirects = false;
 	
-	public function __construct()
-	{
+	public function __construct() {
 		// setup the server uri
 		$this->serverUri = ((isset($_SERVER['HTTPS']))? 'https://': 'http://').$_SERVER['HTTP_HOST'];
 		
 		// setup the application uri
 		$this->applicationPath = dirname($_SERVER['PHP_SELF']);
 	}
-	public function serverUri()
-	{
+	public function serverUri() {
 		return $this->serverUri;
 	}
-	public function applicationPath()
-	{
+	public function applicationPath() {
 		return $this->applicationPath;
 	}
-	public function applicationUri()
-	{
+	public function applicationUri() {
 		return $this->serverUri.$this->applicationPath;
 	}
-	public function messages($delimiter = '')
-	{
+	public function messages($delimiter = '') {
 		return implode($delimiter, $this->messages);
 	}
-	public function addMessage($message)
-	{
+	public function addMessage($message) {
 		// append the message to our list of messages
 		$this->messages[] = str_replace(CRLF, LF, $message);
 		return $this;
 	}
-	public function status()
-	{
+	public function status() {
 		return $this->status;
 	}
-	public function setStatus($status)
-	{
+	public function setStatus($status) {
 		$this->status = str_replace(CRLF, LF, $status);
 		return $this;
 	}
-	public function content($delimiter = '')
-	{
+	public function content($delimiter = '') {
 		// string together the various bits of content
 		return implode($delimiter, $this->body);
 	}
-	public function setContent($content = null, $key = null, $type = null)
-	{
+	public function setContent($content = null, $key = null, $type = null) {
 		// overwrite all existing content and replace with the supplied content
 		$this->body = array();
-		if ($content !== null)
-		{
+		if ($content !== null) {
 			if ($key !== null)
 				$this->body[$key] = $this->filterContentByType($content, $type);
 			else
@@ -74,8 +64,7 @@ class ELSWebAppKit_HTTP_Response
 		}
 		return $this;
 	}
-	public function addContent($content, $key = null, $type = null)
-	{
+	public function addContent($content, $key = null, $type = null) {
 		// append content to the body or set/overwrite the value of a given key if provided
 		if ($key !== null)
 			return $this->setContentForKey($content, $key, $type);
@@ -83,8 +72,7 @@ class ELSWebAppKit_HTTP_Response
 			$this->body[] = $this->filterContentByType($content, $type);
 		return $this;
 	}
-	public function setContentForKey($content, $key, $type = null)
-	{
+	public function setContentForKey($content, $key, $type = null) {
 		// set or unset a value for a given key
 		if ($content !== null)
 			$this->body[$key] = $this->filterContentByType($content, $type);
@@ -92,74 +80,70 @@ class ELSWebAppKit_HTTP_Response
 			unset($this->body[$key]);
 		return $this;
 	}
-	protected function filterContentByType($content, $type)
-	{
+	protected function filterContentByType($content, $type) {
 		return $content;
 	}
-	public function headers($delimeter = CRLF)
-	{
+	public function headers($delimeter = CRLF) {
 		return implode($delimiter, $this->headers);
 	}
-	public function clearHeaders()
-	{
+	public function clearHeaders() {
 		$this->headers = array();
 		return $this;
 	}
-	public function header($name)
-	{
+	public function header($name) {
 		if (isset($this->headers[$name]))
 			return $this->headers[$name];
 		return false;
 	}
-	public function setHeader($name, $value = null, $replace = true)
-	{
+	public function setHeader($name, $value = null, $replace = true) {
 		if ($value !== null)
-			$this->headers[$name] = array
-			(
+			$this->headers[$name] = array(
 				'name' => str_replace(CRLF, LF, $name),
 				'value' => str_replace(CRLF, LF, $value),
 				'replace' => (bool) $replace
 			);
 		else
-			unset($this->header[$name]);
+			unset($this->headers[$name]);
 		return $this;
 	}
-	public function isRedirect()
-	{
+	public function isRedirect() {
 		return $this->isRedirect;
 	}
-	public function setRedirect($url, $code = 302)
-	{
+	public function setRedirect($url, $code = 302) {
 		// set the location header using the given url
 		$this->setHeader('Location', $url, true)
 			->setResponseCode($code);
 		return $this;
 	}
-	public function isModified()
-	{
+	public function unsetRedirect() {
+		return $this->setHeader('Location');
+	}
+	public function setDebugRedirects($value = true) {
+		$this->debugRedirects = false;
+		if ($value) {
+			$this->debugRedirects = true;
+		}
+		return $this;
+	}
+	public function isModified() {
 		return $this->isModified;
 	}
-	public function setIsModified($modified = true)
-	{
-		if (!$modified)
-		{
+	public function setIsModified($modified = true) {
+		if (!$modified) {
 			$this->setResponseCode(304);
 			$this->isModified = false;
 		}
-		else
-		{
+		else {
 			if ($this->responseCode == 304)
 				$this->setResponseCode(200);
 			$this->isModified = true;
 		}
 		return $this;
 	}
-	public function responseCode()
-	{
+	public function responseCode() {
 		return $this->responseCode;
 	}
-	public function setResponseCode($code)
-	{
+	public function setResponseCode($code) {
 		if (!is_int($code) || (100 > $code) || (599 < $code))
 			throw new Exception('Invalid HTTP response code.');
 		
@@ -171,24 +155,20 @@ class ELSWebAppKit_HTTP_Response
 		$this->responseCode = $code;
 		return $this;
 	}
-	public function setContentType($type = 'text/html', $set = 'utf-8')
-	{
+	public function setContentType($type = 'text/html', $set = 'utf-8') {
 		if (!empty($set))
 			$this->setHeader('Content-Type', $type.'; charset='.$set, true);
 		else
 			$this->setHeader('Content-Type', $type, true);
 	}
-	public function setExpires($time)
-	{
+	public function setExpires($time) {
 		$this->setHeader('Expires', date('r', $time), true);
 	}
-	public function generateETag()
-	{
+	public function generateETag() {
 		// use the md5 sum of the content to produce an ETag for this repsonse
 		$this->setHeader('ETag', md5($this->content()), true);
 	}
-	public function utilizeCache()
-	{
+	public function utilizeCache() {
 		// generate an entity tag for the current response
 		$this->generateETag();
 		
@@ -203,8 +183,7 @@ class ELSWebAppKit_HTTP_Response
 			$this->setHeader('ETag', $this->header('ETag').'-gzip', true)
 				->setIsModified(false);
 	}
-	public function send()
-	{
+	public function send() {
 		// verify that headers have not been sent
 		$this->canSendHeaders();
 		
@@ -219,8 +198,7 @@ class ELSWebAppKit_HTTP_Response
 			$this->sendContent();
 		return $this;
 	}
-	protected function canSendHeaders()
-	{
+	protected function canSendHeaders() {
 		// check to see if the headers have been sent
 		$headersSent = headers_sent($file, $line);
 		
@@ -229,18 +207,22 @@ class ELSWebAppKit_HTTP_Response
 			throw new Exception('Unable to send headers. Headers already sent in ' . $file . ' on line ' . $line);
 		return !$headersSent;
 	}
-	protected function sendHeaders()
-	{
+	protected function sendHeaders() {
 		// send the header code
 		header('HTTP/1.1 '.$this->responseCode);
 		
 		// process the headers
-		foreach ($this->headers as $header)
-			header($header['name'].': '.$header['value'], $header['replace']);
+		foreach ($this->headers as $header) {
+			// unset the redirect if applicable
+			if ($this->debugRedirects == true && strtolower($header['name']) == 'location') {
+				$this->addMessage('Redirect to '.$header['value']);
+			} else {
+				header($header['name'].': '.$header['value'], $header['replace']);
+			}
+		}
 		return $this;
 	}
-	protected function sendCustomHeaders()
-	{
+	protected function sendCustomHeaders() {
 		// send custom headers created by this content type
 		if (!empty($this->status))
 			header('ELSWebAppKit-Status: '.$this->status, true);
@@ -248,8 +230,7 @@ class ELSWebAppKit_HTTP_Response
 			header('ELSWebAppKit-Messages: '.$this->messages('|'), true);
 		return $this;
 	}
-	public function sendContent()
-	{
+	public function sendContent() {
 		echo $this->content();
 		return $this;
 	}
