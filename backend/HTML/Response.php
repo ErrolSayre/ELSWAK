@@ -63,10 +63,10 @@ class ELSWebAppKit_HTML_Response
 		$this->body->addContent($content, $key, $type);
 		return $this;
 	}
-	public function setContentForKey($content, $key, $type = null)
+	public function setContentForKey($key, $content, $type = null)
 	{
 		// pass the call on to the document object
-		$this->body->setContentForKey($content, $key, $type);
+		$this->body->setContentForKey($key, $content, $type);
 		return $this;
 	}
 	public function sendCustomHeaders()
