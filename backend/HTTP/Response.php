@@ -67,12 +67,12 @@ class ELSWebAppKit_HTTP_Response
 	public function addContent($content, $key = null, $type = null) {
 		// append content to the body or set/overwrite the value of a given key if provided
 		if ($key !== null)
-			return $this->setContentForKey($content, $key, $type);
+			return $this->setContentForKey($key, $content, $type);
 		else
 			$this->body[] = $this->filterContentByType($content, $type);
 		return $this;
 	}
-	public function setContentForKey($content, $key, $type = null) {
+	public function setContentForKey($key, $content, $type = null) {
 		// set or unset a value for a given key
 		if ($content !== null)
 			$this->body[$key] = $this->filterContentByType($content, $type);
