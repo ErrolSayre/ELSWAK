@@ -109,7 +109,7 @@ class ELSWebAppKit_Settable {
 		$this->{$property} = array();
 		if (is_array($value)) {
 			foreach ($value as $key => $item) {
-				$this->_setArrayPropertyItemForKey($property, $item, $key);
+				$this->_setArrayPropertyItemForKey($property, $key, $item);
 			}
 		}
 		return $this;
@@ -146,7 +146,7 @@ class ELSWebAppKit_Settable {
 	protected function _arrayPropertyItemForKey($property, $key) {
 		return $this->_arrayItemForKey($this->{$property}, $key);
 	}
-	protected function _hasArrayPropertyItemForKey($property, $key) {
+	protected function _arrayPropertyHasItemForKey($property, $key) {
 		if (method_exists($this, '_verify'.$property.'Key')) {
 			if (!call_user_func(array($this, '_verify'.$property.'Key'), $key)) {
 				throw new Exception('Unable to set '.$property.' for key “'.$key.'”. Supplied key does not match accepted keys list.');
@@ -162,7 +162,7 @@ class ELSWebAppKit_Settable {
 		}
 		return false;
 	}
-	protected function _setArrayPropertyItemForKey($property, $value, $key) {
+	protected function _setArrayPropertyItemForKey($property, $key, $value) {
 		// validate the key if applicable
 		if (method_exists($this, '_verify'.$property.'Key')) {
 			if (!call_user_func(array($this, '_verify'.$property.'Key'), $key)) {
