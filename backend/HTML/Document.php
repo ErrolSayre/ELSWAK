@@ -89,12 +89,12 @@ class ELSWebAppKit_HTML_Document
 	{
 		// append content to the body or set/overwrite the value of a given key if provided
 		if ($key !== null)
-			return $this->setContentForKey($content, $key, $type);
+			return $this->setContentForKey($key, $content, $type);
 		else
 			$this->contentNode->appendChild($this->importContent($content, $key, $type));
 		return $this;
 	}
-	public function setContentForKey($content, $key, $type = null)
+	public function setContentForKey($key, $content, $type = null)
 	{
 		// overwrite content matching the given key
 		$element = $this->locateElementById($key);
@@ -446,21 +446,15 @@ class ELSWebAppKit_HTML_Document
 		}
 		
 		// add the description
-		if ($description !== null)
-		{
-			$descriptionContainer = $fieldContainer->appendChild($this->createElement('div'));
-			$descriptionContainer->setAttribute('class', 'description');
-			
+		if ($description !== null) {
 			// determine if the description provided is a DOM element
-			if ($description instanceof DOMElement)
-			{
+			if ($description instanceof DOMElement) {
 				// add this element as the description for this form item
-				$descriptionContainer->appendChild($description);
-			}
-			else
-			{
+				$description->setAttribute('class', $description->getAttribute('class').' description');
+				$fieldContainer->appendChild($description);
+			} else {
 				// add the description as text to the description element
-				$descriptionContainer->appendChild($this->createTextNode($description));
+				$fieldContainer->appendChild($this->createDiv($description, array('class' => 'description')));
 			}
 		}
 		
