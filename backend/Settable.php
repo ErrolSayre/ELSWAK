@@ -299,6 +299,21 @@ class ELSWebAppKit_Settable {
 		}
 		return date($format, strtotime($this->{$property}));
 	}
+	protected function _getPropertyAsDateOrTimestampByFormat($property, $format = 'm/d/Y', $emptyValue = '00/00/0000') {
+		if (is_int($this->{$property})) {
+			$time = $this->{$property};
+		} else {
+			$time = strtotime($this->{$property});
+		}
+		
+		if ($format != null) {
+			if ($time < 1) {
+				return $emptyValue;
+			}
+			return date($format, $time);
+		}
+		return $time;
+	}
 	protected function _getPropertyAsDatetime($property, $format = 'Y-m-d H:i:s') {
 		return $this->_getPropertyAsDate($property, $format);
 	}
