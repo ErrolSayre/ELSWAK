@@ -243,7 +243,7 @@ class ELSWebAppKit_Settable {
 	protected function _setPropertyAsTimestamp($property, $value) {
 		if (is_numeric($value)) {
 			$this->{$property} = intval($value);
-		} else if (str_replace(array('/', '-', ' '), '', $value) == 0) {
+		} else if (str_replace(array('/', '-', ':', ' '), '', $value) == 0) {
 			$this->{$property} = 0;
 		} else {
 			$this->{$property} = strtotime($value);
