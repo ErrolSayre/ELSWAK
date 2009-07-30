@@ -240,6 +240,14 @@ class ELSWebAppKit_Settable {
 		}
 		return $this;
 	}
+	protected function _setPropertyAsStringOfMaximumLength($property, $value, $length = 255) {
+		if (($value = substr($value, 0, $length)) !== false) {
+			$this->{$property} = $value;
+		} else {
+			$this->{$property} = '';
+		}
+		return $this;
+	}
 	protected function _setPropertyAsTimestamp($property, $value) {
 		if (is_numeric($value)) {
 			$this->{$property} = intval($value);
