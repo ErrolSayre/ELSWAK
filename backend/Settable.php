@@ -240,6 +240,22 @@ class ELSWebAppKit_Settable {
 		}
 		return $this;
 	}
+	protected function _setPropertyAsNullBoolean($property, $value) {
+		if (is_string($value)) {
+			$value = strtolower($value);
+			if (($value == 'pending') ||
+				($value == 'null') ||
+				($value == 'p')
+			) {
+				$value = null;
+			}
+		}
+		if ($value === null) {
+			$this->{$property} = null;
+			return $this;
+		}
+		return $this->_setPropertyAsBoolean($property, $value);
+	}
 	protected function _setPropertyAsStringOfMaximumLength($property, $value, $length = 255) {
 		if (($value = substr($value, 0, $length)) !== false) {
 			$this->{$property} = $value;
