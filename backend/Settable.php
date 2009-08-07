@@ -343,6 +343,41 @@ class ELSWebAppKit_Settable {
 	protected function _getPropertyAsDatetime($property, $format = 'Y-m-d H:i:s') {
 		return $this->_getPropertyAsDate($property, $format);
 	}
+	protected function _setCodedProperty($property, $value, array $acceptables, $defaultValue = null) {
+		// look for this value as an exact match
+		if (isset($acceptables[$value])) {
+			$this->{$property} = $value;
+			return $this;
+		}
+		// search through the acceptable values to find a match
+		$value = strtolower($value);
+		$this->{$property} = $defaultValue;
+		foreach ($acceptables as $code => $acceptable) {
+			if ($value == strtolower($code)) {
+				$this->{$property} = $code;
+				return $this;
+			} else if (is_array($acceptable)) {
+				foreach ($acceptable as $option) {
+					if ($value == strtolower($option)) {
+						$this->{$property} = $code;
+						return $this;
+					}
+				}
+			} else if ($value == strtolower($acceptable)) {
+				$this->{$property} = $code;
+				return $this;
+			}
+		}
+		return $this;
+	}
+	protected function _getCodedProperty($property, array $codeLabels, $returnCode = false) {
+		if ($returnCode == false) {
+			if (($label = $this->_arrayItemForKey($codeLabels, $this->{$property})) !== null) {
+				return $label;
+			}
+		}
+		return $this->{$property};
+	}
 }
 class ELSWebAppKit_Settable_Model_Helper {
 	public static function methodsForClass($class) {
