@@ -20,7 +20,7 @@ class ELSWebAppKit_Settable {
 			$this->{$property} = $value;
 		} else {
 			// the property is not defined in the class, protect the class definition
-			throw new Exception('Unable to set property "'.$property.'". Property is not defined within the class.');
+			throw new Exception('Unable to set property "'.$property.'". Property is not defined within the class "'.get_class($this).'".');
 		}
 		return $this;
 	}
@@ -45,7 +45,7 @@ class ELSWebAppKit_Settable {
 			return $this->{$property};
 		} else {
 			// the property is not defined in the class, protect the class definition
-			throw new Exception('Unable to get property "'.$property.'". Property is not defined within the class.');
+			throw new Exception('Unable to get property "'.$property.'". Property is not defined within the class "'.get_class($this).'".');
 		}
 		return $this;
 	}
@@ -358,7 +358,12 @@ class ELSWebAppKit_Settable {
 				return $this;
 			} else if (is_array($acceptable)) {
 				foreach ($acceptable as $option) {
-					if ($value == strtolower($option)) {
+					if (is_bool($option)) {
+						if ($value === $option) {
+							$this->{$property} = $code;
+							return $this;
+						}
+					} else if ($value == strtolower($option)) {
 						$this->{$property} = $code;
 						return $this;
 					}
