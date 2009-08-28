@@ -310,11 +310,15 @@ class ELSWebAppKit_HTML_Document
 		$element = parent::createElement($tagName);
 		
 		// determine if any content was provided
-		if ($content instanceof DOMElement)
+		if ($content instanceof DOMElement) {
 			$element->appendChild($content);
-		else if ($content !== null)
+		} else if (is_object($content)) {
+			if (method_exists($content, '__toString')) {
+				$element->appendChild($this->createTextNode($content->__toString()));
+			}
+		} else if ($content != null) {
 			$element->appendChild($this->createTextNode($content));
-		
+		}
 		// set attributes
 		if (is_array($attributes))
 		{
