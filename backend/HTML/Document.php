@@ -7,8 +7,7 @@
 	This extension to the DOMDocument provides locateElementById as a replacement for the HTML specific getElementById because PHP only recognized the id attribute for elements that existed in the document at the time of the last validation (or on initial load of an HTML file). This method caches ALL ids that it finds, but whenever it doesn't have a cached reference for a given id, it searches the entire document tree. Since the DOM is not ordered in any particular way it must be iterated sequentially, however since most elements are appended to existing items it is most likely that new items will be at the "bottom" of the tree. For this reason, I start the search for items at the last child of a given node and work toward the first child. Please note that you can avoid this search by creating elements through the given methods of this class, or by registering a given element with the cache using the registerElementWithIdIndex method.
 */
 class ELSWebAppKit_HTML_Document
-	extends DOMDocument
-{
+	extends DOMDocument {
 	protected $rootNode;
 	protected $headNode;
 	protected $bodyNode;
@@ -17,16 +16,14 @@ class ELSWebAppKit_HTML_Document
 	protected $titleTextNode;
 	protected $elementIdIndex;
 	
-	public function __construct($templateFile = null)
-	{
+	public function __construct($templateFile = null) {
 		// create the DOMDocument
 		parent::__construct();
 		
 		// load our template file
 		if (($templateFile !== null) && is_file($templateFile))
 			$this->load($templateFile);
-		else
-		{
+		else {
 			// set up the default xhtml content
 			// determine the installation path
 			$this->load(dirname(__FILE__).'/Document/Template.xhtml');
@@ -54,39 +51,31 @@ class ELSWebAppKit_HTML_Document
 		// setup the element id index
 		$this->elementIdIndex = array();
 	}
-	public function cleanup()
-	{
+	public function cleanup() {
 		return $this;
 	}
-	public function root()
-	{
+	public function root() {
 		return $this->rootNode;
 	}
-	public function head()
-	{
+	public function head() {
 		return $this->headNode;
 	}
-	public function body()
-	{
+	public function body() {
 		return $this->bodyNode;
 	}
-	public function messages($delimiter = null)
-	{
+	public function messages($delimiter = null) {
 		// since the messages are stored directly into the document, none are kept separate
 		return false;
 	}
-	public function addMessage($message, $key = null, $type = null)
-	{
+	public function addMessage($message, $key = null, $type = null) {
 		return $this->addContent($message, $key, $type);
 	}
-	public function setContent($content = null, $key = null, $type = null)
-	{
+	public function setContent($content = null, $key = null, $type = null) {
 		// like the original function in the HTTP response, overwrite the existing content within the document with that provided
 		$this->removeChildren($this->contentNode);
 		return $this->addContent($content, $key, $type);
 	}
-	public function addContent($content, $key = null, $type = null)
-	{
+	public function addContent($content, $key = null, $type = null) {
 		// append content to the body or set/overwrite the value of a given key if provided
 		if ($key !== null)
 			return $this->setContentForKey($key, $content, $type);
@@ -94,8 +83,7 @@ class ELSWebAppKit_HTML_Document
 			$this->contentNode->appendChild($this->importContent($content, $key, $type));
 		return $this;
 	}
-	public function setContentForKey($key, $content, $type = null)
-	{
+	public function setContentForKey($key, $content, $type = null) {
 		// overwrite content matching the given key
 		$element = $this->locateElementById($key);
 		if ($element instanceof DOMElement)
@@ -105,25 +93,20 @@ class ELSWebAppKit_HTML_Document
 			$this->contentNode->appendChild($this->importContent($content, $key, $type));
 		return $this;
 	}
-	protected function importContent($content, $key, $type)
-	{
-		if ($content instanceof DOMNode)
-		{
+	protected function importContent($content, $key, $type) {
+		if ($content instanceof DOMNode) {
 			// determine if the node is an element
 			if ($content instanceof DOMElement)
-				if (!empty($key))
-				{
+				if (!empty($key)) {
 					$content->setAttribute('id', $key);
 					$this->registerElementWithIdIndex($content);
 				}
 			return $content;
-		}
-		else if (is_string($content) && strtolower($type) == 'html')
+		} else if (is_string($content) && strtolower($type) == 'html')
 			return $this->convertHTML($content, $key);
 		return $this->convertVariable($content, $key);
 	}
-	public function convertHTML($html, $key = null)
-	{
+	public function convertHTML($html, $key = null) {
 		// convert the supplied html/xml string into a dom tree and import to the local document
 		// wrap the provided html in proper tags and create a new dom
 		$document = new DOMDocument();
@@ -151,15 +134,13 @@ class ELSWebAppKit_HTML_Document
 		}
 		
 		// import all the children of the new document's body into this container
-		while ($body->hasChildNodes())
-		{
+		while ($body->hasChildNodes()) {
 			$container->appendChild($this->importNode($body->firstChild, true));
 			$body->removeChild($body->firstChild);
 		}
 		return $container;
 	}
-	public function convertVariable($content, $key = null)
-	{
+	public function convertVariable($content, $key = null) {
 		// convert the supplied variable into a dom tree on the local document
 		if (is_array($content) ||
 			(is_object($content) && !method_exists($content, '__toString')))
@@ -168,22 +149,17 @@ class ELSWebAppKit_HTML_Document
 		// try to import the contents of the variable into a div
 		return $this->createDiv($content, array('id' => $key));
 	}
-	public function locateElementById($id)
-	{
+	public function locateElementById($id) {
 /*
 	Since PHP requires that the document be verified before using the getElementById method, it is costly and painful to use that method after making changes to the DOM. To address this shortcoming this extension of the DOMDocument model provides an element id searching and caching system to replicate the functionality of getElementById.
 */
 		// look for the id in the cache
-		if (isset($this->elementIdIndex[$id]))
-		{
+		if (isset($this->elementIdIndex[$id])) {
 			// make sure this cached reference is still good
-			if ($this->elementIdIndex[$id]->getAttribute('id') == $id)
-			{
+			if ($this->elementIdIndex[$id]->getAttribute('id') == $id) {
 				// the cached reference is good
 				return $this->elementIdIndex[$id];
-			}
-			else
-			{
+			} else {
 				// update the reference with the new location for this object
 				// save the current reference if the element has an id
 				if (($otherId = $this->elementIdIndex[$id]->getAttribute('id')) != '')
@@ -199,19 +175,15 @@ class ELSWebAppKit_HTML_Document
 				// search for a matching element in the tree
 				return $this->searchDomTreeForElementById($this->rootNode, $id);
 			}
-		}
-		else
-		{
+		} else {
 			// this id hasn't been searched for yet
 			return $this->searchDomTreeForElementById($this->rootNode, $id);
 		}
 	}
-	public function searchDomTreeForElementById(DOMNode $node, $id)
-	{
+	public function searchDomTreeForElementById(DOMNode $node, $id) {
 		// start at the root of the document and process the tree
 		// determine if the current node has an id
-		if (($node->nodeType == XML_ELEMENT_NODE) && $node->hasAttribute('id'))
-		{
+		if (($node->nodeType == XML_ELEMENT_NODE) && $node->hasAttribute('id')) {
 			// this node has an id
 			
 			// save a reference in the index
@@ -223,12 +195,10 @@ class ELSWebAppKit_HTML_Document
 		}
 		
 		// determine if the current node has children
-		if ($node->hasChildNodes())
-		{
+		if ($node->hasChildNodes()) {
 			// process each child
 			$currentNode = $node->lastChild;
-			while ($currentNode !== null)
-			{
+			while ($currentNode !== null) {
 				// search this node's tree
 				$found = $this->searchDomTreeForElementById($currentNode, $id);
 				
@@ -244,51 +214,42 @@ class ELSWebAppKit_HTML_Document
 		// the node wasn't found
 		return null;
 	}
-	public function registerElementWithIdIndex(DOMElement $node)
-	{
+	public function registerElementWithIdIndex(DOMElement $node) {
 		// determine if the current node has an id
 		if ($node->hasAttribute('id'))
 			$this->elementIdIndex[$node->getAttribute('id')] = $node;
 		else
 			throw new Exception('Element not registered: node must be a valid element with an id attribute.');
 	}
-	public function title()
-	{
+	public function title() {
 		// determine if we have a reference to the title text node
-		if ($this->titleTextNode == null)
-		{
+		if ($this->titleTextNode == null) {
 			$this->locateTitleTextNode();
 		}
 		return $this->titleTextNode->nodeValue;
 	}
-	public function pageTitle()
-	{
+	public function pageTitle() {
 		return $this->title();
 	}
-	public function setTitle($title)
-	{
+	public function setTitle($title) {
 		// determine if we have a reference to the title text node
-		if ($this->titleTextNode == null)
-		{
+		if ($this->titleTextNode == null) {
 			$this->locateTitleTextNode();
 		}
 		$this->titleTextNode->nodeValue = $title;
 		
 		return $this;
 	}
-	public function setPageTitle($title)
-	{
+	public function setPageTitle($title) {
 		return $this->setTitle($title);
 	}
-	public function locateTitleTextNode()
-	{
+	public function locateTitleTextNode() {
 		// locate the existing title tags
 		$titleElements = $this->headNode->getElementsByTagName('title');
 		$titleElement = $titleElements->item(0);
 		
 		// remove all but the first
-		while ($titleElements->length > 1)
-		{
+		while ($titleElements->length > 1) {
 			$element = $titleElements->item($titleElements->length - 1);
 			$element->parentNode->removeChild($element);
 		}
@@ -305,8 +266,7 @@ class ELSWebAppKit_HTML_Document
 		
 		return $this;
 	}
-	public function createElement($tagName, $content = null, array $attributes = null)
-	{
+	public function createElement($tagName, $content = null, array $attributes = null) {
 		$element = parent::createElement($tagName);
 		
 		// determine if any content was provided
@@ -316,30 +276,26 @@ class ELSWebAppKit_HTML_Document
 			if (method_exists($content, '__toString')) {
 				$element->appendChild($this->createTextNode($content->__toString()));
 			}
-		} else if ($content != null) {
+		} else if ($content !== null) {
 			$element->appendChild($this->createTextNode($content));
 		}
 		// set attributes
-		if (is_array($attributes))
-		{
-			foreach ($attributes as $attributeKey => $attributeValue)
-			{
+		if (is_array($attributes)) {
+			foreach ($attributes as $attributeKey => $attributeValue) {
 				// format boolean values properly
 				if (is_bool($attributeValue))
 					$element->setAttribute($attributeKey, ($attributeValue)? 'true': 'false');
 				else
 					$element->setAttribute($attributeKey, $attributeValue);
 			}
-			if (array_key_exists('id', $attributes) == true)
-			{
+			if (array_key_exists('id', $attributes) == true) {
 				$element->setAttribute('id', $attributes['id']);
 				$this->registerElementWithIdIndex($element);
 			}
 		}
 		return $element;
 	}
-	public function addClassToElement($class, DOMElement $element)
-	{
+	public function addClassToElement($class, DOMElement $element) {
 		// setup the existing classes
 		$classes = array();
 		if ($element->hasAttribute('class'))
@@ -352,20 +308,26 @@ class ELSWebAppKit_HTML_Document
 		// set the class
 		$element->setAttribute('class', implode(' ', $classes));
 	}
-	public function createDiv($content = null, array $attributes = null)
-	{
+	public function createDiv($content = null, array $attributes = null) {
 		return $this->createElement('div', $content, $attributes);
 	}
-	public function createLink($href, $content = null, array $attributes = null)
-	{
+	public function createLink($href, $content = null, array $attributes = null) {
 		if (!is_array($attributes))
 			$attributes = array();
 		if (empty($attributes['href']))
 			$attributes['href'] = $href;
 		return $this->createElement('a', $content, $attributes);
 	}
-	public function createForm($action = '', $method = 'POST', $content = null, array $attributes = null)
-	{
+	public function createImg($src, $alt = null, array $attributes = null) {
+		if (!is_array($attributes))
+			$attributes = array();
+		if (empty($attributes['src']))
+			$attributes['src'] = $src;
+		if (empty($attributes['alt']))
+			$attributes['alt'] = $alt;
+		return $this->createElement('img', null, $attributes);
+	}
+	public function createForm($action = '', $method = 'POST', $content = null, array $attributes = null) {
 		if (strtolower($method) != 'get')
 			$method = 'POST';
 		if (!is_array($attributes))
@@ -376,16 +338,14 @@ class ELSWebAppKit_HTML_Document
 			$attributes['method'] = $method;
 		return $this->createElement('form', $content, $attributes);
 	}
-	public function createFieldset($legend = null, $content = null, array $attributes = null)
-	{
+	public function createFieldset($legend = null, $content = null, array $attributes = null) {
 		// create a new fieldset element
 		$fieldset = $this->createElement('fieldset', $content, $attributes);
 		if (!empty($legend))
 			$fieldset->insertBefore($this->createElement('legend', $legend), $fieldset->firstChild);
 		return $fieldset;
 	}
-	public function createFormField($label, $input, $description = null, array $attributes = null)
-	{
+	public function createFormField($label, $input, $description = null, array $attributes = null) {
 /*
 	A "form field" in this document is made of a "field" container, which has a "label", "input" and "description".
 */
@@ -402,47 +362,35 @@ class ELSWebAppKit_HTML_Document
 		
 		// add the label
 		// determine if the label provided is a DOM element
-		if ($label instanceof DOMElement)
-		{
+		if ($label instanceof DOMElement) {
 			// determine if this is a label
-			if (strtolower($input->tagName) == 'label')
-			{
+			if (strtolower($input->tagName) == 'label') {
 				// add this element as the label for this form item
 				$fieldContainer->appendChild($label);
-			}
-			else
-			{
+			} else {
 				// add this element as the label within a container
 				$fieldContainer->appendChild($this->createElement('label', $label));
 			}
-		}
-		else
-		{
+		} else {
 			// add the label as text to the label element
 			$fieldContainer->appendChild($this->createElement('label'))->appendChild($this->createTextNode($label));
 		}
 		
 		// add the input
 		// determine if the input provided is a DOM element
-		if ($input instanceof DOMElement)
-		{
+		if ($input instanceof DOMElement) {
 			// determine if this is an input
 			if ((strtolower($input->tagName) == 'input') ||
-				($input->tagName == 'div' && $input->hasAttribute('class') && $input->getAttribute('class') == 'input'))
-			{
+				($input->tagName == 'div' && $input->hasAttribute('class') && $input->getAttribute('class') == 'input')) {
 				// add this element as the input for this form item
 				$fieldContainer->appendChild($input);
-			}
-			else
-			{
+			} else {
 				// add this element as the input within a container
 				$inputContainer = $fieldContainer->appendChild($this->createElement('div'));
 				$inputContainer->setAttribute('class', 'input');
 				$inputContainer->appendChild($input);
 			}
-		}
-		else
-		{
+		} else {
 			// add the input as text to the input element
 			$inputContainer = $fieldContainer->appendChild($this->createElement('div'));
 			$inputContainer->setAttribute('class', 'input');
@@ -465,8 +413,7 @@ class ELSWebAppKit_HTML_Document
 		// return this element
 		return $fieldContainer;
 	}
-	public function createTextArea($name, $value = null,  array $attributes = null)
-	{
+	public function createTextArea($name, $value = null,  array $attributes = null) {
 		if (!is_array($attributes))
 			$attributes = array();
 		if (empty($attributes['name']))
@@ -477,8 +424,7 @@ class ELSWebAppKit_HTML_Document
 			$attributes['rows'] = 5;
 		return $this->createElement('textarea', $value, $attributes);
 	}
-	public function createHiddenInput($name, $value = null, array $attributes = null)
-	{
+	public function createHiddenInput($name, $value = null, array $attributes = null) {
 		if (!is_array($attributes))
 			$attributes = array();
 		if (empty($attributes['type']))
@@ -489,8 +435,7 @@ class ELSWebAppKit_HTML_Document
 			$attributes['value'] = $value;
 		return $this->createElement('input', null, $attributes);
 	}
-	public function createTextInput($name, $value = null, array $attributes = null)
-	{
+	public function createTextInput($name, $value = null, array $attributes = null) {
 		if (!is_array($attributes))
 			$attributes = array();
 		if (empty($attributes['type']))
@@ -499,40 +444,35 @@ class ELSWebAppKit_HTML_Document
 			$attributes['size'] = 20;
 		return $this->createHiddenInput($name, $value, $attributes);
 	}
-	public function createPasswordInput($name, $value = null, array $attributes = null)
-	{
+	public function createPasswordInput($name, $value = null, array $attributes = null) {
 		if (!is_array($attributes))
 			$attributes = array();
 		if (empty($attributes['type']))
 			$attributes['type'] = 'password';
 		return $this->createTextInput($name, $value, $attributes);
 	}
-	public function createButtonInput($name, $value = null, array $attributes = null)
-	{
+	public function createButtonInput($name, $value = null, array $attributes = null) {
 		if (!is_array($attributes))
 			$attributes = array();
 		if (empty($attributes['type']))
 			$attributes['type'] = 'button';
 		return $this->createHiddenInput($name, $value, $attributes);
 	}
-	public function createSubmitButtonInput($name, $value = null, array $attributes = null)
-	{
+	public function createSubmitButtonInput($name, $value = null, array $attributes = null) {
 		if (!is_array($attributes))
 			$attributes = array();
 		if (empty($attributes['type']))
 			$attributes['type'] = 'submit';
 		return $this->createHiddenInput($name, $value, $attributes);
 	}
-	public function createResetButtonInput($name, $value = null, array $attributes = null)
-	{
+	public function createResetButtonInput($name, $value = null, array $attributes = null) {
 		if (!is_array($attributes))
 			$attributes = array();
 		if (empty($attributes['type']))
 			$attributes['type'] = 'reset';
 		return $this->createHiddenInput($name, $value, $attributes);
 	}
-	public function createRadioInput($name, $value = null, $checked = false, array $attributes = null)
-	{
+	public function createRadioInput($name, $value = null, $checked = false, array $attributes = null) {
 		if (!is_array($attributes))
 			$attributes = array();
 		if (empty($attributes['type']))
@@ -541,8 +481,7 @@ class ELSWebAppKit_HTML_Document
 			$attributes['checked'] = 'yes';
 		return $this->createHiddenInput($name, $value, $attributes);
 	}
-	public function createLabeledRadioInput($name, $value, $label, $checked = false, array $attributes = null)
-	{
+	public function createLabeledRadioInput($name, $value, $label, $checked = false, array $attributes = null) {
 /*
 	Labeled check box inputs are check boxes coupled with a label so that the radio is toggled when the text of the label is clicked.
 */
@@ -554,8 +493,7 @@ class ELSWebAppKit_HTML_Document
 			$labelElement->appendChild($this->createTextNode(strval($label)));
 		return $labelElement;
 	}
-	public function createCheckboxInput($name, $value, $checked = false, array $attributes = null)
-	{
+	public function createCheckboxInput($name, $value, $checked = false, array $attributes = null) {
 		if (!is_array($attributes))
 			$attributes = array();
 		if (empty($attributes['type']))
@@ -564,8 +502,7 @@ class ELSWebAppKit_HTML_Document
 			$attributes['checked'] = 'yes';
 		return $this->createHiddenInput($name, $value, $attributes);
 	}
-	public function createLabeledCheckboxInput($name, $value, $label, $checked = false, array $attributes = null)
-	{
+	public function createLabeledCheckboxInput($name, $value, $label, $checked = false, array $attributes = null) {
 /*
 	Labeled check box inputs are check boxes coupled with a label so that the checkbox is toggled when the text of the label is clicked.
 */
@@ -577,8 +514,7 @@ class ELSWebAppKit_HTML_Document
 			$labelElement->appendChild($this->createTextNode(strval($label)));
 		return $labelElement;
 	}
-	public function createSelect($name, $selectedValue = null, array $options = null, $noValueLabel = null, array $attributes = null)
-	{
+	public function createSelect($name, $selectedValue = null, array $options = null, $noValueLabel = null, array $attributes = null) {
 /*
 	Select menu options should be provided in an associative array where the array key is the option value and the array value the option content or a multi-dimensional array where the intended option value and content are provided in an associative array e.g. array('value'=>'asdf','content'=>'ASDF').
 	A selected value can be provided as an option array or as a scalar value. If a scalar is provided, the given options will be searched, or the value will be used as it's own label.
@@ -595,8 +531,7 @@ class ELSWebAppKit_HTML_Document
 			$optionValue = isset($selectedValue['value'])? $selectedValue['value']: '';
 			$optionContent = isset($selectedValue['content'])? $selectedValue['content']: $noValueLabel;
 			$select->appendChild($this->createSelectOption($optionValue, $optionContent));
-		}
-		else if (!empty($selectedValue))
+		} else if (!empty($selectedValue))
 			$select->appendChild($this->createSelectOption($selectedValue, $selectedValue));
 		else if (!empty($noValueLabel))
 			$select->appendChild($this->createSelectOption(null, $noValueLabel));
@@ -606,8 +541,7 @@ class ELSWebAppKit_HTML_Document
 		
 		// create the options
 		if (is_array($options))
-			foreach ($options as $key => $option)
-			{
+			foreach ($options as $key => $option) {
 				$optionValue = $optionContent = '';
 				if (is_array($option)) {
 					if (isset($option['value']))
@@ -628,25 +562,21 @@ class ELSWebAppKit_HTML_Document
 			}
 		return $select;
 	}
-	public function createSelectOption($value = null, $content = null, array $attributes = null)
-	{
+	public function createSelectOption($value = null, $content = null, array $attributes = null) {
 		$option = $this->createElement('option', null, $attributes);
 		
 		// determine how to label this option
-		if ($value !== null && $content !== null)
-		{
+		if ($value !== null && $content !== null) {
 			$option->appendChild($this->createTextNode(strval($content)));
 			$option->setAttribute('value', $value);
-		}
-		else if ($content !== null)
+		} else if ($content !== null)
 			$option->appendChild($this->createTextNode(strval($content)));
 		else if ($value !== null)
 			$option->appendChild($this->createTextNode(strval($value)));
 
 		return $option;
 	}
-	public function addScript($source = null, $content = null, $useHeader = false, array $attributes = null)
-	{
+	public function addScript($source = null, $content = null, $useHeader = false, array $attributes = null) {
 		// determine if a script source was provided and prevent duplicates
 		$uniqueScript = true;
 		if ($source !== null)
@@ -654,18 +584,13 @@ class ELSWebAppKit_HTML_Document
 				if ($script->getAttribute('src') == $source)
 					$uniqueScript = false;
 		
-		if ($uniqueScript)
-		{
+		if ($uniqueScript) {
 			if (!is_array($attributes))
 				$attributes = array();
-			if (empty($attributes['src']) && !empty($source))
-				$attributes['src'] = $source;
 			if (empty($attributes['type']))
 				$attributes['type'] = 'text/javascript';
-			if (empty($attributes['language']))
-				$attributes['language'] = 'javascript';
-			if (empty($attributes['charset']))
-				$attributes['charset'] = 'utf-8';
+			if (empty($attributes['src']) && !empty($source))
+				$attributes['src'] = $source;
 			
 			// defaultly add scripts to the end of the document, unless requested to add it to the header
 			$targetNode = $this->bodyNode;
@@ -678,8 +603,7 @@ class ELSWebAppKit_HTML_Document
 		}
 		return $this;
 	}
-	public function addStyle($content, $type = 'text/css', $media = 'all', array $attributes = null)
-	{
+	public function addStyle($content, $type = 'text/css', $media = 'all', array $attributes = null) {
 		if (!is_array($attributes))
 			$attributes = array();
 		if (empty($attributes['type']))
@@ -689,16 +613,14 @@ class ELSWebAppKit_HTML_Document
 		$this->headNode->appendChild($this->createElement('style', $content, $attributes));
 		return $this;
 	}
-	public function addStylesheet($source, $media = 'all', array $attributes = null)
-	{
+	public function addStylesheet($source, $media = 'all', array $attributes = null) {
 		// prevent duplicate stylesheets from being added
 		$uniqueStylesheet = true;
 		foreach ($this->stylesheets as $link)
 			if ($link->getAttribute('href') == $source)
 				$uniqueStylesheet = false;
 		
-		if ($uniqueStylesheet)
-		{
+		if ($uniqueStylesheet) {
 			if (!is_array($attributes))
 				$attributes = array();
 			if (empty($attributes['href']))
@@ -711,8 +633,7 @@ class ELSWebAppKit_HTML_Document
 		}
 		return $this;
 	}
-	public function debugDumpVariable($var, $label = '')
-	{
+	public function debugDumpVariable($var, $label = '') {
 		// create a new element to contain the variable
 		$div = $this->createElement('div');
 		if ($label != null)
@@ -721,17 +642,14 @@ class ELSWebAppKit_HTML_Document
 		$this->debugRecurseDumpVariable($var, $div);
 		return $div;
 	}
-	public function debugRecurseDumpVariable($var, DOMElement $container)
-	{
+	public function debugRecurseDumpVariable($var, DOMElement $container) {
 		// process this variable
-		if (is_array($var) || is_object($var))
-		{
+		if (is_array($var) || is_object($var)) {
 			// add a definition list for this variable
 			$dl = $container->appendChild($this->createElement('dl'));
 			
 			// process each item
-			foreach ($var as $key => $value)
-			{
+			foreach ($var as $key => $value) {
 				// add a new term for this key
 				$dl->appendChild($this->createElement('dt', $key));
 				
@@ -741,28 +659,22 @@ class ELSWebAppKit_HTML_Document
 				// add this value
 				$this->debugRecurseDumpVariable($value, $dd);
 			}
-		}
-		else
-		{
+		} else {
 			// this should be a discrete value
 			$container->appendChild($this->createTextNode($var));
 		}
 	}
-	public function removeChildren(DOMNode $node)
-	{
+	public function removeChildren(DOMNode $node) {
 		while ($node->hasChildNodes())
 			$node->removeChild($node->firstChild);
 	}
-	public function __toString()
-	{
+	public function __toString() {
 		return $this->cleanup()->save();
 	}
-	public function save()
-	{
+	public function save() {
 		return parent::saveXML();
 	}
-	public function saveHTMLFile()
-	{
+	public function saveHTMLFile() {
 		return $this->save();
 	}
 }
