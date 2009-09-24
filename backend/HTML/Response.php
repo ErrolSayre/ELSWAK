@@ -5,77 +5,63 @@
 require_once('ELSWebAppKit/HTML/Document.php');
 require_once('ELSWebAppKit/HTTP/Response.php');
 class ELSWebAppKit_HTML_Response
-	extends ELSWebAppKit_HTTP_Response
-{
+	extends ELSWebAppKit_HTTP_Response {
 	protected $sendHtml = false;
-	public function __construct(ELSWebAppKit_HTML_Document $document = null)
-	{
+	public function __construct(ELSWebAppKit_HTML_Document $document = null) {
 		parent::__construct();
 		
-		$this->setDocument
-		(
-			($document !== null)?
+		$this->setDocument(
+			$document != null?
 				$document:
 				new ELSWebAppKit_HTML_Document()
 		);
 	}
-	public function document()
-	{
+	public function document() {
 		return $this->body;
 	}
-	public function setDocument(ELSWebAppKit_HTML_Document $document)
-	{
+	public function setDocument(ELSWebAppKit_HTML_Document $document) {
 		$this->body = $document;
 		return $this;
 	}
-	public function sendHtml($value = true)
-	{
+	public function sendHtml($value = true) {
 		if ($value)
 			$this->sendHtml = true;
 		else
 			$this->sendHtml = false;
 		return $this;
 	}
-	public function messages($delimiter = null)
-	{
+	public function messages($delimiter = null) {
 		return $this->body->messages($delimiter = null);
 	}
-	public function addMessage($message)
-	{
+	public function addMessage($message) {
 		$this->body->addMessage($message);
 		return $this;
 	}
-	public function content()
-	{
+	public function content() {
 		if ($this->sendHtml)
 			return $this->body->saveHTML();
 		return (string) $this->body;
 	}
-	public function setContent($content = null, $key = null, $type = null)
-	{
+	public function setContent($content = null, $key = null, $type = null) {
 		// pass the call on to the document object
 		$this->body->setContent($content, $key, $type);
 		return $this;
 	}
-	public function addContent($content, $key = null, $type = null)
-	{
+	public function addContent($content, $key = null, $type = null) {
 		// pass the call on to the document object
 		$this->body->addContent($content, $key, $type);
 		return $this;
 	}
-	public function setContentForKey($key, $content, $type = null)
-	{
+	public function setContentForKey($key, $content, $type = null) {
 		// pass the call on to the document object
 		$this->body->setContentForKey($key, $content, $type);
 		return $this;
 	}
-	public function sendCustomHeaders()
-	{
+	public function sendCustomHeaders() {
 		// override this method since the custom headers are handled within the document
 		return $this;
 	}
-	protected function __call($method, array $arguments = null)
-	{
+	protected function __call($method, array $arguments = null) {
 /*
 	This magic method is implemented to provide a way for this object to be used as an alias for its (DOMDocument) body member.
 */
