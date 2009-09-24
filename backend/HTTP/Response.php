@@ -5,8 +5,7 @@
 	This class was derived from the Zend Controller Response Abstract in order to provide some of the low level HTTP response items (such as headers) to the HTML, XML, and JSON response objects. It also serves as a common ancestor for those classes.
 	If you need the advanced features this class is lacking, it is recommended that you use the Zend class.
 */
-class ELSWebAppKit_HTTP_Response
-{
+class ELSWebAppKit_HTTP_Response {
 	protected $serverUri;
 	protected $applicationPath;
 	protected $headers = array();
@@ -194,8 +193,9 @@ class ELSWebAppKit_HTTP_Response
 		$this->sendCustomHeaders();
 		
 		// output the content if modified from the indicators sent by the client
-		if ($this->isModified)
+		if ($this->isModified) {
 			$this->sendContent();
+		}
 		return $this;
 	}
 	protected function canSendHeaders() {
