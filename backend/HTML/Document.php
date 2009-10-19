@@ -418,8 +418,8 @@ class ELSWebAppKit_HTML_Document
 			$attributes = array();
 		if (empty($attributes['name']))
 			$attributes['name'] = $name;
-		if (empty($attributes['columns']))
-			$attributes['columns'] = 40;
+		if (empty($attributes['cols']))
+			$attributes['cols'] = 40;
 		if (empty($attributes['rows']))
 			$attributes['rows'] = 5;
 		return $this->createElement('textarea', $value, $attributes);
