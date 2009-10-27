@@ -83,6 +83,32 @@ class ELSWebAppKit_Settable {
 		}
 		return $this;
 	}
+	public function __call($method, $arguments) {
+/*
+	This method provides backwards compatibility for classes which may have removed g/setter methods due to extending this class but have external entities that expect those methods to still exist.
+	
+	This method is deprecated and will be removed in the future.
+*/
+		// search for a property that matches the method name
+		// determine if this method is a protected internal method
+		if (method_exists($this, $method)) {
+			// the method exists but is inaccessible, protect it
+			throw new Exception('Unable to call method "'.$method.'". Method is protected.');
+		}
+		// determine if the method name includes "set" or "get"
+		if ((stripos($method, 'set') === 0)) {
+			return $this->__set(strtolower(substr($method, 3, 1)).substr($method, 4), $arguments[0]);
+		}
+		if ((stripos($method, 'get') === 0)) {
+			return $this->__get(strtolower(substr($method, 3, 1)).substr($method, 4));
+		}
+		
+		// look for this method as a property
+		if (count($arguments) == 1) {
+			return $this->__set($method, $arguments[0]);
+		}
+		return $this->__get($method);
+	}
 	public function _import($import) {
 		if (is_array($import) || is_object($import)) {
 			foreach ($import as $property => $value) {
