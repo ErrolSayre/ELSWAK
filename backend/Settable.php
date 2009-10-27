@@ -6,69 +6,82 @@
 	In addition to the protection of variables, this class allows accessor methods to be accessed as though they are properties providing a seamless interface to the class for properties which require validation or other actions to be performed when being set or retrieved.
 */
 class ELSWebAppKit_Settable {
+	private static $_getters;
+	private static $_setters;
+	private static $_callers;
+	
 	public function __set($property, $value) {
-		// determine if this property can be set or not
-		$method = 'set'.$property;
-		if (ELSWebAppKit_Settable_Model_Helper::methodExistsForClass($method, $this)) {
-			// the property has a public setter method, set the value using the method
-			call_user_func(array($this, $method), $value);
-		} else if (method_exists($this, $method)) {
-			// the property has a protected setter method, protect the property
-			throw new Exception('Unable to set property "'.$property.'". Property is protected and has no publically accessible setter method.');
-		} else if (property_exists($this, $property)) {
-			// the property has no setter method, set the value directly
+		// determine if this property has been examined before
+		if (!isset(self::$_setters[$property])) {
+			// determine if this property can be set or not
+			$method = 'set'.$property;
+			if (ELSWebAppKit_Settable_Model_Helper::methodExistsForClass($method, $this)) {
+				// the property has a public setter method, set the value using the method
+				self::$_setters[$property] = 2;
+			} else if (method_exists($this, $method)) {
+				// the property has a protected setter method, protect the property
+				self::$_setters[$property] = -1;
+			} else if (property_exists($this, $property)) {
+				// the property has no setter method, set the value directly
+				self::$_setters[$property] = 1;
+			} else {
+				// the property is not defined in the class, protect the class definition
+				self::$_setters[$property] = -2;
+			}
+		}
+		
+		// perform the determined operation
+		if (self::$_setters[$property] == 1) {
 			$this->{$property} = $value;
+		} else if (self::$_setters[$property] == 2) {
+			$this->{'set'.$property}($value);
+		} else if (self::$_setters[$property] == -1) {
+			throw new Exception('Unable to set property "'.$property.'". Property is protected and has no publically accessible setter method.');
 		} else {
-			// the property is not defined in the class, protect the class definition
 			throw new Exception('Unable to set property "'.$property.'". Property is not defined within the class "'.get_class($this).'".');
 		}
 		return $this;
 	}
 	public function __get($property) {
-		// search for getter methods that include the "get" prefix or not.
-		$method = 'get'.$property;
-		// determine if this property can be accessed
-		if (ELSWebAppKit_Settable_Model_Helper::methodExistsForClass($method, $this)) {
-			// the property has a public getter method, return the value using the method
-			return call_user_func(array($this, $method));
-		} else if (method_exists($this, $method)) {
-			// the property has a protected getter method, protect the property
-			throw new Exception('Unable to get property "'.$property.'". Property is protected and has no publically accessible getter method.');
-		} else if (ELSWebAppKit_Settable_Model_Helper::methodExistsForClass($property, $this)) {
-			// the property has a public getter method, return the value using the method
-			return call_user_func(array($this, $property));
-		} else if (method_exists($this, $property)) {
-			// the property has a protected getter method, protect the property
-			throw new Exception('Unable to get property "'.$property.'". Property is protected and has no publically accessible getter method.');
-		} else if (property_exists($this, $property)) {
-			// the property is has no getter method, return the value directly
+		// determine if this property has been examined before
+		if (!isset(self::$_getters[$property])) {
+			// determine if this property can be accessed
+			// search for getter methods that include the "get" prefix or not.
+			$method = 'get'.$property;
+			if (ELSWebAppKit_Settable_Model_Helper::methodExistsForClass($method, $this)) {
+				// the property has a public getter method, return the value using the method
+				self::$_getters[$property] = 2;
+			} else if (method_exists($this, $method)) {
+				// the property has a protected getter method, protect the property
+				self::$_getters[$property] = -1;
+			} else if (ELSWebAppKit_Settable_Model_Helper::methodExistsForClass($property, $this)) {
+				// the property has a public getter method named as the property, return the value using the method
+				self::$_getters[$property] = 3;
+			} else if (method_exists($this, $property)) {
+				// the property has a protected getter method named as the property, protect the property
+				self::$_getters[$property] = -1;
+			} else if (property_exists($this, $property)) {
+				// the property is has no getter method, return the value directly
+				self::$_getters[$property] = 1;
+			} else {
+				// the property is not defined in the class, protect the class definition
+				self::$_getters[$property] = -2;
+			}
+		}
+		
+		// perform the determined operation
+		if (self::$_getters[$property] == 1) {
 			return $this->{$property};
+		} else if (self::$_getters[$property] == 2) {
+			return $this->{'get'.$property}();
+		} else if (self::$_getters[$property] == 3) {
+			return $this->{$property}();
+		} else if (self::$_getters[$property] == -1) {
+			throw new Exception('Unable to get property "'.$property.'". Property is protected and has no publically accessible getter method.');
 		} else {
-			// the property is not defined in the class, protect the class definition
 			throw new Exception('Unable to get property "'.$property.'". Property is not defined within the class "'.get_class($this).'".');
 		}
 		return $this;
-	}
-	public function __call($method, $arguments) {
-		// search for a property that matches the method name
-		// determine if this method is a protected internal method
-		if (method_exists($this, $method)) {
-			// the method exists but is inaccessible, protect it
-			throw new Exception('Unable to call method "'.$method.'". Method is protected.');
-		}
-		// determine if the method name includes "set" or "get"
-		if ((stripos($method, 'set') === 0)) {
-			return $this->__set(strtolower(substr($method, 3, 1)).substr($method, 4), $arguments[0]);
-		}
-		if ((stripos($method, 'get') === 0)) {
-			return $this->__get(strtolower(substr($method, 3, 1)).substr($method, 4));
-		}
-		
-		// look for this method as a property
-		if (count($arguments) == 1) {
-			return $this->__set($method, $arguments[0]);
-		}
-		return $this->__get($method);
 	}
 	public function _import($import) {
 		if (is_array($import) || is_object($import)) {
@@ -86,14 +99,6 @@ class ELSWebAppKit_Settable {
 		}
 		return $export;
 	}
-/*
-	public static function _factory($import) {
-		echo self::_class();
-	}
-	public static function _class() {
-		return get_called_class();
-	}
-*/
 	protected function _setArrayProperty($property, $value) {
 		$this->{$property} = array();
 		if (is_array($value)) {
@@ -117,7 +122,7 @@ class ELSWebAppKit_Settable {
 	protected function _addArrayPropertyItem($property, $value) {
 		// validate the value if applicable
 		if (method_exists($this, '_verify'.$property.'Item')) {
-			if (!call_user_func(array($this, '_verify'.$property.'Item'), $value)) {
+			if (!$this->{'_verify'.$property.'Item'}($value)) {
 				throw new Exception('Unable to add item to '.$property.'. Provided value is invalid.');
 			}
 		}
@@ -148,13 +153,13 @@ class ELSWebAppKit_Settable {
 	}
 	protected function _arrayPropertyHasItemForKey($property, $key) {
 		if (method_exists($this, '_verify'.$property.'Key')) {
-			if (!call_user_func(array($this, '_verify'.$property.'Key'), $key)) {
+			if (!$this->{'_verify'.$property.'Key'}($key)) {
 				throw new Exception('Unable to set '.$property.' for key “'.$key.'”. Supplied key does not match accepted keys list.');
 			}
 		}
 		if (isset($this->{$property}[$key])) {
 			if (method_exists($this, '_verify'.$property.'Item')) {
-				if (call_user_func(array($this, '_verify'.$property.'Item'), $this->{$property}[$key])) {
+				if ($this->{'_verify'.$property.'Item'}($this->{$property}[$key])) {
 					return true;
 				}
 			}
@@ -165,13 +170,13 @@ class ELSWebAppKit_Settable {
 	protected function _setArrayPropertyItemForKey($property, $key, $value) {
 		// validate the key if applicable
 		if (method_exists($this, '_verify'.$property.'Key')) {
-			if (!call_user_func(array($this, '_verify'.$property.'Key'), $key)) {
+			if (!$this->{'_verify'.$property.'Key'}($key)) {
 				throw new Exception('Unable to set '.$property.' for key “'.$key.'”. Supplied key does not match accepted keys list.');
 			}
 		}
 		// validate the value if applicable
 		if (method_exists($this, '_verify'.$property.'Item')) {
-			if (!call_user_func(array($this, '_verify'.$property.'Item'), $value)) {
+			if (!$this->{'_verify'.$property.'Item'}($value)) {
 				throw new Exception('Unable to set '.$property.' for key “'.$key.'”. Provided value is invalid.');
 			}
 		}
@@ -192,7 +197,7 @@ class ELSWebAppKit_Settable {
 	}
 	protected function _verifyArrayPropertyKey($property, $key) {
 		if (method_exists($this, '_list'.$property.'Keys')) {
-			$keys = call_user_func(array($this, '_list'.$property.'Keys'));
+			$keys = $this->{'_list'.$property.'Keys'}();
 			if (in_array($key, $keys)) {
 				return true;
 			}
