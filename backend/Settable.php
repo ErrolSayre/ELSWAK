@@ -97,7 +97,7 @@ class ELSWebAppKit_Settable {
 	}
 	public function __call($method, $arguments) {
 		// determine if this method has been examined before
-		if (!is_array(self::$_callers[$method])) {
+		if (!isset(self::$_callers[$method]) || !is_array(self::$_callers[$method])) {
 			// set the default
 			self::$_callers[$method] = array(
 				'type' => 0,
