@@ -1,9 +1,21 @@
 <?php
 /*
-	ELSWebAppKit Settable
+ELSWebAppKit Settable
 	
-	This class is designed to allow PHP classes to behave as more strictly defined models. It prevents properties and methods from being dynamically added to the object, allows defined protected methods to be used without explicitly writing accessor methods, and still allows protected (and private) methods by coupling a protected property with protected accessor methods.
-	In addition to the protection of variables, this class allows accessor methods to be accessed as though they are properties providing a seamless interface to the class for properties which require validation or other actions to be performed when being set or retrieved.
+The Settable base class seeks to provide two main features:
+	• allow direct access to properties which require computational action during getter/setter operations normally requiring access to these properties through accessor methods.
+	• allow consistent access to model properties without the need to excplicitly write accessors for all properties.
+Additionally this class provides:
+	• protection of the model declaration - properties can not be added/removed at run-time outside the model itself.
+	• virtual properties - methods that generate a value can be treated as a property.
+	• protected properties - if properties need to be protected members, simply write explicit protected accessor methods.
+	
+By utilizing the magic methods __get, __set, and __call, Settable allows model properties to be accessed either directly or via accessor methods without additional programming in the model. In this way, properties which require operations (e.g. validating proper input ranges in a set operation) during access can do so transparently without the client code needing to know that some properties require the use of an accessor method while others do not.
+	
+This class utilizes the following conventions:
+	• setter methods should be the name of the property with "set" appended to the beginning of the name.
+	• getter methods should be the name of the property with or without "get" appended to the beginning of the name. (Either approach is supported.)
+	• a property name can be utilized as a getter or a setter by calling the method with no arguments (or more than one) to operate as a getter or with a single argument to operate as a setter. This functionality will only be provided if no method with the matching name exists and the method call matches the case of the property name exactly or matches the get and set prefix conventions.
 */
 class ELSWebAppKit_Settable {
 	private static $_getters;
@@ -84,30 +96,43 @@ class ELSWebAppKit_Settable {
 		return $this;
 	}
 	public function __call($method, $arguments) {
-/*
-	This method provides backwards compatibility for classes which may have removed g/setter methods due to extending this class but have external entities that expect those methods to still exist.
-	
-	This method is deprecated and will be removed in the future.
-*/
-		// search for a property that matches the method name
-		// determine if this method is a protected internal method
-		if (method_exists($this, $method)) {
-			// the method exists but is inaccessible, protect it
-			throw new Exception('Unable to call method "'.$method.'". Method is protected.');
-		}
-		// determine if the method name includes "set" or "get"
-		if ((stripos($method, 'set') === 0)) {
-			return $this->__set(strtolower(substr($method, 3, 1)).substr($method, 4), $arguments[0]);
-		}
-		if ((stripos($method, 'get') === 0)) {
-			return $this->__get(strtolower(substr($method, 3, 1)).substr($method, 4));
+		// determine if this method has been examined before
+		if (!is_array(self::$_callers[$method])) {
+			// set the default
+			self::$_callers[$method] = array(
+				'type' => 0,
+				'property' => null
+			);
+			
+			// determine if this method is a protected internal method or a property
+			if (method_exists($this, $method)) {
+				// the method exists but is inaccessible (otherwise the __call method would not have been called)
+				// protect the method
+				self::$_callers[$method]['type'] = -1;
+			} else if ((stripos($method, 'set') === 0)) {
+				self::$_callers[$method]['type'] = 1;
+				self::$_callers[$method]['property'] = strtolower(substr($method, 3, 1)).substr($method, 4);
+			} else if ((stripos($method, 'get') === 0)) {
+				self::$_callers[$method]['type'] = 1;
+				self::$_callers[$method]['property'] = strtolower(substr($method, 3, 1)).substr($method, 4);
+			} else {
+				self::$_callers[$method]['type'] = 1;
+				self::$_callers[$method]['property'] = $method;
+			}
 		}
 		
-		// look for this method as a property
-		if (count($arguments) == 1) {
-			return $this->__set($method, $arguments[0]);
+		// perform the determined operation
+		if (self::$_callers[$method]['type'] == -1) {
+			throw new Exception('Unable to call method "'.$method.'". Method is protected.');
+		} else if (
+			(self::$_callers[$method]['type'] == 1) &&
+			(count($arguments) == 1)
+		) {
+			// attempt to set the property with the provided argument, allowing the __set method to throw any appropriate exceptions
+			return $this->__set(self::$_callers[$method]['property'], $arguments[0]);
 		}
-		return $this->__get($method);
+		// since no matching method exists and there is not an appropriate number of arguments for a set operation, attempt to get the property, allowing the __get method to throw any appropriate exceptions
+		return $this->__get(self::$_callers[$method]['property']);
 	}
 	public function _import($import) {
 		if (is_array($import) || is_object($import)) {
