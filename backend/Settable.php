@@ -23,83 +23,101 @@ class ELSWebAppKit_Settable {
 	private static $_callers;
 	
 	public function __set($property, $value) {
+		// determine if this class has been examined before
+		$className = get_class($this);
+		if (!isset(self::$_setters[$className])) {
+			self::$_setters[$className] = array();
+		}
+		
 		// determine if this property has been examined before
-		if (!isset(self::$_setters[$property])) {
+		if (!isset(self::$_setters[$className][$property])) {
 			// determine if this property can be set or not
 			$method = 'set'.$property;
 			if (ELSWebAppKit_Settable_Model_Helper::methodExistsForClass($method, $this)) {
 				// the property has a public setter method, set the value using the method
-				self::$_setters[$property] = 2;
+				self::$_setters[$className][$property] = 2;
 			} else if (method_exists($this, $method)) {
 				// the property has a protected setter method, protect the property
-				self::$_setters[$property] = -1;
+				self::$_setters[$className][$property] = -1;
 			} else if (property_exists($this, $property)) {
 				// the property has no setter method, set the value directly
-				self::$_setters[$property] = 1;
+				self::$_setters[$className][$property] = 1;
 			} else {
 				// the property is not defined in the class, protect the class definition
-				self::$_setters[$property] = -2;
+				self::$_setters[$className][$property] = -2;
 			}
 		}
 		
 		// perform the determined operation
-		if (self::$_setters[$property] == 1) {
+		if (self::$_setters[$className][$property] == 1) {
 			$this->{$property} = $value;
-		} else if (self::$_setters[$property] == 2) {
+		} else if (self::$_setters[$className][$property] == 2) {
 			$this->{'set'.$property}($value);
-		} else if (self::$_setters[$property] == -1) {
+		} else if (self::$_setters[$className][$property] == -1) {
 			throw new Exception('Unable to set property "'.$property.'". Property is protected and has no publically accessible setter method.');
 		} else {
-			throw new Exception('Unable to set property "'.$property.'". Property is not defined within the class "'.get_class($this).'".');
+			throw new Exception('Unable to set property "'.$property.'". Property is not defined within the class "'.$className.'".');
 		}
 		return $this;
 	}
 	public function __get($property) {
+		// determine if this class has been examined before
+		$className = get_class($this);
+		if (!isset(self::$_getters[$className])) {
+			self::$_getters[$className] = array();
+		}
+		
 		// determine if this property has been examined before
-		if (!isset(self::$_getters[$property])) {
+		if (!isset(self::$_getters[$className][$property])) {
 			// determine if this property can be accessed
 			// search for getter methods that include the "get" prefix or not.
 			$method = 'get'.$property;
 			if (ELSWebAppKit_Settable_Model_Helper::methodExistsForClass($method, $this)) {
 				// the property has a public getter method, return the value using the method
-				self::$_getters[$property] = 2;
+				self::$_getters[$className][$property] = 2;
 			} else if (method_exists($this, $method)) {
 				// the property has a protected getter method, protect the property
-				self::$_getters[$property] = -1;
+				self::$_getters[$className][$property] = -1;
 			} else if (ELSWebAppKit_Settable_Model_Helper::methodExistsForClass($property, $this)) {
 				// the property has a public getter method named as the property, return the value using the method
-				self::$_getters[$property] = 3;
+				self::$_getters[$className][$property] = 3;
 			} else if (method_exists($this, $property)) {
 				// the property has a protected getter method named as the property, protect the property
-				self::$_getters[$property] = -1;
+				self::$_getters[$className][$property] = -1;
 			} else if (property_exists($this, $property)) {
 				// the property is has no getter method, return the value directly
-				self::$_getters[$property] = 1;
+				self::$_getters[$className][$property] = 1;
 			} else {
 				// the property is not defined in the class, protect the class definition
-				self::$_getters[$property] = -2;
+				self::$_getters[$className][$property] = -2;
 			}
 		}
 		
 		// perform the determined operation
-		if (self::$_getters[$property] == 1) {
+		if (self::$_getters[$className][$property] == 1) {
 			return $this->{$property};
-		} else if (self::$_getters[$property] == 2) {
+		} else if (self::$_getters[$className][$property] == 2) {
 			return $this->{'get'.$property}();
-		} else if (self::$_getters[$property] == 3) {
+		} else if (self::$_getters[$className][$property] == 3) {
 			return $this->{$property}();
-		} else if (self::$_getters[$property] == -1) {
+		} else if (self::$_getters[$className][$property] == -1) {
 			throw new Exception('Unable to get property "'.$property.'". Property is protected and has no publically accessible getter method.');
 		} else {
-			throw new Exception('Unable to get property "'.$property.'". Property is not defined within the class "'.get_class($this).'".');
+			throw new Exception('Unable to get property "'.$property.'". Property is not defined within the class "'.$className.'".');
 		}
 		return $this;
 	}
 	public function __call($method, $arguments) {
+		// determine if this class has been examined before
+		$className = get_class($this);
+		if (!isset(self::$_callers[$className])) {
+			self::$_callers[$className] = array();
+		}
+		
 		// determine if this method has been examined before
-		if (!isset(self::$_callers[$method]) || !is_array(self::$_callers[$method])) {
+		if (!isset(self::$_callers[$className][$method]) || !is_array(self::$_callers[$className][$method])) {
 			// set the default
-			self::$_callers[$method] = array(
+			self::$_callers[$className][$method] = array(
 				'type' => 0,
 				'property' => null
 			);
@@ -108,31 +126,31 @@ class ELSWebAppKit_Settable {
 			if (method_exists($this, $method)) {
 				// the method exists but is inaccessible (otherwise the __call method would not have been called)
 				// protect the method
-				self::$_callers[$method]['type'] = -1;
+				self::$_callers[$className][$method]['type'] = -1;
 			} else if ((stripos($method, 'set') === 0)) {
-				self::$_callers[$method]['type'] = 1;
-				self::$_callers[$method]['property'] = strtolower(substr($method, 3, 1)).substr($method, 4);
+				self::$_callers[$className][$method]['type'] = 1;
+				self::$_callers[$className][$method]['property'] = strtolower(substr($method, 3, 1)).substr($method, 4);
 			} else if ((stripos($method, 'get') === 0)) {
-				self::$_callers[$method]['type'] = 1;
-				self::$_callers[$method]['property'] = strtolower(substr($method, 3, 1)).substr($method, 4);
+				self::$_callers[$className][$method]['type'] = 1;
+				self::$_callers[$className][$method]['property'] = strtolower(substr($method, 3, 1)).substr($method, 4);
 			} else {
-				self::$_callers[$method]['type'] = 1;
-				self::$_callers[$method]['property'] = $method;
+				self::$_callers[$className][$method]['type'] = 1;
+				self::$_callers[$className][$method]['property'] = $method;
 			}
 		}
 		
 		// perform the determined operation
-		if (self::$_callers[$method]['type'] == -1) {
+		if (self::$_callers[$className][$method]['type'] == -1) {
 			throw new Exception('Unable to call method "'.$method.'". Method is protected.');
 		} else if (
-			(self::$_callers[$method]['type'] == 1) &&
+			(self::$_callers[$className][$method]['type'] == 1) &&
 			(count($arguments) == 1)
 		) {
 			// attempt to set the property with the provided argument, allowing the __set method to throw any appropriate exceptions
-			return $this->__set(self::$_callers[$method]['property'], $arguments[0]);
+			return $this->__set(self::$_callers[$className][$method]['property'], $arguments[0]);
 		}
 		// since no matching method exists and there is not an appropriate number of arguments for a set operation, attempt to get the property, allowing the __get method to throw any appropriate exceptions
-		return $this->__get(self::$_callers[$method]['property']);
+		return $this->__get(self::$_callers[$className][$method]['property']);
 	}
 	public function _import($import) {
 		if (is_array($import) || is_object($import)) {
