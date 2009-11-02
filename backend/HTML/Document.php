@@ -311,6 +311,21 @@ class ELSWebAppKit_HTML_Document
 	public function createDiv($content = null, array $attributes = null) {
 		return $this->createElement('div', $content, $attributes);
 	}
+	public function createParagraph($content = null, array $attributes = null) {
+		return $this->createElement('p', $content, $attributes);
+	}
+	public function addLinesToElementAsParagraphs($lines, DOMElement $element) {
+		if (is_string($lines)) {
+			$lines = explode(LF, $lines);
+		}
+		if (is_array($lines)) {
+			foreach ($lines as $line) {
+				if ($line != null) {
+					$element->appendChild($this->createParagraph($line));
+				}
+			}
+		}
+	}
 	public function createLink($href, $content = null, array $attributes = null) {
 		if (!is_array($attributes))
 			$attributes = array();
