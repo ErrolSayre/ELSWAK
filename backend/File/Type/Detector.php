@@ -4,10 +4,8 @@
 	
 	This class examines a file name to determine its mime type based on file extension.
 */
-class ELSWebAppKit_File_Type_Detector
-{
-	protected static $fileTypes = array
-	(
+class ELSWebAppKit_File_Type_Detector {
+	protected static $fileTypes = array (
 		'3dm' => 'x-world/x-3dmf',
 		'3dmf' => 'x-world/x-3dmf',
 		'3gp' => 'video/3gpp',
@@ -744,23 +742,28 @@ class ELSWebAppKit_File_Type_Detector
 		'zsh' => 'text/x-script.zsh'
 	);
 	
-	public static function typeFromName($name)
-	{
+	public static function typeFromName($name) {
 		// determine if the filename has an extension
 		$parts = pathinfo($name);
-		if (isset($parts['extension']))
-		{
+		if (isset($parts['extension'])) {
 			$extension = strtolower($parts['extension']);
 			
 			// determine if the extension is in the list
 			if (isset(self::$fileTypes[$extension]))
 				return self::$fileTypes[$extension];
 		}
-		
 		return 'application/octet-stream';
 	}
-	public static function typeFromFile($file)
-	{
+	public static function typeFromFile($file) {
 		return self::typeFromName($file);
+	}
+	public static function fileTypeCanBeViewedInBrowser($type) {
+		if (
+			($type == 'image/jpeg') ||
+			($type == 'image/png')
+		) {
+			return true;
+		}
+		return false;
 	}
 }
