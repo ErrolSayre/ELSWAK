@@ -83,6 +83,13 @@ class ELSWebAppKit_HTML_Document
 			$this->contentNode->appendChild($this->importContent($content, $key, $type));
 		return $this;
 	}
+	public function appendContent($content, $type = null) {
+		return $this->addContent($content, null, $type);
+	}
+	public function prependContent($content, $type = null) {
+		// prepend content to the body
+		$this->contentNode->insertBefore($this->importContent($content, null, $type), $this->contentNode->firstChild);
+	}
 	public function setContentForKey($key, $content, $type = null) {
 		// overwrite content matching the given key
 		$element = $this->locateElementById($key);
