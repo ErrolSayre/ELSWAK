@@ -61,13 +61,13 @@ class ELSWebAppKit_HTML_Response
 		// override this method since the custom headers are handled within the document
 		return $this;
 	}
-	protected function __call($method, array $arguments = null) {
+	public function __call($method, array $arguments = null) {
 /*
 	This magic method is implemented to provide a way for this object to be used as an alias for its (DOMDocument) body member.
 */
 		// determine if the method is a method from the document
 		if (method_exists($this->body, $method))
 			return call_user_func_array(array($this->body, $method), $arguments);
-		throw new Exception('Unable to handle method call. Method does not exist in '.__CLASS__.' nor '.get_class($this->body));
+		throw new Exception('Unable to handle method call. “'.$method.'” does not exist in '.__CLASS__.' nor '.get_class($this->body));
 	}
 }
