@@ -503,11 +503,11 @@ class ELSWebAppKit_HTML_Document
 			$attributes['checked'] = 'yes';
 		return $this->createHiddenInput($name, $value, $attributes);
 	}
-	public function createLabeledRadioInput($name, $value, $label, $checked = false, array $attributes = null) {
+	public function createLabeledRadioInput($name, $value, $label, $checked = false, array $attributes = null, array $labelAttributes = null) {
 /*
 	Labeled check box inputs are check boxes coupled with a label so that the radio is toggled when the text of the label is clicked.
 */
-		$labelElement = $this->createElement('label');
+		$labelElement = $this->createElement('label', null, $labelAttributes);
 		$labelElement->appendChild($this->createRadioInput($name, $value, $checked, $attributes));
 		if ($label instanceof DOMElement)
 			$labelElement->appendChild($label);
@@ -524,11 +524,11 @@ class ELSWebAppKit_HTML_Document
 			$attributes['checked'] = 'yes';
 		return $this->createHiddenInput($name, $value, $attributes);
 	}
-	public function createLabeledCheckboxInput($name, $value, $label, $checked = false, array $attributes = null) {
+	public function createLabeledCheckboxInput($name, $value, $label, $checked = false, array $attributes = null, array $labelAttributes = null) {
 /*
 	Labeled check box inputs are check boxes coupled with a label so that the checkbox is toggled when the text of the label is clicked.
 */
-		$labelElement = $this->createElement('label');
+		$labelElement = $this->createElement('label', null, $labelAttributes);
 		$labelElement->appendChild($this->createCheckboxInput($name, $value, $checked, $attributes));
 		if ($label instanceof DOMElement)
 			$labelElement->appendChild($label);
@@ -597,6 +597,16 @@ class ELSWebAppKit_HTML_Document
 			$option->appendChild($this->createTextNode(strval($value)));
 
 		return $option;
+	}
+	public function createFileInput($name, $size = 2000000, array $attributes = null) {
+		if (!is_array($attributes))
+			$attributes = array();
+		$attributes['type'] = 'file';
+		if (empty($attributes['name']))
+			$attributes['name'] = $name;
+		if (empty($attributes['size']))
+			$attributes['size'] = intval($size);
+		return $this->createElement('input', null, $attributes);
 	}
 	public function addScript($source = null, $content = null, $useHeader = false, array $attributes = null) {
 		// determine if a script source was provided and prevent duplicates
