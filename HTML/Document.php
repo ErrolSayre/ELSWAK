@@ -318,6 +318,9 @@ class ELSWebAppKit_HTML_Document
 	public function createDiv($content = null, array $attributes = null) {
 		return $this->createElement('div', $content, $attributes);
 	}
+	public function createSpan($content = null, array $attributes = null) {
+		return $this->createElement('span', $content, $attributes);
+	}
 	public function createParagraph($content = null, array $attributes = null) {
 		return $this->createElement('p', $content, $attributes);
 	}
