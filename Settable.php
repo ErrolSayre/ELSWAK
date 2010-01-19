@@ -399,16 +399,25 @@ class ELSWebAppKit_Settable {
 		}
 		return date($format, strtotime($this->{$property}));
 	}
-	protected function _getPropertyAsDateOrTimestampByFormat($property, $format = 'm/d/Y', $emptyValue = '00/00/0000') {
+	protected function _getPropertyAsDateOrTimestampByFormat($property, $format = 'm/d/Y', $emptyValue = '00/00/0000', $useRelativeDates = false) {
 		if (is_int($this->{$property})) {
 			$time = $this->{$property};
 		} else {
 			$time = strtotime($this->{$property});
 		}
-		
 		if ($format != null) {
 			if ($time < 1) {
 				return $emptyValue;
+			}
+			if ($useRelativeDates) {
+				$today = strtotime(date('Y-m-d'));
+				$yesterday = $today - 86400;
+				if ($time >= $yesterday) {
+					if ($time >= $today) {
+						return 'Today';
+					}
+					return 'Yesterday';
+				}
 			}
 			return date($format, $time);
 		}
