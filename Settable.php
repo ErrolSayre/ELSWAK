@@ -410,18 +410,22 @@ class ELSWebAppKit_Settable {
 				return $emptyValue;
 			}
 			if ($useRelativeDates) {
-				$today = strtotime(date('Y-m-d'));
-				$yesterday = $today - 86400;
-				if ($time >= $yesterday) {
-					if ($time >= $today) {
-						return 'Today';
-					}
-					return 'Yesterday';
-				}
+				return $this->timeAsRelativeDateWithFormat($time, $format);
 			}
 			return date($format, $time);
 		}
 		return $time;
+	}
+	public static function timeAsRelativeDateWithFormat($time, $format = 'm/d/y') {
+		$today = strtotime(date('Y-m-d'));
+		$yesterday = $today - 86400;
+		if ($time >= $yesterday) {
+			if ($time >= $today) {
+				return 'Today';
+			}
+			return 'Yesterday';
+		}
+		return date($format, $time);
 	}
 	protected function _getPropertyAsDatetime($property, $format = 'Y-m-d H:i:s') {
 		return $this->_getPropertyAsDate($property, $format);
