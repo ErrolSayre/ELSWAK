@@ -1,0 +1,69 @@
+/* ================== */
+/* ! Listing Styles   */
+/* ================== */
+/*
+	“Thing lists” are a recurring item in web applications, generally it is beneficial to structure them as unordered lists and style them into tabular form after the fact. These styles provide a standard framework for accomplishing this using the ul element as the table with li elements acting as rows with elements within them specified as columns using the column class.
+*/
+ul.listing {
+	margin: 0 0 1em 0;
+	padding: 0;
+	list-style: none;
+}
+ul.listing li.item {
+	clear: both;
+	margin: 0;
+	padding: .5em 0;
+	overflow: hidden;
+	border-bottom: .125em #E0E0E0 dashed;
+}
+ul.listing li:last-child:not(li:first-child).item {
+	border: none;
+}
+ul.listing li.item.header {
+	font-weight: bold;
+	padding-bottom: .25em;
+}
+ul.listing li.item.even {
+	background-color: #F0F0F0;
+}
+*:target ul.listing li.item.even {
+	background-color: #eeed9a;
+}
+*:target ul.listing li.item {
+	border-bottom: .125em #bfbf68 dashed;
+}
+ul.listing li.item .column {
+	float: left;
+	width: 25%;
+	min-width: 15em;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+}
+ul.listing li.item .column.one.third {
+	width: 33%;
+}
+ul.listing li.item .column.two.third {
+	width: 66%;
+}
+ul.listing li.item .column.full {
+	float: none;
+	width: auto;
+	overflow: auto;
+}
+ul.listing li.item .column.controls {
+	float: right;
+	text-align: right;
+}
+
+
+
+/* ========================== */
+/* ! Variable Dump Specific   */
+/* ========================== */
+/*
+	This rule helps ensure that variable dumps maintain the proper indentation when definition list behavior is changed (unless specifically overridden).
+*/
+.ELSWAK-Variable-Dump dd {
+	margin-left: 2em;
+}

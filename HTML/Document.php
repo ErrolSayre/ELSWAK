@@ -670,7 +670,7 @@ class ELSWebAppKit_HTML_Document
 	}
 	public function debugDumpVariable($var, $label = '') {
 		// create a new element to contain the variable
-		$div = $this->createElement('div');
+		$div = $this->createElement('div', null, array('class' => 'ELSWAK-Variable-Dump'));
 		if ($label != null)
 			$div->appendChild($this->createElement('h1', $label));
 		// recurse through the variable contents
