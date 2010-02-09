@@ -352,9 +352,10 @@ class ELSWebAppKit_HTML_Document
 			$attributes['alt'] = $alt;
 		return $this->createElement('img', null, $attributes);
 	}
-	public function createForm($action = '', $method = 'POST', $content = null, array $attributes = null) {
-		if (strtolower($method) != 'get')
-			$method = 'POST';
+	public function createForm($action = '', $method = 'post', $content = null, array $attributes = null) {
+		$method = strtolower($method);
+		if ($method != 'get')
+			$method = 'post';
 		if (!is_array($attributes))
 			$attributes = array();
 		if (empty($attributes['action']) && !empty($action))
@@ -601,14 +602,14 @@ class ELSWebAppKit_HTML_Document
 
 		return $option;
 	}
-	public function createFileInput($name, $size = 2000000, array $attributes = null) {
+	public function createFileInput($name, array $attributes = null) {
 		if (!is_array($attributes))
 			$attributes = array();
 		$attributes['type'] = 'file';
 		if (empty($attributes['name']))
 			$attributes['name'] = $name;
 		if (empty($attributes['size']))
-			$attributes['size'] = intval($size);
+			$attributes['size'] = 40;
 		return $this->createElement('input', null, $attributes);
 	}
 	public function addScript($source = null, $content = null, $useHeader = false, array $attributes = null) {
