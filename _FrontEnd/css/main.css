@@ -55,7 +55,10 @@ ul.listing li.item .column.controls {
 	float: right;
 	text-align: right;
 }
-ul.listing li.item ul.tasks li {
+ul.tasks {
+	list-style: none;
+}
+ul.tasks li {
 	display: inline;
 	margin-left: .5em;
 	padding-left: .5em;
