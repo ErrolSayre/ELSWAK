@@ -324,6 +324,9 @@ class ELSWebAppKit_HTML_Document
 	public function createParagraph($content = null, array $attributes = null) {
 		return $this->createElement('p', $content, $attributes);
 	}
+	public function createBreak(array $attributes = null) {
+		return $this->createElement('br', null, $attributes);
+	}
 	public function addLinesToElementAsParagraphs($lines, DOMElement $element) {
 		if (is_string($lines)) {
 			$lines = explode(LF, $lines);
@@ -557,6 +560,8 @@ class ELSWebAppKit_HTML_Document
 			$optionValue = isset($selectedValue['value'])? $selectedValue['value']: '';
 			$optionContent = isset($selectedValue['content'])? $selectedValue['content']: $noValueLabel;
 			$select->appendChild($this->createSelectOption($optionValue, $optionContent));
+		} else if (is_array($options) && isset($options[$selectedValue])) {
+			$select->appendChild($this->createSelectOption($selectedValue, $options[$selectedValue]));
 		} else if (!empty($selectedValue))
 			$select->appendChild($this->createSelectOption($selectedValue, $selectedValue));
 		else if (!empty($noValueLabel))
