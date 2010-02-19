@@ -109,7 +109,6 @@ class ELSWebAppKit_HTTP_Response {
 		return $this->isRedirect;
 	}
 	public function setRedirect($url, $code = 303) {
-		// since this method will predominately be used for redirecting users to authenticate, make the default code 307
 		// set the location header using the given url
 		$this->setHeader('Location', $url, true)
 			->setResponseCode($code);
