@@ -16,9 +16,6 @@ ul.listing li.item {
 	overflow: hidden;
 	border-bottom: .125em #E0E0E0 dashed;
 }
-ul.listing li:last-child:not(li:first-child).item {
-	border: none;
-}
 ul.listing li.item.header {
 	font-weight: bold;
 	padding-bottom: .25em;
@@ -31,6 +28,9 @@ ul.listing li.item.even {
 }
 *:target ul.listing li.item {
 	border-bottom: .125em #bfbf68 dashed;
+}
+ul.listing li.item:last-child:not(li.item.header) {
+	border: none;
 }
 ul.listing li.item .column {
 	float: left;
