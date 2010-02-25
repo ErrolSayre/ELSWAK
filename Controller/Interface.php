@@ -13,4 +13,3 @@ interface ELSWebAppKit_Controller_Interface
 	public static function systemComponent();
 		// a human (and machine) readible label for the object/class/activity/component that the controller manages (e.g. the person controller manages "persons")
 }
-?>
