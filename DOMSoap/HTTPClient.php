@@ -33,6 +33,9 @@ class ELSWebAppKit_DOMSoap_HTTPClient
 		}
 		$this->useSSL = ($useSSL)?	true:	false;
 	}
+	public function uri() {
+		return ($this->useSSL? 'https': 'http').'://'.$this->host.':'.$this->port.$this->resource;
+	}
 	function makeRequest($soapXML, $rawResponse = false)
 	{
 		// set up the response
