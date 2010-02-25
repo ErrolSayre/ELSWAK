@@ -6,8 +6,7 @@
 	
 	Letters are converted to numbers according to the standard phone keypad. The parse does take into account the possibility that a 9 immediately follows the last 4 digits of the number and assumes that this is an "x" that has been converted to a 9. For this reason you should always add a delimiter if your extension begins with a 9, though most internal phone systems don't allow extensions to begin with 9 since it is commonly used as the external access prefix.
 */
-class ELSWebAppKit_Phone_Number
-{
+class ELSWebAppKit_Phone_Number {
 	const TEN_DIGIT_REGEX_BASE = '/(1?)[\s\-\.]?[\(]?([[2-9]\d{2}]?)[\)]?[\s\-\.]?([[2-9]\d{2}]?)[\s\-\.]?(\d{4})[9\s\-\.]?(\d*)/';
 	const TEN_DIGIT_REGEX = '/^(1?)[\s\-\.]?[\(]?([[2-9]\d{2}]?)[\)]?[\s\-\.]?([[2-9]\d{2}]?)[\s\-\.]?(\d{4})[9\s\-\.]?(\d*)$/';
 	const SEVEN_DIGIT_REGEX_BASE = '/([[2-9]\d{2}]?)[\s\-\.]?(\d{4})[9\s\-\.]?(\d*)/';
@@ -19,12 +18,10 @@ class ELSWebAppKit_Phone_Number
 	protected $localSuffix;
 	protected $extension;
 	
-	public function __construct($number = null)
-	{
+	public function __construct($number = null) {
 		$this->setNumber($number);
 	}
-	public function number()
-	{
+	public function number() {
 		$number = '';
 		if ($this->countryCode != '')
 			$number = $this->countryCode.' ';
@@ -39,41 +36,32 @@ class ELSWebAppKit_Phone_Number
 		
 		return $number;
 	}
-	public function setNumber($number)
-	{
-		if ($number !== null)
-		{
+	public function setNumber($number) {
+		if ($number != null) {
 			// determine if the number is made up of the valid characters
 			// first replace letters with their number counter parts
 			$number = $this->translateLettersToNumbers($number);
 			
 			// determine if the number is a 10 digit number
-			if (preg_match(self::TEN_DIGIT_REGEX, $number, $matches) == 1)
-			{
+			if (preg_match(self::TEN_DIGIT_REGEX, $number, $matches) == 1) {
 				// this is a 10+ digit number
 				$this->countryCode	= ($matches[1] != '')?	$matches[1]:	($matches[2] != '')?	1:	'';
 				$this->areaCode		= ($matches[2] != '')?	$matches[2]:	'';
 				$this->localPrefix	= ($matches[3] != '')?	$matches[3]:	'';
 				$this->localSuffix	= ($matches[4] != '')?	$matches[4]:	'';
 				$this->extension	= ($matches[5] != '')?	$matches[5]:	'';
-			}
-			else if (preg_match(self::SEVEN_DIGIT_REGEX, $number, $matches) == 1)
-			{
+			} else if (preg_match(self::SEVEN_DIGIT_REGEX, $number, $matches) == 1) {
 				// this is a 7 digit number
 				$this->countryCode	= '';
 				$this->areaCode		= '';
 				$this->localPrefix	= ($matches[1] != '')?	$matches[1]:	'';
 				$this->localSuffix	= ($matches[2] != '')?	$matches[2]:	'';
 				$this->extension	= ($matches[3] != '')?	$matches[3]:	'';
-			}
-			else
-			{
+			} else {
 				// the number has illegal characters
 				throw new Exception('Invalid Phone Number: Number should only contain numbers, letters, spaces, or the following characters: -, (, ).');
 			}
-		}
-		else
-		{
+		} else {
 			// set the number blank
 			$this->countryCode	= '';
 			$this->areaCode		= '';
@@ -83,31 +71,25 @@ class ELSWebAppKit_Phone_Number
 		}
 		return $this;
 	}
-	public static function translateLettersToNumbers($phoneNumber)
-	{
-		return preg_replace('/[AaBbCc]/', 2, preg_replace('/[DdEeFf]/', 3, preg_replace('/[GgHhIi]/', 4, preg_replace('/[JjKkLl]/', 5, preg_replace('/[MmNnOo]/', 6, preg_replace('/[PpRrSs]/', 7, preg_replace('/[TtUuVv]/', 8, preg_replace('/[WwXxYyZz]/', 9, preg_replace('/\s/', '', $phoneNumber)))))))));
+	public static function translateLettersToNumbers($phoneNumber) {
+		return preg_replace('/[AaBbCc]/', 2, preg_replace('/[DdEeFf]/', 3, preg_replace('/[GgHhIi]/', 4, preg_replace('/[JjKkLl]/', 5, preg_replace('/[MmNnOo]/', 6, preg_replace('/[PpQqRrSs]/', 7, preg_replace('/[TtUuVv]/', 8, preg_replace('/[WwXxYyZz]/', 9, preg_replace('/\s/', '', $phoneNumber)))))))));
 	}
-	public static function verify($phoneNumber)
-	{
+	public static function verify($phoneNumber) {
 		if (self::verifyTenDigit($phoneNumber) || self::verifySevenDigit($phoneNumber))
 			return true;
 		return false;
 	}
-	public static function verifyTenDigit($phoneNumber)
-	{
+	public static function verifyTenDigit($phoneNumber) {
 		if (preg_match(self::TEN_DIGIT_REGEX, $phoneNumber) == 1)
 			return true;
 		return false;
 	}
-	public static function verifySevenDigit($phoneNumber)
-	{
+	public static function verifySevenDigit($phoneNumber) {
 		if (preg_match(self::SEVEN_DIGIT_REGEX, $phoneNumber) == 1)
 			return true;
 		return false;
 	}
-	public function __toString()
-	{
+	public function __toString() {
 		return $this->number();
 	}
 }
-?>
