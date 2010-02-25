@@ -315,11 +315,13 @@ class ELSWebAppKit_Settable {
 		return $this;
 	}
 	protected function _setPropertyAsNullBoolean($property, $value) {
+		// if a value is a null string, set it to a null value, otherwise forward it to the boolean checks to make it false
 		if (is_string($value)) {
 			$value = strtolower($value);
 			if (($value == 'pending') ||
 				($value == 'null') ||
-				($value == 'p')
+				($value == 'p' ||
+				($value == null))
 			) {
 				$value = null;
 			}
