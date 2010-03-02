@@ -17,14 +17,14 @@ class ELSWebAppKit_DOMSoap_HTTPClient
 	protected $authentication;
 	protected $username;
 	protected $password;
-	protected $nameSpaceUri;
+	protected $namespaceUri;
 	
-	function __construct($host, $port, $resource, $nameSpaceUri = 'http://localhost.localdomain/', $useSSL = false, $authentication = 'none', $username = null, $password = null)
+	function __construct($host, $port, $resource, $namespaceUri = 'http://localhost.localdomain/', $useSSL = false, $authentication = 'none', $username = null, $password = null)
 	{
 		$this->host = $host;
 		$this->port = intval($port);
 		$this->resource = $resource;
-		$this->nameSpaceUri = $nameSpaceUri;
+		$this->namespaceUri = $namespaceUri;
 		if (strtolower($authentication) == 'basic')
 		{
 			$this->authentication = 'Basic';
@@ -35,6 +35,9 @@ class ELSWebAppKit_DOMSoap_HTTPClient
 	}
 	public function uri() {
 		return ($this->useSSL? 'https': 'http').'://'.$this->host.':'.$this->port.$this->resource;
+	}
+	public function namespaceUri() {
+		return $this->namespaceUri;
 	}
 	function makeRequest($soapXML, $rawResponse = false)
 	{
@@ -67,7 +70,7 @@ class ELSWebAppKit_DOMSoap_HTTPClient
 			$requestContent .= 'Content-Length: '.strlen($soapXML).CRLF;
 			
 			// add the soap headers
-			$requestContent .= 'SOAPAction: '.$this->nameSpaceUri.CRLF;
+			$requestContent .= 'SOAPAction: '.$this->namespaceUri.CRLF;
 			
 			// add the soap content
 			$requestContent .= CRLF.$soapXML;
