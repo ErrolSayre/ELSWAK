@@ -8,19 +8,13 @@ class ELSWebAppKit_JSON_Response
 	}
 	protected function filterContentByType($content, $type) {
 		// determine if the content is a string
-		if (is_string($content)) {
-			// determine the supplied type
-			$type = strtolower($type);
-			if ($type == 'json+functions') {
+		if (is_string($content) && strtolower($type) == 'json') {
+			// determine if the content is valid JSON
+			if (json_decode($content, true) !== null) {
 				return $content;
-			} else if ($type == 'json') {
-				// determine if the content is valid JSON
-				if (json_decode($content, true) !== null) {
-					return $content;
-				}
 			}
 		}
-		// since the content is not a string or is not an acceptable JSON string, encode it
+		// since the content is not an acceptable JSON string, encode it
 		return json_encode($content);
 	}
 	public function content() {
