@@ -1,4 +1,60 @@
 /* ================== */
+/* ! Generic Styles   */
+/* ================== */
+.help {
+	color: #606060;
+}
+.error {
+	color: #c90028;
+}
+.warning {
+	color: #ed972e;
+}
+.loud {
+	font-weight: bold;
+}
+.loud.error {
+	padding: 2em;
+	background-color: #eed2dc;
+}
+.loud.warning {
+	padding: 2em;
+	background-color: #efe09b;
+}
+.left {
+	text-align: left !important;
+}
+.right {
+	text-align: right !important;
+}
+.center {
+	text-align: center !important;
+}
+.top {
+	vertical-align: top !important;
+}
+.bottom {
+	vertical-align: bottom !important;
+}
+*:target {
+	background-color: #fffec2;
+}
+.clear {
+	clear: both;
+}
+.floatLeft {
+	float: left;
+}
+.floatRight {
+	float: right;
+}
+.hash {
+	text-transform: uppercase;
+}
+
+
+
+/* ================== */
 /* ! Listing Styles   */
 /* ================== */
 /*
