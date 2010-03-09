@@ -5,8 +5,7 @@
 */
 
 // logging function
-document.log = function(sMessage, bReverse)
-{
+document.log = function(sMessage, bReverse) {
 	var reverse = true;
 	if (bReverse && bReverse != true)
 		reverse = false;
