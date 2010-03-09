@@ -9,8 +9,7 @@
 if (!defined('LF')) define('LF', "\n");
 if (!defined('CRLF')) define('CRLF', "\r\n");
 
-class ELSWebAppKit_DOMSoap_HTTPClient
-{
+class ELSWebAppKit_DOMSoap_HTTPClient {
 	protected $host;
 	protected $port;
 	protected $resource;
@@ -19,14 +18,12 @@ class ELSWebAppKit_DOMSoap_HTTPClient
 	protected $password;
 	protected $namespaceUri;
 	
-	function __construct($host, $port, $resource, $namespaceUri = 'http://localhost.localdomain/', $useSSL = false, $authentication = 'none', $username = null, $password = null)
-	{
+	function __construct($host, $port, $resource, $namespaceUri = 'http://localhost.localdomain/', $useSSL = false, $authentication = 'none', $username = null, $password = null) {
 		$this->host = $host;
 		$this->port = intval($port);
 		$this->resource = $resource;
 		$this->namespaceUri = $namespaceUri;
-		if (strtolower($authentication) == 'basic')
-		{
+		if (strtolower($authentication) == 'basic') {
 			$this->authentication = 'Basic';
 			$this->username = $username;
 			$this->password = $password;
@@ -39,29 +36,25 @@ class ELSWebAppKit_DOMSoap_HTTPClient
 	public function namespaceUri() {
 		return $this->namespaceUri;
 	}
-	function makeRequest($soapXML, $rawResponse = false)
-	{
+	function makeRequest($soapXML, $rawResponse = false) {
 		// set up the response
 		$responseContent = '';
 		$responseXML = '';
 		
 		// determine if we should use ssl
 		$connectHost = $this->host;
-		if ($this->useSSL)
-		{
+		if ($this->useSSL) {
 			$connectHost = 'ssl://'.$this->host;
 		}
 		
 		// open a connection to the remote location and send the data
-		if (($httpConnection = fsockopen($connectHost, $this->port, $errorNumber, $errorString, 30)) !== false)
-		{
+		if (($httpConnection = fsockopen($connectHost, $this->port, $errorNumber, $errorString, 30)) !== false) {
 			// set up the request content
 			$requestContent = 'POST '.$this->resource.' HTTP/1.1'.CRLF;
 			$requestContent .= 'Host: '.$this->host.CRLF;
 			
 			// add authentication if needed
-			if ($this->authentication == 'Basic')
-			{
+			if ($this->authentication == 'Basic') {
 				$requestContent .= 'Authorization: Basic '.base64_encode($this->username.':'.$this->password).CRLF;
 			}
 			
@@ -79,8 +72,7 @@ class ELSWebAppKit_DOMSoap_HTTPClient
 			// read the response content
 			// suppress php warnings using an output buffer
 			ob_start();
-			while (!feof($httpConnection))
-			{
+			while (!feof($httpConnection)) {
 				$responseContent .= fgets($httpConnection, 100);
 			}
 			// turn off the output buffer
@@ -91,9 +83,7 @@ class ELSWebAppKit_DOMSoap_HTTPClient
 			
 			// extract the XML from the response
 			$responseXML = substr($responseContent, strpos($responseContent, CRLF.CRLF) + strlen(CRLF.CRLF));
-		}
-		else
-		{
+		} else {
 			throw new Exception('Request Failed: '.$errorNumber.': '.$errorString);
 		}
 		
@@ -103,4 +93,3 @@ class ELSWebAppKit_DOMSoap_HTTPClient
 		return $responseXML;
 	}
 }
-?>
