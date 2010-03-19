@@ -358,6 +358,9 @@ class ELSWebAppKit_Settable {
 		$this->{$property} = round(floatval(str_replace(array(',', '$'), '', $value)), 2);
 		return $this;
 	}
+	protected function _getPropertyAsDollarAmount($property) {
+		return sprintf('%.2f', floatval(str_replace(array(',', '$'), '', $this->{$property})));
+	}
 	protected function _setPropertyAsEnumeratedValue($property, $value, $values, $ignoreCase = true) {
 		if ($ignoreCase)
 			$value = strtolower($value);
@@ -395,11 +398,16 @@ class ELSWebAppKit_Settable {
 		}
 		return false;
 	}
-	protected function _getPropertyAsDate($property, $format = 'm/d/Y') {
+	protected function _getPropertyAsDate($property, $format = 'm/d/Y', $emptyValue = '00/00/0000') {
 		if (is_int($this->{$property})) {
-			return date($format, $this->{$property});
+			$time = $this->{$property};
+		} else {
+			$time = strtotime($this->{$property});
 		}
-		return date($format, strtotime($this->{$property}));
+		if ($time == null) {
+			return $emptyValue;
+		}
+		return date($format, $time);
 	}
 	protected function _getPropertyAsDateOrTimestampByFormat($property, $format = 'm/d/Y', $emptyValue = '00/00/0000', $useRelativeDates = false) {
 		if (is_int($this->{$property})) {
@@ -408,7 +416,7 @@ class ELSWebAppKit_Settable {
 			$time = strtotime($this->{$property});
 		}
 		if ($format != null) {
-			if ($time < 1) {
+			if ($time == null) {
 				return $emptyValue;
 			}
 			if ($useRelativeDates) {
