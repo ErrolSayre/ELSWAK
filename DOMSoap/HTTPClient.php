@@ -37,8 +37,6 @@ class ELSWebAppKit_DOMSoap_HTTPClient {
 		return $this->namespaceUri;
 	}
 	function makeRequest($soapXML, $rawResponse = false) {
-$transcript = 'Making request to '.$this->uri().LF.LF;
-$sStart = microtime(true);
 		// set up the response
 		$responseContent = '';
 		$responseXML = '';
@@ -78,10 +76,7 @@ $sStart = microtime(true);
 			// suppress php warnings using an output buffer
 			ob_start();
 			while (!feof($httpConnection)) {
-$start = microtime(true);
 				$line = fgets($httpConnection);
-$end = microtime(true);
-$transcript .= formatSeconds($end - $start).formatLine($line);
 				$responseContent .= $line;
 			}
 			// turn off the output buffer
@@ -89,10 +84,6 @@ $transcript .= formatSeconds($end - $start).formatLine($line);
 			
 			// close the connection
 			fclose($httpConnection);
-$sEnd = microtime(true);
-$transcript .= LF.LF.'Completed transaction in '.($sEnd - $sStart).'s';
-$transcript .= LF.LF.'Request:'.LF.$requestContent.LF;
-error_log($transcript, 1, 'database@research.olemiss.edu');
 			
 			// extract the XML from the response
 			$responseXML = substr($responseContent, strpos($responseContent, CRLF.CRLF) + strlen(CRLF.CRLF));
@@ -105,16 +96,4 @@ error_log($transcript, 1, 'database@research.olemiss.edu');
 			return $responseContent;
 		return $responseXML;
 	}
-}
-function formatSeconds($time) {
-	if ($time < .001) {
-		$time = sprintf('%.5f', $time * 1000).'ms: ';
-	} else {
-		$time = sprintf('%.5f', $time).'s : ';
-	}
-	return str_pad($time, 14, ' ', STR_PAD_LEFT);
-}
-function formatLine($line) {
-	$line = str_replace(array(LF, CR, CRLF), '', $line);
-	return $line.LF;
 }
