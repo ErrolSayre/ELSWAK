@@ -37,6 +37,8 @@ class ELSWebAppKit_DOMSoap_HTTPClient {
 		return $this->namespaceUri;
 	}
 	function makeRequest($soapXML, $rawResponse = false) {
+$transcript = 'Making request to '.$this->uri().LF.LF;
+$sStart = microtime(true);
 		// set up the response
 		$responseContent = '';
 		$responseXML = '';
@@ -58,6 +60,9 @@ class ELSWebAppKit_DOMSoap_HTTPClient {
 				$requestContent .= 'Authorization: Basic '.base64_encode($this->username.':'.$this->password).CRLF;
 			}
 			
+			// add the connection close instruction
+			$requestContent .= 'Connection: close'.CRLF;
+			
 			// add the metadata
 			$requestContent .= 'Content-Type: text/xml; charset="UTF-8"'.CRLF;
 			$requestContent .= 'Content-Length: '.strlen($soapXML).CRLF;
@@ -73,13 +78,21 @@ class ELSWebAppKit_DOMSoap_HTTPClient {
 			// suppress php warnings using an output buffer
 			ob_start();
 			while (!feof($httpConnection)) {
-				$responseContent .= fgets($httpConnection, 100);
+$start = microtime(true);
+				$line = fgets($httpConnection);
+$end = microtime(true);
+$transcript .= formatSeconds($end - $start).formatLine($line);
+				$responseContent .= $line;
 			}
 			// turn off the output buffer
 			ob_end_clean();
 			
 			// close the connection
 			fclose($httpConnection);
+$sEnd = microtime(true);
+$transcript .= LF.LF.'Completed transaction in '.($sEnd - $sStart).'s';
+$transcript .= LF.LF.'Request:'.LF.$requestContent.LF;
+error_log($transcript, 1, 'database@research.olemiss.edu');
 			
 			// extract the XML from the response
 			$responseXML = substr($responseContent, strpos($responseContent, CRLF.CRLF) + strlen(CRLF.CRLF));
@@ -92,4 +105,16 @@ class ELSWebAppKit_DOMSoap_HTTPClient {
 			return $responseContent;
 		return $responseXML;
 	}
+}
+function formatSeconds($time) {
+	if ($time < .001) {
+		$time = sprintf('%.5f', $time * 1000).'ms: ';
+	} else {
+		$time = sprintf('%.5f', $time).'s : ';
+	}
+	return str_pad($time, 14, ' ', STR_PAD_LEFT);
+}
+function formatLine($line) {
+	$line = str_replace(array(LF, CR, CRLF), '', $line);
+	return $line.LF;
 }
