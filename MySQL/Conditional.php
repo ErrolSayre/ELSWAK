@@ -1,26 +1,26 @@
 <?php
 /*
-	ELSWebAppKit MySQL Conditional
+	ELSWAK MySQL Conditional
 	
 	This class contains the data necessary to make a MySQL conditional statement
 	such as TRUE, FALSE, table.field = table.file, table.field < value, value !=
 	table.field, etc.
 */
-require_once('ELSWebAppKit/MySQL/Field.php');
-require_once('ELSWebAppKit/MySQL/Boolean.php');
-require_once('ELSWebAppKit/MySQL/Field.php');
-require_once('ELSWebAppKit/MySQL/Literal.php');
-require_once('ELSWebAppKit/MySQL/Operator.php');
-require_once('ELSWebAppKit/MySQL/String.php');
+require_once('ELSWAK/MySQL/Field.php');
+require_once('ELSWAK/MySQL/Boolean.php');
+require_once('ELSWAK/MySQL/Field.php');
+require_once('ELSWAK/MySQL/Literal.php');
+require_once('ELSWAK/MySQL/Operator.php');
+require_once('ELSWAK/MySQL/String.php');
 
-class ELSWebAppKit_MySQL_Conditional
-	implements ELSWebAppKit_MySQL_Expression
+class ELSWAK_MySQL_Conditional
+	implements ELSWAK_MySQL_Expression
 {
 	protected $leftSide;
 	protected $operator;
 	protected $rightSide;
 	
-	public function __construct(ELSWebAppKit_MySQL_Expression $leftSide, ELSWebAppKit_MySQL_Operator $operator = null, ELSWebAppKit_MySQL_Expression $rightSide = null)
+	public function __construct(ELSWAK_MySQL_Expression $leftSide, ELSWAK_MySQL_Operator $operator = null, ELSWAK_MySQL_Expression $rightSide = null)
 	{
 		// setup default values
 		$this->leftSide = null;
@@ -35,7 +35,7 @@ class ELSWebAppKit_MySQL_Conditional
 	{
 		return $this->leftSide;
 	}
-	public function setLeftSide(ELSWebAppKit_MySQL_Expression $leftSide)
+	public function setLeftSide(ELSWAK_MySQL_Expression $leftSide)
 	{
 		$this->leftSide = $leftSide;
 		return $this;
@@ -44,7 +44,7 @@ class ELSWebAppKit_MySQL_Conditional
 	{
 		return $this->operator;
 	}
-	public function setOperator(ELSWebAppKit_MySQL_Operator $operator)
+	public function setOperator(ELSWAK_MySQL_Operator $operator)
 	{
 		$this->operator = $operator;
 		return $this;
@@ -53,7 +53,7 @@ class ELSWebAppKit_MySQL_Conditional
 	{
 		return $this->rightSide;
 	}
-	public function setRightSide(ELSWebAppKit_MySQL_Expression $rightSide)
+	public function setRightSide(ELSWAK_MySQL_Expression $rightSide)
 	{
 		$this->rightSide = $rightSide;
 		return $this;

@@ -1,16 +1,16 @@
 <?php
 /*
-	ELSWebAppKit Postal Address HTML Display Writer
+	ELSWAK Postal Address HTML Display Writer
 */
-require_once('ELSWebAppKit/HTML/Document.php');
-require_once('ELSWebAppKit/Postal/Address.php');
-class ELSWebAppKit_Postal_Address_HTML_DisplayWriter
+require_once('ELSWAK/HTML/Document.php');
+require_once('ELSWAK/Postal/Address.php');
+class ELSWAK_Postal_Address_HTML_DisplayWriter
 {
-	public static function standardView(ELSWebAppKit_HTML_Response $response, ELSWebAppKit_Postal_Address $address)
+	public static function standardView(ELSWAK_HTML_Response $response, ELSWAK_Postal_Address $address)
 	{
 		return self::multipleLineView($response, $address);
 	}
-	public static function inlineView(ELSWebAppKit_HTML_Response $response, ELSWebAppKit_Postal_Address $address)
+	public static function inlineView(ELSWAK_HTML_Response $response, ELSWAK_Postal_Address $address)
 	{
 		// grab the normal view
 		$view = self::multipleLineView($response, $address);
@@ -21,7 +21,7 @@ class ELSWebAppKit_Postal_Address_HTML_DisplayWriter
 		// return the finished view
 		return $view;
 	}
-	public static function multipleLineView(ELSWebAppKit_HTML_Response $response, ELSWebAppKit_Postal_Address $address)
+	public static function multipleLineView(ELSWAK_HTML_Response $response, ELSWAK_Postal_Address $address)
 	{
 		// create a new address element to contain the view
 		$viewContainer = $response->document()->createElement('address');

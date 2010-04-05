@@ -1,8 +1,8 @@
 <?php
 /*
-	ELSWebAppKit Postal Address
+	ELSWAK Postal Address
 */
-class ELSWebAppKit_Postal_Address
+class ELSWAK_Postal_Address
 {
 	protected $lines;
 	protected $city;

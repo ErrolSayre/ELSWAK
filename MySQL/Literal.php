@@ -1,13 +1,13 @@
 <?php
 /*
-	ELSWebAppKit MySQL Literal
+	ELSWAK MySQL Literal
 	
 	A MySQL literal is an expression made up of a specific value. It also allows
 	an hard coded string to be appended to a dynamic query.
 */
-require_once('ELSWebAppKit/MySQL/Expression.php');
-class ELSWebAppKit_MySQL_Literal
-	implements ELSWebAppKit_MySQL_Expression
+require_once('ELSWAK/MySQL/Expression.php');
+class ELSWAK_MySQL_Literal
+	implements ELSWAK_MySQL_Expression
 {
 	protected $literal;
 	

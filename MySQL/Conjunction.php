@@ -1,8 +1,8 @@
 <?php
 /*
-	ELSWebAppKit MySQL Conjunction
+	ELSWAK MySQL Conjunction
 */
-class ELSWebAppKit_MySQL_Conjunction
+class ELSWAK_MySQL_Conjunction
 {
 	protected $conjunction;
 	

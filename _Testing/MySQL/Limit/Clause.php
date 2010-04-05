@@ -1,6 +1,6 @@
 <?php
-require_once('ELSWebAppKit/MySQL/Limit/Clause.php');
-$className = 'ELSWebAppKit_MySQL_LimitClause';
+require_once('ELSWAK/MySQL/Limit/Clause.php');
+$className = 'ELSWAK_MySQL_LimitClause';
 $classData = array
 (
 	array
@@ -55,5 +55,5 @@ $classMethods = array
 (
 	'sql' => null
 );
-require_once('ELSWebAppKit/Utilities/ClassTester.php');
+require_once('ELSWAK/Utilities/ClassTester.php');
 ?>

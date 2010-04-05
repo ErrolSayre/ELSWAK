@@ -1,13 +1,13 @@
 <?php
 /*
-	ELSWebAppKit File Download Response
+	ELSWAK File Download Response
 	
 	This class handles responses which collect data and send it to the user as a download.
 */
-require_once('ELSWebAppKit/HTTP/Response.php');
-require_once('ELSWebAppKit/File/Type/Detector.php');
-class ELSWebAppKit_File_Download_Response
-	extends ELSWebAppKit_HTTP_Response
+require_once('ELSWAK/HTTP/Response.php');
+require_once('ELSWAK/File/Type/Detector.php');
+class ELSWAK_File_Download_Response
+	extends ELSWAK_HTTP_Response
 {
 	protected $fileName;
 	
@@ -37,7 +37,7 @@ class ELSWebAppKit_File_Download_Response
 		else
 			throw new Exception('Unable to set file name. Please provide a valid string.');
 		
-		$this->setHeader('Content-Type', ELSWebAppKit_File_Type_Detector::typeFromName($this->fileName), true);
+		$this->setHeader('Content-Type', ELSWAK_File_Type_Detector::typeFromName($this->fileName), true);
 		
 		return $this->setDownload();
 	}

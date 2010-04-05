@@ -1,7 +1,7 @@
 <?php
 // test the Database Model
-$className = 'ELSWebAppKit_MySQL_Database';
-$classPath = 'ELSWebAppKit/MySQL/Database.php';
+$className = 'ELSWAK_MySQL_Database';
+$classPath = 'ELSWAK/MySQL/Database.php';
 
 // set test data
 $classData = array

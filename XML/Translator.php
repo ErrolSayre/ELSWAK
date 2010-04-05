@@ -1,10 +1,10 @@
 <?php
 /*
-	ELSWebAppKit XML Translator
+	ELSWAK XML Translator
 	
 	This class translates iterable objects into XML representations.
 */
-class ELSWebAppKit_XML_Translator
+class ELSWAK_XML_Translator
 {
 	public static function encode(DOMDocument $document, $item, $tagName = null)
 	{

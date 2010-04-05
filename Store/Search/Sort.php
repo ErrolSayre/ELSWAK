@@ -1,10 +1,10 @@
 <?php
 /*
-	ELSWebAppKit Store Search Sort
+	ELSWAK Store Search Sort
 	
 	Sorts are made up of an object property name and a sort order.
 */
-class ELSWebAppKit_Store_Search_Sort
+class ELSWAK_Store_Search_Sort
 {
 	protected $property;
 	protected $order;

@@ -1,12 +1,12 @@
 <?php
 /*
-	ELSWebAppKit Validator
+	ELSWAK Validator
 	
 	This class provides validating methods for various datatypes, among those collected from disparate classes.
 */
-require_once 'ELSWebAppKit/Email/Address.php';
-require_once 'ELSWebAppKit/Phone/Number.php';
-class ELSWebAppKit_Validator
+require_once 'ELSWAK/Email/Address.php';
+require_once 'ELSWAK/Phone/Number.php';
+class ELSWAK_Validator
 {
 	public static function integer($value)
 	{
@@ -31,10 +31,10 @@ class ELSWebAppKit_Validator
 	}
 	public static function emailAddress($value)
 	{
-		return ELSWebAppKit_Email_Address::verify($value);
+		return ELSWAK_Email_Address::verify($value);
 	}
 	public static function phoneNumber($value)
 	{
-		return ELSWebAppKit_Phone_Number::verify($value);
+		return ELSWAK_Phone_Number::verify($value);
 	}
 }

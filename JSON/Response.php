@@ -1,7 +1,7 @@
 <?php
-require_once 'ELSWebAppKit/HTTP/Response.php';
-class ELSWebAppKit_JSON_Response
-	extends ELSWebAppKit_HTTP_Response {
+require_once 'ELSWAK/HTTP/Response.php';
+class ELSWAK_JSON_Response
+	extends ELSWAK_HTTP_Response {
 	public function __construct() {
 		$this->setContentType('text/javascript');
 		$this->setStatus('OK');

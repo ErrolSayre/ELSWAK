@@ -1,11 +1,11 @@
 <?php
 /*
-	ELSWebAppKit HTTP Response
+	ELSWAK HTTP Response
 	
 	This class was derived from the Zend Controller Response Abstract in order to provide some of the low level HTTP response items (such as headers) to the HTML, XML, and JSON response objects. It also serves as a common ancestor for those classes.
 	If you need the advanced features this class is lacking, it is recommended that you use the Zend class.
 */
-class ELSWebAppKit_HTTP_Response {
+class ELSWAK_HTTP_Response {
 	protected $serverUri;
 	protected $applicationPath;
 	protected $headers = array();
@@ -225,9 +225,9 @@ class ELSWebAppKit_HTTP_Response {
 	protected function sendCustomHeaders() {
 		// send custom headers created by this content type
 		if (!empty($this->status))
-			header('ELSWebAppKit-Status: '.$this->status, true);
+			header('ELSWAK-Status: '.$this->status, true);
 		if (count($this->messages) > 0)
-			header('ELSWebAppKit-Messages: '.$this->messages('|'), true);
+			header('ELSWAK-Messages: '.$this->messages('|'), true);
 		return $this;
 	}
 	public function sendContent() {

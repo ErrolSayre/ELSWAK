@@ -1,13 +1,13 @@
 <?php
 /*
-	ELSWebAppKit File Response
+	ELSWAK File Response
 	
 	This class handles responses which read files on the local filesystem to the response.
 */
-require_once 'ELSWebAppKit/HTTP/Response.php';
-require_once 'ELSWebAppKit/File/Type/Detector.php';
-class ELSWebAppKit_File_Response
-	extends ELSWebAppKit_HTTP_Response {
+require_once 'ELSWAK/HTTP/Response.php';
+require_once 'ELSWAK/File/Type/Detector.php';
+class ELSWAK_File_Response
+	extends ELSWAK_HTTP_Response {
 	protected $fileName;
 	protected $filePath;
 	
@@ -41,7 +41,7 @@ class ELSWebAppKit_File_Response
 	public function setFile($filePath) {
 		if (is_readable($filePath)) {
 			$this->filePath = $filePath;
-			$this->setHeader('Content-Type', ELSWebAppKit_File_Type_Detector::typeFromName($this->filePath), true);
+			$this->setHeader('Content-Type', ELSWAK_File_Type_Detector::typeFromName($this->filePath), true);
 			$this->setHeader('Content-Length', filesize($this->filePath), true);
 		} else
 			throw new Exception('Unable to set file path. Please specify a valid file on the local file system.');

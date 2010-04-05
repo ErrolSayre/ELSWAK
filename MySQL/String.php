@@ -1,12 +1,12 @@
 <?php
 /*
-	ELSWebAppKit MySQL String
+	ELSWAK MySQL String
 	
 	Since MySQL Strings should be encoded, this class requires a mysqli database connection object
 */
-require_once('ELSWebAppKit/MySQL/Expression.php');
-class ELSWebAppKit_MySQL_String
-	implements ELSWebAppKit_MySQL_Expression
+require_once('ELSWAK/MySQL/Expression.php');
+class ELSWAK_MySQL_String
+	implements ELSWAK_MySQL_Expression
 {
 	protected $string;
 	protected $db;

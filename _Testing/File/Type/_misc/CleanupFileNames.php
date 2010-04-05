@@ -1,6 +1,6 @@
 <?php
 // include the data type detector
-require_once('ELSWebAppKit/File/Type/Detector.php');
+require_once('ELSWAK/File/Type/Detector.php');
 
 // read the file name from the post data
 $dirtyName = '';
@@ -20,6 +20,6 @@ echo '<input type="submit" value="Go">'.LF;
 echo '</form>'.LF;
 
 // output the previous name and results
-echo '<p><b>Submitted Name:</b> '.$dirtyName.' ('.ELSWebAppKit_File_Type_Detector::typeFromName($dirtyName).')</p>'.LF;
-echo '<p><b>Cleaned Name:</b> '.$cleanName.' ('.ELSWebAppKit_File_Type_Detector::typeFromName($cleanName).')</p>'.LF;
+echo '<p><b>Submitted Name:</b> '.$dirtyName.' ('.ELSWAK_File_Type_Detector::typeFromName($dirtyName).')</p>'.LF;
+echo '<p><b>Cleaned Name:</b> '.$cleanName.' ('.ELSWAK_File_Type_Detector::typeFromName($cleanName).')</p>'.LF;
 ?>

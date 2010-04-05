@@ -1,31 +1,31 @@
 <?php
 require_once('DummyConnection.php');
-require_once('ELSWebAppKit/MySQL/Field.php');
-require_once('ELSWebAppKit/MySQL/Conditional.php');
-require_once('ELSWebAppKit/MySQL/Operator.php');
-require_once('ELSWebAppKit/MySQL/String.php');
-$className = 'ELSWebAppKit_MySQL_Conditional';
+require_once('ELSWAK/MySQL/Field.php');
+require_once('ELSWAK/MySQL/Conditional.php');
+require_once('ELSWAK/MySQL/Operator.php');
+require_once('ELSWAK/MySQL/String.php');
+$className = 'ELSWAK_MySQL_Conditional';
 $classData = array
 (
 	array
 	(
 		'constructor parameters' => array
 		(
-			new ELSWebAppKit_MySQL_Field
+			new ELSWAK_MySQL_Field
 			(
 				'field',
-				new ELSWebAppKit_MySQL_Table
+				new ELSWAK_MySQL_Table
 				(
 					'table',
-					new ELSWebAppKit_MySQL_Database
+					new ELSWAK_MySQL_Database
 					(
 						'database'
 					)
 				),
 				'int'
 			),
-			new ELSWebAppKit_MySQL_Operator('IS NOT'),
-			new ELSWebAppKit_MySQL_Literal('NULL')
+			new ELSWAK_MySQL_Operator('IS NOT'),
+			new ELSWAK_MySQL_Literal('NULL')
 		),
 		'additional methods' => array
 		(
@@ -36,27 +36,27 @@ $classData = array
 	(
 		'constructor parameters' => array
 		(
-			new ELSWebAppKit_MySQL_Field
+			new ELSWAK_MySQL_Field
 			(
 				'PROPOSAL_ID',
-				new ELSWebAppKit_MySQL_Table
+				new ELSWAK_MySQL_Table
 				(
 					'proposals',
-					new ELSWebAppKit_MySQL_Database
+					new ELSWAK_MySQL_Database
 					(
 						'GrahamCracker'
 					)
 				),
 				'int'
 			),
-			new ELSWebAppKit_MySQL_Operator('='),
-			new ELSWebAppKit_MySQL_Field
+			new ELSWAK_MySQL_Operator('='),
+			new ELSWAK_MySQL_Field
 			(
 				'PROPOSAL_ID',
-				new ELSWebAppKit_MySQL_Table
+				new ELSWAK_MySQL_Table
 				(
 					'proposal_investigators',
-					new ELSWebAppKit_MySQL_Database
+					new ELSWAK_MySQL_Database
 					(
 						'GrahamCracker'
 					)
@@ -73,21 +73,21 @@ $classData = array
 	(
 		'constructor parameters' => array
 		(
-			new ELSWebAppKit_MySQL_Field
+			new ELSWAK_MySQL_Field
 			(
 				'proposal_title',
-				new ELSWebAppKit_MySQL_Table
+				new ELSWAK_MySQL_Table
 				(
 					'proposals',
-					new ELSWebAppKit_MySQL_Database
+					new ELSWAK_MySQL_Database
 					(
 						'GrahamCracker'
 					)
 				),
 				'int'
 			),
-			new ELSWebAppKit_MySQL_Operator('LIKE'),
-			new ELSWebAppKit_MySQL_String
+			new ELSWAK_MySQL_Operator('LIKE'),
+			new ELSWAK_MySQL_String
 			(
 				'%catfish%',
 				$db
@@ -103,5 +103,5 @@ $classMethods = array
 (
 	'sql' => null
 );
-require_once('ELSWebAppKit/Utilities/ClassTester.php');
+require_once('ELSWAK/Utilities/ClassTester.php');
 ?>

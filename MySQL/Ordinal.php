@@ -1,31 +1,31 @@
 <?php
 /*
-	ELSWebAppKit MySQL Ordinal
+	ELSWAK MySQL Ordinal
 	
 	This class pairs a field and a direction to represent an order by statement.
 */
-require_once('ELSWebAppKit/MySQL/Field.php');
-require_once('ELSWebAppKit/MySQL/Order.php');
-class ELSWebAppKit_MySQL_Ordinal
+require_once('ELSWAK/MySQL/Field.php');
+require_once('ELSWAK/MySQL/Order.php');
+class ELSWAK_MySQL_Ordinal
 {
 	protected $field;
 	protected $direction;
 	
-	public function __construct(ELSWebAppKit_MySQL_Field $field, ELSWebAppKit_MySQL_Order $direction = null)
+	public function __construct(ELSWAK_MySQL_Field $field, ELSWAK_MySQL_Order $direction = null)
 	{
 		$this->setField($field);
 		$this->setDirection
 		(
 			($direction !== null)?
 				$direction:
-				new ELSWebAppKit_MySQL_Order()
+				new ELSWAK_MySQL_Order()
 		);
 	}
 	public function field()
 	{
 		return $this->field;
 	}
-	public function setField(ELSWebAppKit_MySQL_Field $field)
+	public function setField(ELSWAK_MySQL_Field $field)
 	{
 		$this->field = $field;
 		return $this;
@@ -34,7 +34,7 @@ class ELSWebAppKit_MySQL_Ordinal
 	{
 		return $this->direction;
 	}
-	public function setDirection(ELSWebAppKit_MySQL_Order $direction)
+	public function setDirection(ELSWAK_MySQL_Order $direction)
 	{
 		$this->direction = $direction;
 		return $this;

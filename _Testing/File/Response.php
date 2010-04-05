@@ -1,9 +1,9 @@
 <?php
 /*
-	Test the ELSWebAppKit File Response
+	Test the ELSWAK File Response
 */
-require_once('ELSWebAppKit/File/Response.php');
-$response = new ELSWebAppKit_File_Response();
+require_once('ELSWAK/File/Response.php');
+$response = new ELSWAK_File_Response();
 $response->setFile('test.txt');
 $response->setFileName('SuperFile.txt');
 $response->setDownload();

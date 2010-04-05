@@ -1,14 +1,14 @@
 <?php
 /*
-	ELSWebAppKit MySQL Delete
+	ELSWAK MySQL Delete
 	
 	DELETE query as an object...
 */
-require_once('ELSWebAppKit/MySQL/Table.php');
-require_once('ELSWebAppKit/MySQL/Where/Clause.php');
-require_once('ELSWebAppKit/MySQL/Order/Clause.php');
-require_once('ELSWebAppKit/MySQL/Limit/Clause.php');
-class ELSWebAppKit_MySQL_Delete
+require_once('ELSWAK/MySQL/Table.php');
+require_once('ELSWAK/MySQL/Where/Clause.php');
+require_once('ELSWAK/MySQL/Order/Clause.php');
+require_once('ELSWAK/MySQL/Limit/Clause.php');
+class ELSWAK_MySQL_Delete
 {
 	protected $table;
 	protected $whereClause;
@@ -20,10 +20,10 @@ class ELSWebAppKit_MySQL_Delete
 	
 	public function __construct
 	(
-		ELSWebAppKit_MySQL_Table $table = null,
-		ELSWebAppKit_MySQL_Where_Clause $whereClause = null,
-		ELSWebAppKit_MySQL_Order_Clause $orderClause = null,
-		ELSWebAppKit_MySQL_Limit_Clause $limitClause = null,
+		ELSWAK_MySQL_Table $table = null,
+		ELSWAK_MySQL_Where_Clause $whereClause = null,
+		ELSWAK_MySQL_Order_Clause $orderClause = null,
+		ELSWAK_MySQL_Limit_Clause $limitClause = null,
 		$priority = null,
 		$quick = null,
 		$ignore = null
@@ -31,9 +31,9 @@ class ELSWebAppKit_MySQL_Delete
 	{
 		$this->setTable
 		(
-			($table instanceOf ELSWebAppKit_MySQL_Table)?
+			($table instanceOf ELSWAK_MySQL_Table)?
 				$table:
-				new ELSWebAppKit_MySQL_Table('', new ELSWebAppKit_MySQL_Database(''))
+				new ELSWAK_MySQL_Table('', new ELSWAK_MySQL_Database(''))
 		);
 		$this->setWhereClause($whereClause);
 		$this->setOrderClause($orderClause);
@@ -46,7 +46,7 @@ class ELSWebAppKit_MySQL_Delete
 	{
 		return $this->table;
 	}
-	public function setTable(ELSWebAppKit_MySQL_Table $table)
+	public function setTable(ELSWAK_MySQL_Table $table)
 	{
 		$this->table = $table;
 		return $this;
@@ -55,7 +55,7 @@ class ELSWebAppKit_MySQL_Delete
 	{
 		return $this->whereClause;
 	}
-	public function setWhereClause(ELSWebAppKit_MySQL_Where_Clause $whereClause = null)
+	public function setWhereClause(ELSWAK_MySQL_Where_Clause $whereClause = null)
 	{
 		$this->whereClause = $whereClause;
 		return $this;
@@ -64,7 +64,7 @@ class ELSWebAppKit_MySQL_Delete
 	{
 		return $this->orderClause;
 	}
-	public function setOrderClause(ELSWebAppKit_MySQL_Order_Clause $orderClause = null)
+	public function setOrderClause(ELSWAK_MySQL_Order_Clause $orderClause = null)
 	{
 		$this->orderClause = $orderClause;
 		return $this;
@@ -73,7 +73,7 @@ class ELSWebAppKit_MySQL_Delete
 	{
 		return $this->limitClause;
 	}
-	public function setLimitClause(ELSWebAppKit_MySQL_Limit_Clause $limitClause = null)
+	public function setLimitClause(ELSWAK_MySQL_Limit_Clause $limitClause = null)
 	{
 		$this->limitClause = $limitClause;
 		return $this;

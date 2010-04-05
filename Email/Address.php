@@ -1,8 +1,8 @@
 <?php
 /*
-	ELSWebAppKit Email Address
+	ELSWAK Email Address
 */
-class ELSWebAppKit_Email_Address
+class ELSWAK_Email_Address
 {
 	const EMAIL_ADDRESS_REGX_BASE = '/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i';
 	const EMAIL_ADDRESS_REGX = '/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i';

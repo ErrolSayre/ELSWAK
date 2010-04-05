@@ -1,8 +1,8 @@
 <?php
 /*
-	ELSWebAppKit Store Search Criteria
+	ELSWAK Store Search Criteria
 */
-class ELSWebAppKit_Store_Search_Criteria
+class ELSWAK_Store_Search_Criteria
 {
 	protected $property;
 	protected $value;

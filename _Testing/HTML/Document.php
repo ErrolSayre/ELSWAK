@@ -20,9 +20,9 @@ $input['TheSelect4'] = '';
 foreach ($_REQUEST as $key => $value)
 	$input[$key] = $value;
 
-require_once('ELSWebAppKit/HTML/Document.php');
+require_once('ELSWAK/HTML/Document.php');
 // create a new document
-$document = new ELSWebAppKit_HTML_Document();
+$document = new ELSWAK_HTML_Document();
 
 // set the title
 echo $document->title().BR.LF;

@@ -1,19 +1,19 @@
 <?php
 /*
-	ELSWebAppKit MySQL Table
+	ELSWAK MySQL Table
 	
 	This class provides some basic information for an object representing a
 	table in the database.
 */
-require_once('ELSWebAppKit/MySQL/Database.php');
-class ELSWebAppKit_MySQL_Table
+require_once('ELSWAK/MySQL/Database.php');
+class ELSWAK_MySQL_Table
 {
 	protected $name;
 	protected $prettyName;
 	protected $database;
 	protected $primaryKey;
 	
-	public function __construct($name, ELSWebAppKit_MySQL_Database $database, $primaryKey = null)
+	public function __construct($name, ELSWAK_MySQL_Database $database, $primaryKey = null)
 	{
 		$this->setName($name);
 		$this->setDatabase($database);
@@ -45,7 +45,7 @@ class ELSWebAppKit_MySQL_Table
 	{
 		return $this->database;
 	}
-	protected function setDatabase(ELSWebAppKit_MySQL_Database $database)
+	protected function setDatabase(ELSWAK_MySQL_Database $database)
 	{
 		$this->database = $database;
 		return $this;

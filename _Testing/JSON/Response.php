@@ -1,6 +1,6 @@
 <?php
-require_once 'ELSWebAppKit/JSON/Response.php';
-$response = new ELSWebAppKit_JSON_Response;
+require_once 'ELSWAK/JSON/Response.php';
+$response = new ELSWAK_JSON_Response;
 $response->addContent('item 1');
 $response->addContent('item 2');
 $response->addContent('first', 'firstName');

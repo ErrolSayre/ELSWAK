@@ -1,8 +1,8 @@
 <?php
 /*
-	ELSWebAppKit Store Search Limit
+	ELSWAK Store Search Limit
 */
-class ELSWebAppKit_Store_Search_Limit
+class ELSWAK_Store_Search_Limit
 {
 	protected $count;
 	protected $offset;

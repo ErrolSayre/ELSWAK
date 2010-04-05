@@ -1,25 +1,25 @@
 <?php
 /*
-	ELSWebAppKit HTML Response
+	ELSWAK HTML Response
 */
-require_once('ELSWebAppKit/HTML/Document.php');
-require_once('ELSWebAppKit/HTTP/Response.php');
-class ELSWebAppKit_HTML_Response
-	extends ELSWebAppKit_HTTP_Response {
+require_once('ELSWAK/HTML/Document.php');
+require_once('ELSWAK/HTTP/Response.php');
+class ELSWAK_HTML_Response
+	extends ELSWAK_HTTP_Response {
 	protected $sendHtml = false;
-	public function __construct(ELSWebAppKit_HTML_Document $document = null) {
+	public function __construct(ELSWAK_HTML_Document $document = null) {
 		parent::__construct();
 		
 		$this->setDocument(
 			$document != null?
 				$document:
-				new ELSWebAppKit_HTML_Document()
+				new ELSWAK_HTML_Document()
 		);
 	}
 	public function document() {
 		return $this->body;
 	}
-	public function setDocument(ELSWebAppKit_HTML_Document $document) {
+	public function setDocument(ELSWAK_HTML_Document $document) {
 		$this->body = $document;
 		return $this;
 	}

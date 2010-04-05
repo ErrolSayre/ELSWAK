@@ -1,12 +1,12 @@
 <?php
 /*
-	ELSWebAppKit HTML Document
+	ELSWAK HTML Document
 	
-	This class defines an extension of the DOMDocument that provides generic helpful features specific to HTML. It is intended to be used with ELSWebAppKit HTML Response Container but can be used on its own.
+	This class defines an extension of the DOMDocument that provides generic helpful features specific to HTML. It is intended to be used with ELSWAK HTML Response Container but can be used on its own.
 	
 	This extension to the DOMDocument provides locateElementById as a replacement for the HTML specific getElementById because PHP only recognized the id attribute for elements that existed in the document at the time of the last validation (or on initial load of an HTML file). This method caches ALL ids that it finds, but whenever it doesn't have a cached reference for a given id, it searches the entire document tree. Since the DOM is not ordered in any particular way it must be iterated sequentially, however since most elements are appended to existing items it is most likely that new items will be at the "bottom" of the tree. For this reason, I start the search for items at the last child of a given node and work toward the first child. Please note that you can avoid this search by creating elements through the given methods of this class, or by registering a given element with the cache using the registerElementWithIdIndex method.
 */
-class ELSWebAppKit_HTML_Document
+class ELSWAK_HTML_Document
 	extends DOMDocument {
 	protected $rootNode;
 	protected $headNode;

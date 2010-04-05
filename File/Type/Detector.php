@@ -1,10 +1,10 @@
 <?php
 /*
-	ELSWebAppKit File Type Detector
+	ELSWAK File Type Detector
 	
 	This class examines a file name to determine its mime type based on file extension.
 */
-class ELSWebAppKit_File_Type_Detector {
+class ELSWAK_File_Type_Detector {
 	protected static $fileTypes = array (
 		'3dm' => 'x-world/x-3dmf',
 		'3dmf' => 'x-world/x-3dmf',

@@ -1,12 +1,12 @@
 <?php
 /*
-	ELSWebAppKit MySQL Operator
+	ELSWAK MySQL Operator
 	
 	Operators are an integral part of a MySQL expression. Operators can have any
 	value that is deemed a valid MySQL operator.
 */
-require_once('ELSWebAppKit/MySQL/Literal.php');
-class ELSWebAppKit_MySQL_Operator
+require_once('ELSWAK/MySQL/Literal.php');
+class ELSWAK_MySQL_Operator
 {
 	protected $operator;
 	

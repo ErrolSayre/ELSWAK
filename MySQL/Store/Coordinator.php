@@ -1,6 +1,6 @@
 <?php
 /*
-	ELSWebAppKit MySQL Store Coordinator
+	ELSWAK MySQL Store Coordinator
 		
 	There are three defined levels of depth: shallow, deep, and complete. Generally, the depth of an object is broken down according to these rules:
 		1) Shallow depth includes only those attributes that can be loaded in a query yielding a single row. (Attribute members and 1to1 relations.)

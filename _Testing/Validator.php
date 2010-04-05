@@ -1,6 +1,6 @@
 <?php
-require_once 'ELSWebAppKit/Validator.php';
-$valid = new ELSWebAppKit_Validator();
+require_once 'ELSWAK/Validator.php';
+$valid = new ELSWAK_Validator();
 
 echo '200 valid integer? ';
 echo ($valid->integer(200)? 'yes': 'no').BR.LF;

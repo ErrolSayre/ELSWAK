@@ -1,17 +1,17 @@
 <?php
 /*
-	ELSWebAppKit MySQL Field Value
+	ELSWAK MySQL Field Value
 	
 	This class provides a pairing of a MySQL Field with an appropriate value
 	designed for use in INSERT and UPDATE queries.
 */
-require_once('ELSWebAppKit/MySQL/Field.php');
-class ELSWebAppKit_MySQL_Field_Value
+require_once('ELSWAK/MySQL/Field.php');
+class ELSWAK_MySQL_Field_Value
 {
 	protected $field;
 	protected $value;
 	
-	public function __construct(ELSWebAppKit_MySQL_Field $field, ELSWebAppKit_MySQL_Expression $value)
+	public function __construct(ELSWAK_MySQL_Field $field, ELSWAK_MySQL_Expression $value)
 	{
 		$this->setField($field);
 		$this->setValue($value);
@@ -20,7 +20,7 @@ class ELSWebAppKit_MySQL_Field_Value
 	{
 		return $this->field;
 	}
-	public function setField(ELSWebAppKit_MySQL_Field $field)
+	public function setField(ELSWAK_MySQL_Field $field)
 	{
 		$this->field = $field;
 		return $this;
@@ -29,7 +29,7 @@ class ELSWebAppKit_MySQL_Field_Value
 	{
 		return $this->value;
 	}
-	public function setValue(ELSWebAppKit_MySQL_Expression $value)
+	public function setValue(ELSWAK_MySQL_Expression $value)
 	{
 		$this->value = $value;
 		return $this;

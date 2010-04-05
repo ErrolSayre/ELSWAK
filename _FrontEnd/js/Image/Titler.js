@@ -1,10 +1,10 @@
 /*
-	ELSWebAppKit Image Titler - this script runs at page load, scans for all the images on the page, and sets the title to the alt attribute if it is not set. Since DOM modifications don't affect the validity of a document, the ALT tag is required for most DTDs, and the browsers most likely to be using alt tags (instead of images) will probably not support javascript, it is unlikely that setting the alt to the title will matter.
+	ELSWAK Image Titler - this script runs at page load, scans for all the images on the page, and sets the title to the alt attribute if it is not set. Since DOM modifications don't affect the validity of a document, the ALT tag is required for most DTDs, and the browsers most likely to be using alt tags (instead of images) will probably not support javascript, it is unlikely that setting the alt to the title will matter.
 */
 // setup namespace
-if (typeof ELSWebAppKit == 'undefined' || !ELSWebAppKit)
+if (typeof ELSWAK == 'undefined' || !ELSWAK)
 {
-	var ELSWebAppKit = new function()
+	var ELSWAK = new function()
 	{
 		var self = this;
 		var subscribers = [];
@@ -23,9 +23,9 @@ if (typeof ELSWebAppKit == 'undefined' || !ELSWebAppKit)
 		};
 	};
 }
-if (typeof ELSWebAppKit.Image == 'undefined' || !ELSWebAppKit.Image)
-	ELSWebAppKit.Image = {};
-ELSWebAppKit.Image.Titler = function()
+if (typeof ELSWAK.Image == 'undefined' || !ELSWAK.Image)
+	ELSWAK.Image = {};
+ELSWAK.Image.Titler = function()
 {
 	// grab all the images in the document
 	var images = document.getElementsByTagName('img');
@@ -41,12 +41,12 @@ ELSWebAppKit.Image.Titler = function()
 try
 {
 	if (window.attachEvent)
-		window.attachEvent('onload', document.ELSWebAppKit.Image.Titler);
+		window.attachEvent('onload', document.ELSWAK.Image.Titler);
 	else if (window.addEventListener)
-		window.addEventListener('load', document.ELSWebAppKit.Image.Titler);
+		window.addEventListener('load', document.ELSWAK.Image.Titler);
 }
 catch(e)
 {
 	if (document.addEventListener)
-		document.addEventListener('DOMContentLoaded', document.ELSWebAppKit.Image.Titler, false);
+		document.addEventListener('DOMContentLoaded', document.ELSWAK.Image.Titler, false);
 }

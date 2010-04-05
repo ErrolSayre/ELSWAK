@@ -1,13 +1,13 @@
 <?php
 /*
-	ELSWebAppKit MySQL Field
+	ELSWAK MySQL Field
 	
 	This class represents the data associated with a column from a MySQL table.
 */
-require_once('ELSWebAppKit/MySQL/Expression.php');
-require_once('ELSWebAppKit/MySQL/Table.php');
-class ELSWebAppKit_MySQL_Field
-	implements ELSWebAppKit_MySQL_Expression
+require_once('ELSWAK/MySQL/Expression.php');
+require_once('ELSWAK/MySQL/Table.php');
+class ELSWAK_MySQL_Field
+	implements ELSWAK_MySQL_Expression
 {
 	protected $name;
 	protected $prettyName;
@@ -18,7 +18,7 @@ class ELSWebAppKit_MySQL_Field
 	protected $permissibleValues;
 	protected $presentationType;
 	
-	public function __construct($name, ELSWebAppKit_MySQL_Table $table, $mysqlType = null)
+	public function __construct($name, ELSWAK_MySQL_Table $table, $mysqlType = null)
 	{
 		$this->setName($name);
 		$this->setTable($table);
@@ -53,7 +53,7 @@ class ELSWebAppKit_MySQL_Field
 	{
 		return $this->table;
 	}
-	protected function setTable(ELSWebAppKit_MySQL_Table $table)
+	protected function setTable(ELSWAK_MySQL_Table $table)
 	{
 		$this->table = $table;
 		return $this;

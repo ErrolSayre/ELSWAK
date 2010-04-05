@@ -1,18 +1,18 @@
 <?php
 /*
-	ELSWebAppKit MySQL Update
+	ELSWAK MySQL Update
 	
 	This class represents a standard MySQL UPDATE query.
 	
 	For multiple table updates, see MySQL Update Multiple
 */
-require_once('ELSWebAppKit/MySQL/Table.php');
-require_once('ELSWebAppKit/MySQL/Field/Value.php');
-require_once('ELSWebAppKit/MySQL/Where/Clause.php');
-require_once('ELSWebAppKit/MySQL/Order/Clause.php');
-require_once('ELSWebAppKit/MySQL/Limit/Clause.php');
+require_once('ELSWAK/MySQL/Table.php');
+require_once('ELSWAK/MySQL/Field/Value.php');
+require_once('ELSWAK/MySQL/Where/Clause.php');
+require_once('ELSWAK/MySQL/Order/Clause.php');
+require_once('ELSWAK/MySQL/Limit/Clause.php');
 
-class ELSWebAppKit_MySQL_Update
+class ELSWAK_MySQL_Update
 {
 	protected $table;
 	protected $fieldValues;
@@ -25,20 +25,20 @@ class ELSWebAppKit_MySQL_Update
 	
 	public function __construct
 	(
-		ELSWebAppKit_MySQL_Table $table = null,
+		ELSWAK_MySQL_Table $table = null,
 		array $fieldValues = null,
-		ELSWebAppKit_MySQL_Where_Clause $whereClause = null,
-		ELSWebAppKit_MySQL_Order_Clause $orderClause = null,
-		ELSWebAppKit_MySQL_Limit_Clause $limitClause = null,
+		ELSWAK_MySQL_Where_Clause $whereClause = null,
+		ELSWAK_MySQL_Order_Clause $orderClause = null,
+		ELSWAK_MySQL_Limit_Clause $limitClause = null,
 		$priority = null,
 		$ignore = null
 	)
 	{
 		$this->setTable
 		(
-			($table instanceOf ELSWebAppKit_MySQL_Table)?
+			($table instanceOf ELSWAK_MySQL_Table)?
 				$table:
-				new ELSWebAppKit_MySQL_Table('', new ELSWebAppKit_MySQL_Database(''))
+				new ELSWAK_MySQL_Table('', new ELSWAK_MySQL_Database(''))
 		);
 		$this->fieldNameIndex = array();
 		$this->setFieldValues
@@ -57,7 +57,7 @@ class ELSWebAppKit_MySQL_Update
 	{
 		return $this->table;
 	}
-	public function setTable(ELSWebAppKit_MySQL_Table $table)
+	public function setTable(ELSWAK_MySQL_Table $table)
 	{
 		$this->table = $table;
 		return $this;
@@ -84,7 +84,7 @@ class ELSWebAppKit_MySQL_Update
 			throw new Exception('Invalid Field Name: Field Value Pair not found.');
 		}
 	}
-	public function addFieldValue(ELSWebAppKit_MySQL_Field_Value $fieldValue)
+	public function addFieldValue(ELSWAK_MySQL_Field_Value $fieldValue)
 	{
 		// determine if the field is already in the list
 		if (isset($this->fieldNameIndex[$fieldValue->field()->name()]))
@@ -143,7 +143,7 @@ class ELSWebAppKit_MySQL_Update
 		
 		foreach ($fieldValues as $fieldValue)
 		{
-			if ($fieldValue instanceOf ELSWebAppKit_MySQL_Field_Value)
+			if ($fieldValue instanceOf ELSWAK_MySQL_Field_Value)
 			{
 				$this->addFieldValue($fieldValue);
 			}
@@ -154,7 +154,7 @@ class ELSWebAppKit_MySQL_Update
 	{
 		return $this->whereClause;
 	}
-	public function setWhereClause(ELSWebAppKit_MySQL_Where_Clause $whereClause = null)
+	public function setWhereClause(ELSWAK_MySQL_Where_Clause $whereClause = null)
 	{
 		$this->whereClause = $whereClause;
 		return $this;
@@ -163,7 +163,7 @@ class ELSWebAppKit_MySQL_Update
 	{
 		return $this->orderClause;
 	}
-	public function setOrderClause(ELSWebAppKit_MySQL_Order_Clause $orderClause = null)
+	public function setOrderClause(ELSWAK_MySQL_Order_Clause $orderClause = null)
 	{
 		$this->orderClause = $orderClause;
 		return $this;
@@ -172,7 +172,7 @@ class ELSWebAppKit_MySQL_Update
 	{
 		return $this->limitClause;
 	}
-	public function setLimitClause(ELSWebAppKit_MySQL_Limit_Clause $limitClause = null)
+	public function setLimitClause(ELSWAK_MySQL_Limit_Clause $limitClause = null)
 	{
 		$this->limitClause = $limitClause;
 		return $this;

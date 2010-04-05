@@ -1,5 +1,5 @@
 /*
-	ELSWebAppKit HTML Document
+	ELSWAK HTML Document
 	
 	This class provides extensions to the DOM document to provide functionality similar to that of the corresponding PHP classes.
 */

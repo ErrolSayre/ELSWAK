@@ -1,6 +1,6 @@
 <?php
 /*
-	ELSWebAppKit DOMSoap HTTP Client
+	ELSWAK DOMSoap HTTP Client
 	
 	This class was built to provide a very simple client for consuming soap services. It accepts a DOMDocument as it's payload (which should be a properly formed SOAP request) and can handle basic HTTP authentication. It will return the response XML as a string.
 */
@@ -9,7 +9,7 @@
 if (!defined('LF')) define('LF', "\n");
 if (!defined('CRLF')) define('CRLF', "\r\n");
 
-class ELSWebAppKit_DOMSoap_HTTPClient {
+class ELSWAK_DOMSoap_HTTPClient {
 	protected $host;
 	protected $port;
 	protected $resource;

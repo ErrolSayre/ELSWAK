@@ -1,6 +1,6 @@
 <?php
 /*
-	This script uses the MyCokeRewards web service to check balances and submit codes using the ELSWebAppKit DOMSoap HTTPClient.
+	This script uses the MyCokeRewards web service to check balances and submit codes using the ELSWAK DOMSoap HTTPClient.
 */
 
 // construct a new dom document to match our mycokerewards request
@@ -56,8 +56,8 @@ if (isset($_POST['email']))
 			$member->appendChild($document->createElement('value'))->appendChild($document->createElement('string', '3.0'));
 			
 			// issue this command to the webservice
-			require_once('ELSWebAppKit/DOMSoap/HTTPClient.php');
-			$soapClient = new ELSWebAppKit_DOMSoap_HTTPClient('secure.mycokerewards.com', 443, '/xmlrpc', null, true);
+			require_once('ELSWAK/DOMSoap/HTTPClient.php');
+			$soapClient = new ELSWAK_DOMSoap_HTTPClient('secure.mycokerewards.com', 443, '/xmlrpc', null, true);
 			echo $soapClient->makeRequest($document->saveXML());
 		}
 	}

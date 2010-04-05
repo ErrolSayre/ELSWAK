@@ -1,10 +1,10 @@
 <?php
 /*
-	ELSWebAppKit Filter
+	ELSWAK Filter
 	
 	This class provides filtering methods for various datatypes, among those collected from disparate classes.
 */
-class ELSWebAppKit_Filter
+class ELSWAK_Filter
 {
 	public static function integer($value)
 	{

@@ -1,7 +1,7 @@
 <?php
-require_once 'ELSWebAppKit/HTTP/Response.php';
+require_once 'ELSWAK/HTTP/Response.php';
 
-$response = new ELSWebAppKit_HTTP_Response();
+$response = new ELSWAK_HTTP_Response();
 $response->addContent($response->serverUri().BR);
 $response->addContent($response->applicationPath().BR);
 $response->addMessage('The thingamajig didn’t work like a who’s-a-what’s-it');

@@ -1,6 +1,6 @@
 <?php
 /*
-ELSWebAppKit Settable
+ELSWAK Settable
 	
 The Settable base class seeks to provide two main features:
 	• allow direct access to properties which require computational action during getter/setter operations normally requiring access to these properties through accessor methods.
@@ -17,7 +17,7 @@ This class utilizes the following conventions:
 	• getter methods should be the name of the property with or without "get" appended to the beginning of the name. (Either approach is supported.)
 	• a property name can be utilized as a getter or a setter by calling the method with no arguments (or more than one) to operate as a getter or with a single argument to operate as a setter. This functionality will only be provided if no method with the matching name exists and the method call matches the case of the property name exactly or matches the get and set prefix conventions.
 */
-class ELSWebAppKit_Settable {
+class ELSWAK_Settable {
 	private static $_getters;
 	private static $_setters;
 	private static $_callers;
@@ -33,7 +33,7 @@ class ELSWebAppKit_Settable {
 		if (!isset(self::$_setters[$className][$property])) {
 			// determine if this property can be set or not
 			$method = 'set'.$property;
-			if (ELSWebAppKit_Settable_Model_Helper::methodExistsForClass($method, $this)) {
+			if (ELSWAK_Settable_Model_Helper::methodExistsForClass($method, $this)) {
 				// the property has a public setter method, set the value using the method
 				self::$_setters[$className][$property] = 2;
 			} else if (method_exists($this, $method)) {
@@ -72,13 +72,13 @@ class ELSWebAppKit_Settable {
 			// determine if this property can be accessed
 			// search for getter methods that include the "get" prefix or not.
 			$method = 'get'.$property;
-			if (ELSWebAppKit_Settable_Model_Helper::methodExistsForClass($method, $this)) {
+			if (ELSWAK_Settable_Model_Helper::methodExistsForClass($method, $this)) {
 				// the property has a public getter method, return the value using the method
 				self::$_getters[$className][$property] = 2;
 			} else if (method_exists($this, $method)) {
 				// the property has a protected getter method, protect the property
 				self::$_getters[$className][$property] = -1;
-			} else if (ELSWebAppKit_Settable_Model_Helper::methodExistsForClass($property, $this)) {
+			} else if (ELSWAK_Settable_Model_Helper::methodExistsForClass($property, $this)) {
 				// the property has a public getter method named as the property, return the value using the method
 				self::$_getters[$className][$property] = 3;
 			} else if (method_exists($this, $property)) {
@@ -481,7 +481,7 @@ class ELSWebAppKit_Settable {
 		return $this->{$property};
 	}
 }
-class ELSWebAppKit_Settable_Model_Helper {
+class ELSWAK_Settable_Model_Helper {
 	public static function methodsForClass($class) {
 		return get_class_methods($class);
 	}

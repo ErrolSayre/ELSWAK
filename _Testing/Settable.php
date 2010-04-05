@@ -1,7 +1,7 @@
 <?php
-require_once 'ELSWebAppKit/Settable.php';
+require_once 'ELSWAK/Settable.php';
 class example
-	extends ELSWebAppKit_Settable {
+	extends ELSWAK_Settable {
 	protected $id;
 	protected $title;
 	protected $name;

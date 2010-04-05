@@ -1,6 +1,6 @@
 <?php
 /*
-	ELSWebAppKit MySQL From Clause
+	ELSWAK MySQL From Clause
 	
 	This class represents the attributes that make up a MySQL FROM clause. This
 	class is currently very rudimentary and assumes that all tables should be
@@ -9,8 +9,8 @@
 	will either use just the tables array, or have one table in the tables array
 	and all other tables will be joined to that table.
 */
-require_once('ELSWebAppKit/MySQL/Table/Join.php');
-class ELSWebAppKit_MySQL_From_Clause
+require_once('ELSWAK/MySQL/Table/Join.php');
+class ELSWAK_MySQL_From_Clause
 {
 	protected $tables;
 	protected $tableJoins;
@@ -41,7 +41,7 @@ class ELSWebAppKit_MySQL_From_Clause
 			throw new Exception('Invalid key: Table not found');
 		}
 	}
-	public function addTable(ELSWebAppKit_MySQL_Table $table)
+	public function addTable(ELSWAK_MySQL_Table $table)
 	{
 		$this->tables[] = $table;
 		return $this->tables[count($this->tables) - 1];
@@ -75,7 +75,7 @@ class ELSWebAppKit_MySQL_From_Clause
 		
 		foreach ($tables as $table)
 		{
-			if ($table instanceOf ELSWebAppKit_MySQL_Table)
+			if ($table instanceOf ELSWAK_MySQL_Table)
 			{
 				$this->addTable($table);
 			}
@@ -93,7 +93,7 @@ class ELSWebAppKit_MySQL_From_Clause
 			throw new Exception('Invalid key: Table Join not found');
 		}
 	}
-	public function addTableJoin(ELSWebAppKit_MySQL_Table_Join $tableJoin)
+	public function addTableJoin(ELSWAK_MySQL_Table_Join $tableJoin)
 	{
 		$this->tableJoins[] = $tableJoin;
 		return $this->tableJoins[count($this->tableJoins) - 1];
@@ -127,7 +127,7 @@ class ELSWebAppKit_MySQL_From_Clause
 		
 		foreach ($tableJoins as $tableJoin)
 		{
-			if ($tableJoin instanceOf ELSWebAppKit_MySQL_Table_Join)
+			if ($tableJoin instanceOf ELSWAK_MySQL_Table_Join)
 			{
 				$this->addTableJoin($tableJoins);
 			}

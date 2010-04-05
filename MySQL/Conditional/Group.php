@@ -1,19 +1,19 @@
 <?php
 /*
-	ELSWebAppKit MySQL Conditional Group
+	ELSWAK MySQL Conditional Group
 	
 	This class lumps MySQL conditional statements together into one group using
 	a specified conjunction (AND or OR).
 */
-require_once('ELSWebAppKit/MySQL/Conditional.php');
-require_once('ELSWebAppKit/MySQL/Conjunction.php');
-class ELSWebAppKit_MySQL_Conditional_Group
-	implements ELSWebAppKit_MySQL_Expression
+require_once('ELSWAK/MySQL/Conditional.php');
+require_once('ELSWAK/MySQL/Conjunction.php');
+class ELSWAK_MySQL_Conditional_Group
+	implements ELSWAK_MySQL_Expression
 {
 	protected $conditions;
 	protected $conjunction;
 	
-	public function __construct(array $conditions = null, ELSWebAppKit_MySQL_Conjunction $conjunction = null)
+	public function __construct(array $conditions = null, ELSWAK_MySQL_Conjunction $conjunction = null)
 	{
 		$this->setConditions
 		(
@@ -25,7 +25,7 @@ class ELSWebAppKit_MySQL_Conditional_Group
 		(
 			($conjunction !== null)?
 				$conjunction:
-				new ELSWebAppKit_MySQL_Conjunction()
+				new ELSWAK_MySQL_Conjunction()
 		);
 	}
 	public function conditionForKey($index)
@@ -39,7 +39,7 @@ class ELSWebAppKit_MySQL_Conditional_Group
 			throw new Exception('Invalid key: Condition not found');
 		}
 	}
-	public function addCondition(ELSWebAppKit_MySQL_Expression $condition)
+	public function addCondition(ELSWAK_MySQL_Expression $condition)
 	{
 		$this->conditions[] = $condition;
 		return $this->conditions[count($this->conditions) - 1];
@@ -73,7 +73,7 @@ class ELSWebAppKit_MySQL_Conditional_Group
 		
 		foreach ($conditions as $condition)
 		{
-			if ($condition instanceOf ELSWebAppKit_MySQL_Expression)
+			if ($condition instanceOf ELSWAK_MySQL_Expression)
 			{
 				$this->addCondition($condition);
 			}
@@ -84,7 +84,7 @@ class ELSWebAppKit_MySQL_Conditional_Group
 	{
 		return $this->conjunction;
 	}
-	public function setConjunction(ELSWebAppKit_MySQL_Conjunction $conjunction)
+	public function setConjunction(ELSWAK_MySQL_Conjunction $conjunction)
 	{
 		$this->conjunction = $conjunction;
 		return $this;

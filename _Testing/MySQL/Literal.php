@@ -1,7 +1,7 @@
 <?php
-require_once('ELSWebAppKit/MySQL/Literal.php');
+require_once('ELSWAK/MySQL/Literal.php');
 
-$literal = new ELSWebAppKit_MySQL_Literal(1);
+$literal = new ELSWAK_MySQL_Literal(1);
 print_r_html($literal);
 echo $literal->sql().BR;
 $literal->setLiteral('asdf');

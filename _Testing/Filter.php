@@ -1,6 +1,6 @@
 <?php
-require_once 'ELSWebAppKit/Filter.php';
-$filter = new ELSWebAppKit_Filter();
+require_once 'ELSWAK/Filter.php';
+$filter = new ELSWAK_Filter();
 
 echo '200 filtered as integer ';
 echo $filter->integer(200).BR.LF;

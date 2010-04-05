@@ -1,9 +1,9 @@
 <?php
 /*
-	ELSWebAppKit XML Response
+	ELSWAK XML Response
 */
-require_once('ELSWebAppKit/HTTP/Response.php');
-class ELSWebAppKit_XML_Response
-	extends ELSWebAppKit_HTTP_Response
+require_once('ELSWAK/HTTP/Response.php');
+class ELSWAK_XML_Response
+	extends ELSWAK_HTTP_Response
 {
 }

@@ -1,5 +1,5 @@
 <?php
-class ELSWebAppKit_XML_Document
+class ELSWAK_XML_Document
 	extends DOMDocument {
 	protected $statusNode;
 	protected $messagesNode;
@@ -10,7 +10,7 @@ class ELSWebAppKit_XML_Document
 		parent::__construct();
 		
 		// create the container element
-		$container = $this->appendChild($this->createElement('ELSWebAppKitResponse'));
+		$container = $this->appendChild($this->createElement('ELSWAKResponse'));
 		
 		// setup references to the main elements
 		$this->statusNode = $container->appendChild(createElement('status'));

@@ -1,11 +1,11 @@
 <?php
 /*
-	ELSWebAppKit MySQL Database
+	ELSWAK MySQL Database
 	
 	This class provides some basic information for an object representing the
 	attributes of a database.
 */
-class ELSWebAppKit_MySQL_Database
+class ELSWAK_MySQL_Database
 {
 	protected $name;
 	

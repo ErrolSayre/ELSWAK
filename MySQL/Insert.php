@@ -1,11 +1,11 @@
 <?php
 /*
-	ELSWebAppKit MySQL Insert
+	ELSWAK MySQL Insert
 	
 	This class represents a MySQL insert query.
 */
-require_once('ELSWebAppKit/MySQL/Field/Value.php');
-class ELSWebAppKit_MySQL_Insert
+require_once('ELSWAK/MySQL/Field/Value.php');
+class ELSWAK_MySQL_Insert
 {
 	protected $table;
 	protected $fieldValues;
@@ -13,13 +13,13 @@ class ELSWebAppKit_MySQL_Insert
 	protected $priority;
 	protected $ignore;
 	
-	public function __construct(ELSWebAppKit_MySQL_Table $table = null, array $fieldValues = null, $priority = null, $ignore = null)
+	public function __construct(ELSWAK_MySQL_Table $table = null, array $fieldValues = null, $priority = null, $ignore = null)
 	{
 		$this->setTable
 		(
-			($table instanceOf ELSWebAppKit_MySQL_Table)?
+			($table instanceOf ELSWAK_MySQL_Table)?
 				$table:
-				new ELSWebAppKit_MySQL_Table('', new ELSWebAppKit_MySQL_Database(''))
+				new ELSWAK_MySQL_Table('', new ELSWAK_MySQL_Database(''))
 		);
 		$this->fieldNameIndex = array();
 		$this->setFieldValues
@@ -35,7 +35,7 @@ class ELSWebAppKit_MySQL_Insert
 	{
 		return $this->table;
 	}
-	public function setTable(ELSWebAppKit_MySQL_Table $table)
+	public function setTable(ELSWAK_MySQL_Table $table)
 	{
 		$this->table = $table;
 		return $this;
@@ -62,7 +62,7 @@ class ELSWebAppKit_MySQL_Insert
 			throw new Exception('Invalid Field Name: Field Value Pair not found.');
 		}
 	}
-	public function addFieldValue(ELSWebAppKit_MySQL_Field_Value $fieldValue)
+	public function addFieldValue(ELSWAK_MySQL_Field_Value $fieldValue)
 	{
 		// determine if the field is already in the list
 		if (isset($this->fieldNameIndex[$fieldValue->field()->name()]))
@@ -121,7 +121,7 @@ class ELSWebAppKit_MySQL_Insert
 		
 		foreach ($fieldValues as $fieldValue)
 		{
-			if ($fieldValue instanceOf ELSWebAppKit_MySQL_Field_Value)
+			if ($fieldValue instanceOf ELSWAK_MySQL_Field_Value)
 			{
 				$this->addFieldValue($fieldValue);
 			}

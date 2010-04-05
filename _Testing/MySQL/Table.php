@@ -1,8 +1,8 @@
 <?php
 // test the Database Table
-include('ELSWebAppKit/MySQL/Database.php');
-$className = 'ELSWebAppKit_MySQL_Table';
-$classPath = 'ELSWebAppKit/MySQL/Table.php';
+include('ELSWAK/MySQL/Database.php');
+$className = 'ELSWAK_MySQL_Table';
+$classPath = 'ELSWAK/MySQL/Table.php';
 
 // set test data
 $classData = array
@@ -12,7 +12,7 @@ $classData = array
 		'constructor parameters' => array
 		(
 			'name' => 'proposals',
-			'database' => new ELSWebAppKit_MySQL_Database('ProposalNator'),
+			'database' => new ELSWAK_MySQL_Database('ProposalNator'),
 			'primaryKey' => 'PROPOSAL_ID'
 		),
 	),
@@ -21,7 +21,7 @@ $classData = array
 		'constructor parameters' => array
 		(
 			'name' => 'proposal_places',
-			'database' => new ELSWebAppKit_MySQL_Database('ProposalNator'),
+			'database' => new ELSWAK_MySQL_Database('ProposalNator'),
 			'primaryKey' => 'PROPOSAL_ID, PLACE_ID'
 		),
 		'additional methods' => array
@@ -38,7 +38,7 @@ $classData = array
 		'constructor parameters' => array
 		(
 			'name' => 'special_fields_long_times',
-			'database' => new ELSWebAppKit_MySQL_Database('ARG')
+			'database' => new ELSWAK_MySQL_Database('ARG')
 		)
 	)
 );

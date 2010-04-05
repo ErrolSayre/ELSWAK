@@ -1,10 +1,10 @@
 <?php
 /*
-	ELSWebAppKit MySQL Boolean
+	ELSWAK MySQL Boolean
 */
-require_once('ELSWebAppKit/MySQL/Expression.php');
-class ELSWebAppKit_MySQL_Boolean
-	implements ELSWebAppKit_MySQL_Expression
+require_once('ELSWAK/MySQL/Expression.php');
+class ELSWAK_MySQL_Boolean
+	implements ELSWAK_MySQL_Expression
 {
 	protected $boolean;
 	

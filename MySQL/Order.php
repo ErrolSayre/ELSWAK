@@ -1,10 +1,10 @@
 <?php
 /*
-	ELSWebAppKit MySQL Order
+	ELSWAK MySQL Order
 	
 	This class represents the operators used to determine a MySQL sort order.
 */
-class ELSWebAppKit_MySQL_Order
+class ELSWAK_MySQL_Order
 {
 	protected $order;
 	

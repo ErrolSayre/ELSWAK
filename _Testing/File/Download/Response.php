@@ -1,6 +1,6 @@
 <?php
-require 'ELSWebAppKit/File/Download/Response.php';
-$response = new ELSWebAppKit_File_Download_Response();
+require 'ELSWAK/File/Download/Response.php';
+$response = new ELSWAK_File_Download_Response();
 $response->setFileName('Test.csv');
 $response->addContent('"Investigator ID","First Name"');
 $response->addContent('"23","John"');

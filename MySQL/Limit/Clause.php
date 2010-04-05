@@ -1,10 +1,10 @@
 <?php
 /*
-	ELSWebAppKit MySQL Limit Clause
+	ELSWAK MySQL Limit Clause
 	
 	Represents a MySQL LIMIT clause.
 */
-class ELSWebAppKit_MySQL_Limit_Clause
+class ELSWAK_MySQL_Limit_Clause
 {
 	protected $rowCount;
 	protected $offset;

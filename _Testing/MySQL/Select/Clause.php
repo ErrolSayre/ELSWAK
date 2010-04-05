@@ -1,14 +1,14 @@
 <?php
-require_once('ELSWebAppKit/MySQL/Select/Clause.php');
+require_once('ELSWAK/MySQL/Select/Clause.php');
 
 echo '<h1>Creating new Select Clause</h1>'.LF;
-$clause = new ELSWebAppKit_MySQL_Select_Clause();
+$clause = new ELSWAK_MySQL_Select_Clause();
 print_r_html($clause->sql());
 
 echo '<h1>Adding fields to clause</h1>'.LF;
-$clause->addField(new ELSWebAppKit_MySQL_Field('PROPOSAL_ID', new ELSWebAppKit_MySQL_Table('proposals', new ELSWebAppKit_MySQL_Database('GrahamCracker')), 'int'));
+$clause->addField(new ELSWAK_MySQL_Field('PROPOSAL_ID', new ELSWAK_MySQL_Table('proposals', new ELSWAK_MySQL_Database('GrahamCracker')), 'int'));
 print_r_html($clause->sql());
-$clause->addField(new ELSWebAppKit_MySQL_Field('proposal_title', new ELSWebAppKit_MySQL_Table('proposals', new ELSWebAppKit_MySQL_Database('GrahamCracker')), 'int'));
+$clause->addField(new ELSWAK_MySQL_Field('proposal_title', new ELSWAK_MySQL_Table('proposals', new ELSWAK_MySQL_Database('GrahamCracker')), 'int'));
 print_r_html($clause->sql('database.table.field'));
 print_r_html($clause);
 

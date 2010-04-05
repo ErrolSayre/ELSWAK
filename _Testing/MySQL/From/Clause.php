@@ -1,16 +1,16 @@
 <?php
 // include some files
-require_once('ELSWebAppKit/MySQL/From/Clause.php');
+require_once('ELSWAK/MySQL/From/Clause.php');
 
 // set up some data
-$grahamCracker = new ELSWebAppKit_MySQL_Database('GrahamCracker');
-$proposals = new ELSWebAppKit_MySQL_Table('proposals', $grahamCracker);
-$proposalInvestigators = new ELSWebAppKit_MySQL_Table('proposal_investigators', $grahamCracker);
-$proposalAwards = new ELSWebAppKit_MySQL_Table('proposal_awards', $grahamCracker);
+$grahamCracker = new ELSWAK_MySQL_Database('GrahamCracker');
+$proposals = new ELSWAK_MySQL_Table('proposals', $grahamCracker);
+$proposalInvestigators = new ELSWAK_MySQL_Table('proposal_investigators', $grahamCracker);
+$proposalAwards = new ELSWAK_MySQL_Table('proposal_awards', $grahamCracker);
 
 echo 'Using Where Conditions';
 
-$from = new ELSWebAppKit_MySQL_From_Clause();
+$from = new ELSWAK_MySQL_From_Clause();
 $from->addTable($proposals);
 print_r_html($from->sql());
 $from->addTable($proposalInvestigators);
@@ -21,55 +21,55 @@ print_r_html($from->sql());
 echo 'Using Joins';
 
 // set up some more data
-$proposalsProposalId = new ELSWebAppKit_MySQL_Field('PROPOSAL_ID', $proposals, 'int');
-$proposalInvestigatorsProposalId = new ELSWebAppKit_MySQL_Field('PROPOSAL_ID', $proposalInvestigators, 'int');
-$proposalAwardsProposalId = new ELSWebAppKit_MySQL_Field('PROPOSAL_ID', $proposalAwards, 'int');
+$proposalsProposalId = new ELSWAK_MySQL_Field('PROPOSAL_ID', $proposals, 'int');
+$proposalInvestigatorsProposalId = new ELSWAK_MySQL_Field('PROPOSAL_ID', $proposalInvestigators, 'int');
+$proposalAwardsProposalId = new ELSWAK_MySQL_Field('PROPOSAL_ID', $proposalAwards, 'int');
 
-$from = new ELSWebAppKit_MySQL_From_Clause();
-$from->addTable(new ELSWebAppKit_MySQL_Table('proposals', new ELSWebAppKit_MySQL_Database('GrahamCracker')));
+$from = new ELSWAK_MySQL_From_Clause();
+$from->addTable(new ELSWAK_MySQL_Table('proposals', new ELSWAK_MySQL_Database('GrahamCracker')));
 print_r_html($from->sql());
 $from->addTableJoin
 (
-	new ELSWebAppKit_MySQL_Table_Join
+	new ELSWAK_MySQL_Table_Join
 	(
 		null,
 		'LEFT',
 		$proposalInvestigators,
-		new ELSWebAppKit_MySQL_Conditional_Group
+		new ELSWAK_MySQL_Conditional_Group
 		(
 			array
 			(
-				new ELSWebAppKit_MySQL_Conditional
+				new ELSWAK_MySQL_Conditional
 				(
 					$proposalsProposalId,
-					new ELSWebAppKit_MySQL_Operator('='),
+					new ELSWAK_MySQL_Operator('='),
 					$proposalInvestigatorsProposalId
 				)
 			),
-			new ELSWebAppKit_MySQL_Conjunction('AND')
+			new ELSWAK_MySQL_Conjunction('AND')
 		)
 	)
 );
 print_r_html($from->sql());
 $from->addTableJoin
 (
-	new ELSWebAppKit_MySQL_Table_Join
+	new ELSWAK_MySQL_Table_Join
 	(
 		null,
 		'LEFT',
 		$proposalAwards,
-		new ELSWebAppKit_MySQL_Conditional_Group
+		new ELSWAK_MySQL_Conditional_Group
 		(
 			array
 			(
-				new ELSWebAppKit_MySQL_Conditional
+				new ELSWAK_MySQL_Conditional
 				(
 					$proposalsProposalId,
-					new ELSWebAppKit_MySQL_Operator('='),
+					new ELSWAK_MySQL_Operator('='),
 					$proposalAwardsProposalId
 				)
 			),
-			new ELSWebAppKit_MySQL_Conjunction('AND')
+			new ELSWAK_MySQL_Conjunction('AND')
 		)
 	)
 );

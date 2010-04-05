@@ -1,10 +1,10 @@
 <?php
 /*
-	ELSWebAppKit MySQL Where Clause
+	ELSWAK MySQL Where Clause
 */
-require_once('ELSWebAppKit/MySQL/Conditional/Group.php');
-class ELSWebAppKit_MySQL_Where_Clause
-	extends ELSWebAppKit_MySQL_Conditional_Group
+require_once('ELSWAK/MySQL/Conditional/Group.php');
+class ELSWAK_MySQL_Where_Clause
+	extends ELSWAK_MySQL_Conditional_Group
 {
 	public function sql($format = '', $indent = '')
 	{

@@ -1,9 +1,9 @@
 <?php
 /*
-	ELSWebAppKit MySQL Order Clause
+	ELSWAK MySQL Order Clause
 */
-require_once('ELSWebAppKit/MySQL/Ordinal.php');
-class ELSWebAppKit_MySQL_Order_Clause
+require_once('ELSWAK/MySQL/Ordinal.php');
+class ELSWAK_MySQL_Order_Clause
 {
 	protected $ordinals;
 	
@@ -27,7 +27,7 @@ class ELSWebAppKit_MySQL_Order_Clause
 			throw new Exception('Invalid key: Ordinal not found.');
 		}
 	}
-	public function addOrdinal(ELSWebAppKit_MySQL_Ordinal $ordinal)
+	public function addOrdinal(ELSWAK_MySQL_Ordinal $ordinal)
 	{
 		$this->ordinals[] = $ordinal;
 		return $this->ordinals[count($this->ordinals) - 1];
@@ -61,7 +61,7 @@ class ELSWebAppKit_MySQL_Order_Clause
 		
 		foreach ($ordinals as $ordinal)
 		{
-			if ($ordinal instanceof ELSWebAppKit_MySQL_Ordinal)
+			if ($ordinal instanceof ELSWAK_MySQL_Ordinal)
 			{
 				$this->addOrdinal($ordinal);
 			}

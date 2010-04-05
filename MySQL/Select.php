@@ -1,14 +1,14 @@
 <?php
 /*
-	ELSWebAppKit MySQL Select
+	ELSWAK MySQL Select
 	
 	This class represents the attributes of a MySQL SELECT query.
 */
-require_once('ELSWebAppKit/MySQL/Select/Clause.php');
-require_once('ELSWebAppKit/MySQL/From/Clause.php');
-require_once('ELSWebAppKit/MySQL/Where/Clause.php');
-require_once('ELSWebAppKit/MySQL/Order/Clause.php');
-class ELSWebAppKit_MySQL_Select
+require_once('ELSWAK/MySQL/Select/Clause.php');
+require_once('ELSWAK/MySQL/From/Clause.php');
+require_once('ELSWAK/MySQL/Where/Clause.php');
+require_once('ELSWAK/MySQL/Order/Clause.php');
+class ELSWAK_MySQL_Select
 {
 	protected $selectClause;
 	protected $fromClause;
@@ -17,38 +17,38 @@ class ELSWebAppKit_MySQL_Select
 	protected $orderClause;
 	protected $limitClause;
 	
-	public function __construct(ELSWebAppKit_MySQL_Select_Clause $selectClause = null, ELSWebAppKit_MySQL_From_Clause $fromClause = null, ELSWebAppKit_MySQL_Where_Clause $whereClause = null, ELSWebAppKit_MySQL_Order_Clause $orderClause = null)
+	public function __construct(ELSWAK_MySQL_Select_Clause $selectClause = null, ELSWAK_MySQL_From_Clause $fromClause = null, ELSWAK_MySQL_Where_Clause $whereClause = null, ELSWAK_MySQL_Order_Clause $orderClause = null)
 	{
 		$this->setSelectClause
 		(
 			($selectClause !== null)?
 				$selectClause:
-				new ELSWebAppKit_MySQL_Select_Clause()
+				new ELSWAK_MySQL_Select_Clause()
 		);
 		$this->setFromClause
 		(
 			($fromClause !== null)?
 				$fromClause:
-				new ELSWebAppKit_MySQL_From_Clause()
+				new ELSWAK_MySQL_From_Clause()
 		);
 		$this->setWhereClause
 		(
 			($whereClause !== null)?
 				$whereClause:
-				new ELSWebAppKit_MySQL_Where_Clause()
+				new ELSWAK_MySQL_Where_Clause()
 		);
 		$this->setOrderClause
 		(
 			($orderClause !== null)?
 				$orderClause:
-				new ELSWebAppKit_MySQL_Order_Clause()
+				new ELSWAK_MySQL_Order_Clause()
 		);
 	}
 	public function selectClause()
 	{
 		return $this->selectClause;
 	}
-	public function setSelectClause(ELSWebAppKit_MySQL_Select_Clause $selectClause)
+	public function setSelectClause(ELSWAK_MySQL_Select_Clause $selectClause)
 	{
 		$this->selectClause = $selectClause;
 		return $this;
@@ -57,7 +57,7 @@ class ELSWebAppKit_MySQL_Select
 	{
 		return $this->fromClause;
 	}
-	public function setFromClause(ELSWebAppKit_MySQL_From_Clause $fromClause)
+	public function setFromClause(ELSWAK_MySQL_From_Clause $fromClause)
 	{
 		$this->fromClause = $fromClause;
 		return $this;
@@ -66,7 +66,7 @@ class ELSWebAppKit_MySQL_Select
 	{
 		return $this->whereClause;
 	}
-	public function setWhereClause(ELSWebAppKit_MySQL_Where_Clause $whereClause)
+	public function setWhereClause(ELSWAK_MySQL_Where_Clause $whereClause)
 	{
 		$this->whereClause = $whereClause;
 		return $this;
@@ -75,7 +75,7 @@ class ELSWebAppKit_MySQL_Select
 	{
 		return $this->orderClause;
 	}
-	public function setOrderClause(ELSWebAppKit_MySQL_Order_Clause $orderClause)
+	public function setOrderClause(ELSWAK_MySQL_Order_Clause $orderClause)
 	{
 		$this->orderClause = $orderClause;
 		return $this;
@@ -84,7 +84,7 @@ class ELSWebAppKit_MySQL_Select
 	{
 		return $this->limitClause;
 	}
-	public function setLimitClause(ELSWebAppKit_MySQL_Limit_Clause $limitClause = null)
+	public function setLimitClause(ELSWAK_MySQL_Limit_Clause $limitClause = null)
 	{
 		$this->limitClause = $limitClause;
 		return $this;

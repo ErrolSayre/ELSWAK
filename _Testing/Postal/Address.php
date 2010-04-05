@@ -1,7 +1,7 @@
 <?php
-// test the ELSWebAppKit Postal Address class
-$className = 'ELSWebAppKit_Postal_Address';
-$classPath = 'ELSWebAppKit/Postal/Address.php';
+// test the ELSWAK Postal Address class
+$className = 'ELSWAK_Postal_Address';
+$classPath = 'ELSWAK/Postal/Address.php';
 
 $classData = array
 (
@@ -41,4 +41,4 @@ $classMethods = array
 );
 
 // include the class tester
-include('ELSWebAppKit/Utilities/ClassTester.php');
+include('ELSWAK/Utilities/ClassTester.php');

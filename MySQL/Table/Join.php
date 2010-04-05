@@ -1,18 +1,18 @@
 <?php
 /*
-	ELSWebAppKit MySQL Table Join
+	ELSWAK MySQL Table Join
 */
-require_once('ELSWebAppKit/MySQL/Operator.php');
-require_once('ELSWebAppKit/MySQL/Table.php');
-require_once('ELSWebAppKit/MySQL/Conditional/Group.php');
-class ELSWebAppKit_MySQL_Table_Join
+require_once('ELSWAK/MySQL/Operator.php');
+require_once('ELSWAK/MySQL/Table.php');
+require_once('ELSWAK/MySQL/Conditional/Group.php');
+class ELSWAK_MySQL_Table_Join
 {
 	protected $type;
 	protected $direction;
 	protected $table;
 	protected $conditions;
 	
-	public function __construct($type = null, $direction = 'LEFT', ELSWebAppKit_MySQL_Table $table = null, ELSWebAppKit_MySQL_Conditional_Group $conditions = null)
+	public function __construct($type = null, $direction = 'LEFT', ELSWAK_MySQL_Table $table = null, ELSWAK_MySQL_Conditional_Group $conditions = null)
 	{
 		$this->setType($type);
 		$this->setDirection($direction);
@@ -20,16 +20,16 @@ class ELSWebAppKit_MySQL_Table_Join
 		(
 			($table !== null)?
 				$table:
-				new ELSWebAppKit_MySQL_Table()
+				new ELSWAK_MySQL_Table()
 		);
 		$this->setConditions
 		(
 			($conditions !== null)?
 				$conditions:
-				new ELSWebAppKit_MySQL_Conditional_Group
+				new ELSWAK_MySQL_Conditional_Group
 				(
 					array(),
-					new ELSWebAppKit_MySQL_Conjunction('AND')
+					new ELSWAK_MySQL_Conjunction('AND')
 				)
 		);
 	}
@@ -109,7 +109,7 @@ class ELSWebAppKit_MySQL_Table_Join
 	{
 		return $this->table;
 	}
-	public function setTable(ELSWebAppKit_MySQL_Table $table)
+	public function setTable(ELSWAK_MySQL_Table $table)
 	{
 		$this->table = $table;
 		return $this;
@@ -118,7 +118,7 @@ class ELSWebAppKit_MySQL_Table_Join
 	{
 		return $this->conditions;
 	}
-	public function setConditions(ELSWebAppKit_MySQL_Conditional_Group $conditions)
+	public function setConditions(ELSWAK_MySQL_Conditional_Group $conditions)
 	{
 		$this->conditions = $conditions;
 		return $this;

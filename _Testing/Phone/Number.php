@@ -1,7 +1,7 @@
 <?php
-// test the ELSWebAppKit Phone Number class
-$className = 'ELSWebAppKit_Phone_Number';
-$classPath = 'ELSWebAppKit/Phone/Number.php';
+// test the ELSWAK Phone Number class
+$className = 'ELSWAK_Phone_Number';
+$classPath = 'ELSWAK/Phone/Number.php';
 
 // specify some test data
 $classData = array
@@ -75,5 +75,5 @@ $classData = array
 );
 
 // include the class tester
-include('ELSWebAppKit/Utilities/ClassTester.php');
+include('ELSWAK/Utilities/ClassTester.php');
 ?>

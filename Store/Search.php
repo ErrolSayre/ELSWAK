@@ -1,20 +1,20 @@
 <?php
 /*
-	ELSWebAppKit Store Search
+	ELSWAK Store Search
 	
 	Store search "queries" are designed to provide a common interface for providing search data to a store coordinator. Since a store coordinator can be any type (RDBMS, XML, text, or binary file, etc.) controllers need a standard and independent manner to provide search parameters. A store search is made up of a search criteria list, a sort properties list, a depth, and a limit.
 */
-require_once('ELSWebAppKit/Store/Search/Criteria.php');
-require_once('ELSWebAppKit/Store/Search/Sort.php');
-require_once('ELSWebAppKit/Store/Search/Limit.php');
-class ELSWebAppKit_Store_Search
+require_once('ELSWAK/Store/Search/Criteria.php');
+require_once('ELSWAK/Store/Search/Sort.php');
+require_once('ELSWAK/Store/Search/Limit.php');
+class ELSWAK_Store_Search
 {
 	protected $criteriaList;
 	protected $sortItems;
 	protected $depth;
 	protected $limit;
 	
-	public function __construct(array $criteriaList = null, array $sortItems = null, $depth = 'deep', ELSWebAppKit_Store_Search_Limit $limit = null)
+	public function __construct(array $criteriaList = null, array $sortItems = null, $depth = 'deep', ELSWAK_Store_Search_Limit $limit = null)
 	{
 		$this->setCriteriaList
 		(
@@ -33,7 +33,7 @@ class ELSWebAppKit_Store_Search
 		(
 			($limit !== null)?
 				$limit:
-				new ELSWebAppKit_Store_Search_Limit()
+				new ELSWAK_Store_Search_Limit()
 		);
 	}
 	public function criteriaForKey($index)
@@ -47,7 +47,7 @@ class ELSWebAppKit_Store_Search
 			throw new Exception('Invalid key: Criteria not found.');
 		}
 	}
-	public function addCriteria(ELSWebAppKit_Store_Search_Criteria $criteria)
+	public function addCriteria(ELSWAK_Store_Search_Criteria $criteria)
 	{
 		$this->criteriaList[] = $criteria;
 		return $this->criteriaList[count($this->criteriaList) - 1];
@@ -87,7 +87,7 @@ class ELSWebAppKit_Store_Search
 		
 		foreach ($criteriaList as $criteria)
 		{
-			if ($criteria instanceOf ELSWebAppKit_Store_Search_Criteria)
+			if ($criteria instanceOf ELSWAK_Store_Search_Criteria)
 			{
 				$this->addCriteria($criteria);
 			}
@@ -105,7 +105,7 @@ class ELSWebAppKit_Store_Search
 			throw new Exception('Invalid key: Criteria not found.');
 		}
 	}
-	public function addSortItem(ELSWebAppKit_Store_Search_Sort $sortItem)
+	public function addSortItem(ELSWAK_Store_Search_Sort $sortItem)
 	{
 		$this->sortItems[] = $sortItem;
 		return $this->sortItems[count($this->sortItems) - 1];
@@ -145,7 +145,7 @@ class ELSWebAppKit_Store_Search
 		
 		foreach ($sortItems as $sortItem)
 		{
-			if ($sortItem instanceOf ELSWebAppKit_Store_Search_Sort)
+			if ($sortItem instanceOf ELSWAK_Store_Search_Sort)
 			{
 				$this->addSortItem($sortItem);
 			}
@@ -182,7 +182,7 @@ class ELSWebAppKit_Store_Search
 	{
 		return $this->limit;
 	}
-	public function setLimit(ELSWebAppKit_Store_Search_Limit $limit)
+	public function setLimit(ELSWAK_Store_Search_Limit $limit)
 	{
 		$this->limit = $limit;
 		return $this;

@@ -1,11 +1,11 @@
 <?php
 /*
-	ELSWebAppKit MySQL Select Clause
+	ELSWAK MySQL Select Clause
 	
 	This class represents the attributes that make up a MySQL SELECT clause.
 */
-require_once('ELSWebAppKit/MySQL/Field.php');
-class ELSWebAppKit_MySQL_Select_Clause
+require_once('ELSWAK/MySQL/Field.php');
+class ELSWAK_MySQL_Select_Clause
 {
 	protected $fields;
 	
@@ -33,7 +33,7 @@ class ELSWebAppKit_MySQL_Select_Clause
 			throw new Exception('Invalid key: Field not found.');
 		}
 	}
-	public function addField(ELSWebAppKit_MySQL_Field $field)
+	public function addField(ELSWAK_MySQL_Field $field)
 	{
 		$this->fields[] = $field;
 		return $this->fields[count($this->fields) - 1];
@@ -67,7 +67,7 @@ class ELSWebAppKit_MySQL_Select_Clause
 		
 		foreach ($fields as $field)
 		{
-			if ($field instanceOf ELSWebAppKit_MySQL_Field)
+			if ($field instanceOf ELSWAK_MySQL_Field)
 			{
 				$this->addField($field);
 			}
