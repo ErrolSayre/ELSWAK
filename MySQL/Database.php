@@ -25,4 +25,3 @@ class ELSWAK_MySQL_Database {
 		return '`'.$this->name.'`';
 	}
 }
-?>
