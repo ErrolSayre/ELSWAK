@@ -5,29 +5,23 @@
 	This class provides some basic information for an object representing the
 	attributes of a database.
 */
-class ELSWAK_MySQL_Database
-{
+class ELSWAK_MySQL_Database {
 	protected $name;
 	
-	public function __construct($name)
-	{
+	public function __construct($name) {
 		$this->setName($name);
 	}
-	public function name()
-	{
+	public function name() {
 		return $this->name;
 	}
-	protected function setName($name)
-	{
+	protected function setName($name) {
 		$this->name = $name;
 		return $this;
 	}
-	public function prettyName()
-	{
+	public function prettyName() {
 		return $this->name;
 	}
-	public function sql($format = '', $indent = '')
-	{
+	public function sql($format = '', $indent = '') {
 		return '`'.$this->name.'`';
 	}
 }
