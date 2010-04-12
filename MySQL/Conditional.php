@@ -55,17 +55,17 @@ class ELSWAK_MySQL_Conditional
 		$sql = '';
 		
 		// add the left side
-		if ($this->leftSide !== null) {
+		if ($this->leftSide != null) {
 			$sql .= $this->leftSide->sql($format, $indent);
 		}
 		
 		// add the operator
-		if ($this->operator !== null) {
+		if ($this->operator != null) {
 			$sql .= ' '.$this->operator->sql($format, $indent);
 		}
 		
 		// add the right side
-		if ($this->rightSide !== null) {
+		if ($this->rightSide != null) {
 			$sql .= ' '.$this->rightSide->sql($format, $indent);
 		}
 		
