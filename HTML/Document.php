@@ -356,10 +356,10 @@ class ELSWAK_HTML_Document
 			$attributes['alt'] = $alt;
 		return $this->createElement('img', null, $attributes);
 	}
-	public function createForm($action = '', $method = 'post', $content = null, array $attributes = null) {
-		$method = strtolower($method);
-		if ($method != 'get')
-			$method = 'post';
+	public function createForm($action = '', $method = 'POST', $content = null, array $attributes = null) {
+		$method = strtoupper($method);
+		if ($method != 'GET')
+			$method = 'POST';
 		if (!is_array($attributes))
 			$attributes = array();
 		if (empty($attributes['action']) && !empty($action))
