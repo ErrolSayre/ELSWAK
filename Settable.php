@@ -480,6 +480,17 @@ class ELSWAK_Settable {
 		}
 		return $this->{$property};
 	}
+	public static function _makeYearValue($value) {
+		$value = abs(intval($value));
+		if ($value < 100) {
+			if ($value + 2000 < date('Y') + 25) {
+				$value += 2000;
+			} else {
+				$value += 1900;
+			}
+		}
+		return $value;
+	}
 }
 class ELSWAK_Settable_Model_Helper {
 	public static function methodsForClass($class) {
