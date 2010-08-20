@@ -338,6 +338,7 @@ class ELSWAK_HTML_Document
 				}
 			}
 		}
+		return $element;
 	}
 	public function createLink($href, $content = null, array $attributes = null) {
 		if (!is_array($attributes))
