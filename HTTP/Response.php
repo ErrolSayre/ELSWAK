@@ -55,13 +55,7 @@ class ELSWAK_HTTP_Response {
 	public function setContent($content = null, $key = null, $type = null) {
 		// overwrite all existing content and replace with the supplied content
 		$this->body = array();
-		if ($content !== null) {
-			if ($key !== null)
-				$this->body[$key] = $this->filterContentByType($content, $type);
-			else
-				$this->body[] = $this->filterContentByType($content, $type);
-		}
-		return $this;
+		return $this->addContent($content, $key, $type);
 	}
 	public function addContent($content, $key = null, $type = null) {
 		// append content to the body or set/overwrite the value of a given key if provided
@@ -73,7 +67,7 @@ class ELSWAK_HTTP_Response {
 	}
 	public function setContentForKey($key, $content, $type = null) {
 		// set or unset a value for a given key
-		if ($content != null)
+		if ($content !== null)
 			$this->body[$key] = $this->filterContentByType($content, $type);
 		else
 			unset($this->body[$key]);
