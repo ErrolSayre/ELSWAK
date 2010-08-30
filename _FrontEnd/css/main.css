@@ -17,6 +17,9 @@
 	padding: 2em;
 	background-color: #eed2dc;
 }
+div.loud.error * {
+	color: #c90028;
+}
 .loud.warning {
 	padding: 2em;
 	background-color: #efe09b;
@@ -129,4 +132,27 @@ ul.tasks li {
 */
 .ELSWAK-Variable-Dump dd {
 	margin-left: 2em;
+}
+/* ================== */
+/* ! Server Badging   */
+/* ================== */
+/*
+	This rule provides a Coda specific hack that shows a large badging of "Dev" or "Base" depending upon the server generating the response.
+*/
+.server.environment.badging {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	font-family: "Arial Narrow", san-serif;
+	font-size: 300pt;
+	font-weight: bold;
+	font-stretch: condensed;
+	text-align: center;
+}
+.server.environment.badging.test {
+	color: #2956bc;
+}
+.server.environment.badging.base {
+	color: #d20000;
 }
