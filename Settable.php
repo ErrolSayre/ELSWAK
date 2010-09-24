@@ -22,6 +22,9 @@ class ELSWAK_Settable {
 	private static $_setters;
 	private static $_callers;
 	
+	public function __construct($import = null) {
+		$this->_import($import);
+	}
 	public function __set($property, $value) {
 		// determine if this class has been examined before
 		$className = get_class($this);
@@ -152,6 +155,39 @@ class ELSWAK_Settable {
 		// since no matching method exists and there is not an appropriate number of arguments for a set operation, attempt to get the property, allowing the __get method to throw any appropriate exceptions
 		return $this->__get(self::$_callers[$className][$method]['property']);
 	}
+	public function __toString() {
+		return $this->_describe();
+	}
+	public function _describe($padding = '', $json = false) {
+		$values = array();
+		$keys = array_keys(get_object_vars($this));
+		foreach ($keys as $property) {
+			try {
+				$value = $this->__get($property);
+				if ($value instanceof ELSWAK_Settable) {
+					$value = $value->_describe($padding.TAB, $json);
+				} else {
+					$value = json_encode($value);
+				}
+				if ($json) {
+					$values[] = '"'.$property.'": '.$value;
+				} else {
+					$values[] = $property.': '.$value;
+				}
+			} catch (Exception $e) {}
+		}
+		if ($json) {
+			return '{'.LF
+				.$padding.TAB.implode(','.LF.$padding.TAB, $values).LF
+				.$padding.'}';
+		}
+		return get_class($this).' {'.LF
+			.$padding.TAB.implode(','.LF.$padding.TAB, $values).LF
+			.$padding.'}';
+	}
+	public function _toJSON($padding = '') {
+		return $this->_describe($padding, true);
+	}
 	public function _import($import) {
 		if (is_array($import) || is_object($import)) {
 			foreach ($import as $property => $value) {
@@ -272,6 +308,10 @@ class ELSWAK_Settable {
 			}
 		}
 		return false;
+	}
+	protected function _setPropertyAsString($property, $value) {
+		$this->{$property} = strval($value);
+		return $this;
 	}
 	protected function _setPropertyAsInteger($property, $value) {
 		$this->{$property} = intval($value);
