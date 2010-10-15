@@ -273,6 +273,9 @@ class ELSWAK_HTML_Document
 		
 		return $this;
 	}
+// =========================== 
+// !Element Creation Methods   
+// =========================== 
 	public function createElement($tagName, $content = null, array $attributes = null) {
 		$element = parent::createElement($tagName);
 		
@@ -302,19 +305,22 @@ class ELSWAK_HTML_Document
 		}
 		return $element;
 	}
-	public function addClassToElement($class, DOMElement $element) {
-		// setup the existing classes
-		$classes = array();
-		if ($element->hasAttribute('class'))
-			$classes = explode(' ', $element->getAttribute('class'));
-		
-		// determine if this class is new
-		if (!in_array($class, $classes))
-			$classes[] = $class;
-		
-		// set the class
-		$element->setAttribute('class', implode(' ', $classes));
+	public function migrateElementToElementOfType(DOMElement $element, $type) {
+		$attributes = array();
+		if ($element->hasAttributes()) {
+			foreach ($element->attributes as $attribute) {
+				$attributes[$attribute->name] = $attribute->value;
+			}
+		}
+		$newElement = $this->createElement($type, null, $attributes);
+		while ($element->hasChildNodes()) {
+			$newElement->appendChild($element->firstChild);
+		}
+		return $newElement;
 	}
+// ======================= 
+// !	Display Elements   
+// ======================= 
 	public function createDiv($content = null, array $attributes = null) {
 		return $this->createElement('div', $content, $attributes);
 	}
@@ -326,19 +332,6 @@ class ELSWAK_HTML_Document
 	}
 	public function createBreak(array $attributes = null) {
 		return $this->createElement('br', null, $attributes);
-	}
-	public function addLinesToElementAsParagraphs($lines, DOMElement $element) {
-		if (is_string($lines)) {
-			$lines = explode(LF, $lines);
-		}
-		if (is_array($lines)) {
-			foreach ($lines as $line) {
-				if ($line != null) {
-					$element->appendChild($this->createParagraph($line));
-				}
-			}
-		}
-		return $element;
 	}
 	public function createLink($href, $content = null, array $attributes = null) {
 		if (!is_array($attributes))
@@ -356,6 +349,9 @@ class ELSWAK_HTML_Document
 			$attributes['alt'] = $alt;
 		return $this->createElement('img', null, $attributes);
 	}
+// ==================== 
+// !	Form Elements   
+// ==================== 
 	public function createForm($action = '', $method = 'POST', $content = null, array $attributes = null) {
 		$method = strtoupper($method);
 		if ($method != 'GET')
@@ -382,9 +378,11 @@ class ELSWAK_HTML_Document
 		// set up the class
 		if ($attributes == null)
 			$attributes = array();
-		if (empty($attributes['class']))
-			$attributes['class'] = '';
-		$attributes['class'] = 'field '.$attributes['class'];
+		if (array_key_exists('class', $attributes)) {
+			$attributes['class'] = trim('field '.$attributes['class']);
+		} else {
+			$attributes['class'] = 'field';
+		}
 		
 		// create the field container
 		$fieldContainer = $this->createElement('div', null, $attributes);
@@ -410,8 +408,10 @@ class ELSWAK_HTML_Document
 		// determine if the input provided is a DOM element
 		if ($input instanceof DOMElement) {
 			// determine if this is an input
-			if ((strtolower($input->tagName) == 'input') ||
-				($input->tagName == 'div' && $input->hasAttribute('class') && $input->getAttribute('class') == 'input')) {
+			if (
+				strtolower($input->tagName) == 'input' ||
+				($input->hasAttribute('class') && $input->getAttribute('class') == 'input')
+			) {
 				// add this element as the input for this form item
 				$fieldContainer->appendChild($input);
 			} else {
@@ -473,6 +473,15 @@ class ELSWAK_HTML_Document
 		if (empty($attributes['size']))
 			$attributes['size'] = 20;
 		return $this->createHiddenInput($name, $value, $attributes);
+	}
+	public function createLabeledTextInput($name, $value = null, $label, array $attributes = null, array $labelAttributes = null) {
+		$labelElement = $this->createElement('label', null, $labelAttributes);
+		if ($label instanceof DOMElement)
+			$labelElement->appendChild($label);
+		else
+			$labelElement->appendChild($this->createTextNode(strval($label)));
+		$labelElement->appendChild($this->createTextInput($name, $value, $attributes));
+		return $labelElement;
 	}
 	public function createPasswordInput($name, $value = null, array $attributes = null) {
 		if (!is_array($attributes))
@@ -618,6 +627,53 @@ class ELSWAK_HTML_Document
 			$attributes['size'] = 40;
 		return $this->createElement('input', null, $attributes);
 	}
+// ========================== 
+// !Element Utility Methods   
+// ========================== 
+	public function addLinesToElementAsParagraphs($lines, DOMElement $element) {
+		if (is_string($lines)) {
+			$lines = explode(LF, $lines);
+		}
+		if (is_array($lines)) {
+			foreach ($lines as $line) {
+				if ($line != null) {
+					$element->appendChild($this->createParagraph($line));
+				}
+			}
+		}
+		return $element;
+	}
+	public function addClassToElement($class, DOMElement $element) {
+		// setup the existing classes
+		$classes = array();
+		if ($element->hasAttribute('class'))
+			$classes = explode(' ', $element->getAttribute('class'));
+		
+		// determine if this class is new
+		if (!in_array($class, $classes))
+			$classes[] = $class;
+		
+		// set the class
+		$element->setAttribute('class', implode(' ', $classes));
+	}
+	public static function addClassToAttributesArray($class, $attributes) {
+		if (array_key_exists('class', $attributes)) {
+			$attributes['class'] = self::addClassToClassString($class, $attributes['class']);
+		} else {
+			$attributes['class'] = $class;
+		}
+		return $attributes;
+	}
+	public static function addClassToClassString($class, $classString) {
+		$classes = explode(' ', $classString);
+		if (!in_array($class, $classes)) {
+			$classString .= ' '.$class;
+		}
+		return trim($classString);
+	}
+// ===================== 
+// !CSS & JS Additions   
+// ===================== 
 	public function addScript($source = null, $content = null, $useHeader = false, array $attributes = null) {
 		// determine if a script source was provided and prevent duplicates
 		$uniqueScript = true;
@@ -675,6 +731,9 @@ class ELSWAK_HTML_Document
 		}
 		return $this;
 	}
+// ================ 
+// !Console Tools   
+// ================ 
 	public function debugDumpVariable($var, $label = '') {
 		// create a new element to contain the variable
 		$div = $this->createElement('div', null, array('class' => 'ELSWAK-Variable-Dump'));
