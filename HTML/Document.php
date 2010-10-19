@@ -413,7 +413,7 @@ class ELSWAK_HTML_Document
 		// create a new fieldset element
 		$fieldset = $this->createElement('fieldset', $content, $attributes);
 		if (!empty($legend))
-			$fieldset->insertBefore($this->createLabel($legend), $fieldset->firstChild);
+			$fieldset->insertBefore($this->createLegend($legend), $fieldset->firstChild);
 		return $fieldset;
 	}
 	public function createLegend($content = null, array $attributes = null) {
