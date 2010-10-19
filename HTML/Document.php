@@ -327,6 +327,24 @@ class ELSWAK_HTML_Document
 	public function createSpan($content = null, array $attributes = null) {
 		return $this->createElement('span', $content, $attributes);
 	}
+	public function createH1($content = null, array $attributes = null) {
+		return $this->createElement('h1', $content, $attributes);
+	}
+	public function createH2($content = null, array $attributes = null) {
+		return $this->createElement('h2', $content, $attributes);
+	}
+	public function createH3($content = null, array $attributes = null) {
+		return $this->createElement('h3', $content, $attributes);
+	}
+	public function createH4($content = null, array $attributes = null) {
+		return $this->createElement('h4', $content, $attributes);
+	}
+	public function createH5($content = null, array $attributes = null) {
+		return $this->createElement('h5', $content, $attributes);
+	}
+	public function createH6($content = null, array $attributes = null) {
+		return $this->createElement('h6', $content, $attributes);
+	}
 	public function createParagraph($content = null, array $attributes = null) {
 		return $this->createElement('p', $content, $attributes);
 	}
@@ -349,6 +367,33 @@ class ELSWAK_HTML_Document
 			$attributes['alt'] = $alt;
 		return $this->createElement('img', null, $attributes);
 	}
+	public function createDl($content = null, array $attributes = null) {
+		return $this->createElement('dl', $content, $attributes);
+	}
+	public function createDt($content = null, array $attributes = null) {
+		return $this->createElement('dt', $content, $attributes);
+	}
+	public function createDd($content = null, array $attributes = null) {
+		return $this->createElement('dd', $content, $attributes);
+	}
+	public function createUl($content = null, array $attributes = null) {
+		return $this->createElement('ul', $content, $attributes);
+	}
+	public function createLi($content = null, array $attributes = null) {
+		return $this->createElement('li', $content, $attributes);
+	}
+// ===================== 
+// !	Table Elements   
+// ===================== 
+	public function createTr($content = null, array $attributes = null) {
+		return $this->createElement('tr', $content, $attributes);
+	}
+	public function createTh($content = null, array $attributes = null) {
+		return $this->createElement('th', $content, $attributes);
+	}
+	public function createTd($content = null, array $attributes = null) {
+		return $this->createElement('td', $content, $attributes);
+	}
 // ==================== 
 // !	Form Elements   
 // ==================== 
@@ -368,8 +413,14 @@ class ELSWAK_HTML_Document
 		// create a new fieldset element
 		$fieldset = $this->createElement('fieldset', $content, $attributes);
 		if (!empty($legend))
-			$fieldset->insertBefore($this->createElement('legend', $legend), $fieldset->firstChild);
+			$fieldset->insertBefore($this->createLabel($legend), $fieldset->firstChild);
 		return $fieldset;
+	}
+	public function createLegend($content = null, array $attributes = null) {
+		return $this->createElement('legend', $content, $attributes);
+	}
+	public function createLabel($content = null, array $attributes = null) {
+		return $this->createElement('label', $content, $attributes);
 	}
 	public function createFormField($label, $input, $description = null, array $attributes = null) {
 /*
@@ -385,7 +436,7 @@ class ELSWAK_HTML_Document
 		}
 		
 		// create the field container
-		$fieldContainer = $this->createElement('div', null, $attributes);
+		$fieldContainer = $this->createDiv(null, $attributes);
 		$this->addClassToElement('field', $fieldContainer);
 		
 		// add the label
@@ -397,7 +448,7 @@ class ELSWAK_HTML_Document
 				$fieldContainer->appendChild($label);
 			} else {
 				// add this element as the label within a container
-				$fieldContainer->appendChild($this->createElement('label', $label));
+				$fieldContainer->appendChild($this->createLabel($label));
 			}
 		} else {
 			// add the label as text to the label element
@@ -475,7 +526,7 @@ class ELSWAK_HTML_Document
 		return $this->createHiddenInput($name, $value, $attributes);
 	}
 	public function createLabeledTextInput($name, $value = null, $label, array $attributes = null, array $labelAttributes = null) {
-		$labelElement = $this->createElement('label', null, $labelAttributes);
+		$labelElement = $this->createLabel(null, $labelAttributes);
 		if ($label instanceof DOMElement)
 			$labelElement->appendChild($label);
 		else
@@ -524,7 +575,7 @@ class ELSWAK_HTML_Document
 /*
 	Labeled check box inputs are check boxes coupled with a label so that the radio is toggled when the text of the label is clicked.
 */
-		$labelElement = $this->createElement('label', null, $labelAttributes);
+		$labelElement = $this->createLabel(null, $labelAttributes);
 		$labelElement->appendChild($this->createRadioInput($name, $value, $checked, $attributes));
 		if ($label instanceof DOMElement)
 			$labelElement->appendChild($label);
@@ -545,7 +596,7 @@ class ELSWAK_HTML_Document
 /*
 	Labeled check box inputs are check boxes coupled with a label so that the checkbox is toggled when the text of the label is clicked.
 */
-		$labelElement = $this->createElement('label', null, $labelAttributes);
+		$labelElement = $this->createLabel(null, $labelAttributes);
 		$labelElement->appendChild($this->createCheckboxInput($name, $value, $checked, $attributes));
 		if ($label instanceof DOMElement)
 			$labelElement->appendChild($label);
@@ -736,9 +787,9 @@ class ELSWAK_HTML_Document
 // ================ 
 	public function debugDumpVariable($var, $label = '') {
 		// create a new element to contain the variable
-		$div = $this->createElement('div', null, array('class' => 'ELSWAK-Variable-Dump'));
+		$div = $this->createDiv(null, array('class' => 'ELSWAK-Variable-Dump'));
 		if ($label != null)
-			$div->appendChild($this->createElement('h1', $label));
+			$div->appendChild($this->createH1($label));
 		// recurse through the variable contents
 		$this->debugRecurseDumpVariable($var, $div);
 		return $div;
@@ -752,10 +803,10 @@ class ELSWAK_HTML_Document
 			// process each item
 			foreach ($var as $key => $value) {
 				// add a new term for this key
-				$dl->appendChild($this->createElement('dt', $key));
+				$dl->appendChild($this->createDt($key));
 				
 				// create a definition for the value
-				$dd = $dl->appendChild($this->createElement('dd'));
+				$dd = $dl->appendChild($this->createDd());
 				
 				// add this value
 				$this->debugRecurseDumpVariable($value, $dd);
