@@ -402,6 +402,10 @@ class ELSWAK_Settable {
 		return sprintf('%.2f', floatval(str_replace(array(',', '$'), '', $this->{$property})));
 	}
 	protected function _setPropertyAsEnumeratedValue($property, $value, $values, $ignoreCase = true) {
+		$this->{$property} = $this->_validateValueAgainstList($value, $values, $ignoreCase);
+		return $this;
+	}
+	protected static function _validateValueAgainstList($value, $values, $ignoreCase = true) {
 		if ($ignoreCase)
 			$value = strtolower($value);
 		foreach ($values as $validKey => $validValue) {
@@ -409,20 +413,18 @@ class ELSWAK_Settable {
 			if ($ignoreCase)
 				$compareValue = strtolower($compareValue);
 			if ($value == $compareValue) {
-				$this->{$property} = $validValue;
-				return $this;
+				return $validValue;
 			} else if (!is_numeric($validKey)) {
 				// try to compare the value against the key
 				$compareValue = $validKey;
 				if ($ignoreCase)
 					$compareValue = strtolower($compareValue);
 				if ($value == $compareValue) {
-					$this->{$property} = $validValue;
-					return $this;
+					return $validValue;
 				}
 			}
 		}
-		throw new Exception('Unable to set '.$property.'. Supplied value does not match accepted values list.');
+		throw new Exception('Supplied value does not match accepted values list.');
 	}
 	protected function _setPropertyAsObjectOfClass($property, $value, $class) {
 		if ($this->_verifyItemAsObjectOfClass($value, $class)) {
