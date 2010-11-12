@@ -25,6 +25,8 @@ class ELSWAK_HTML_FormReader {
 				return true;
 			if (isset($_POST[$namePrefix]['continue']))
 				return true;
+			if (isset($_POST[$namePrefix]['create']))
+				return true;
 		}
 		return false;
 	}
