@@ -10,6 +10,19 @@
 .warning {
 	color: #ed972e;
 }
+.highlight,
+*:target {
+	background-color: #fff773;
+}
+.highlight.green {
+	background-color: #a4ff74;
+}
+.highlight.orange {
+	background-color: #ffd275;
+}
+.highlight.blue {
+	background-color: #76ceff;
+}
 .loud {
 	font-weight: bold;
 }
@@ -39,9 +52,6 @@ div.loud.error * {
 .bottom {
 	vertical-align: bottom !important;
 }
-*:target {
-	background-color: #fffec2;
-}
 .clear {
 	clear: both;
 }
@@ -53,6 +63,85 @@ div.loud.error * {
 }
 .hash {
 	text-transform: uppercase;
+}
+
+
+
+/* =============== */
+/* ! Form Styles   */
+/* =============== */
+.field {
+	clear: both;
+	margin: 0 0 1.5em 0;
+	padding: 0;
+	overflow: hidden;
+}
+.field.highlight,
+.field:target {
+	margin: -.5em -.5em 1.5em -.5em;
+	padding: .5em .5em .5em .5em;
+}
+input.currency {
+	width: 12em;
+	text-align: right;
+}
+input.currency:before {
+	content: "\$";
+}
+.field.yes-no label {
+	display: inline;
+}
+.field .field {
+	margin: 0 0 .5em 1em;
+}
+.field.float .field {
+	clear: none;
+	float: left;
+	margin: 0 1em .5em 0;
+}
+.field.float .field.float {
+	clear: left;
+	width: auto;
+}
+.field .label,
+.field label {
+	display: block;
+	font-weight: bold;
+}
+.field ul.input {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+.field .description {
+	clear: both;
+	padding: .25em;
+	font-size: .85em;
+	color: #606060;
+}
+.input label,
+.label label {
+	width: auto;
+	margin: 0 1em 0 0;
+	font-weight: normal;
+}
+.label label {
+	text-align: right;
+}
+.input label {
+	font-weight: normal;
+	text-align: left;
+}
+.field ul.input li {
+	overflow: hidden;
+	margin-bottom: 1em;
+	padding-bottom: .5em;
+	border-bottom: .125em #606060 dashed;
+}
+textarea {
+	width: 99%;
+	min-width: 200px;
+	max-width: 1000px;
 }
 
 
@@ -132,27 +221,4 @@ ul.tasks li {
 */
 .ELSWAK-Variable-Dump dd {
 	margin-left: 2em;
-}
-/* ================== */
-/* ! Server Badging   */
-/* ================== */
-/*
-	This rule provides a Coda specific hack that shows a large badging of "Dev" or "Base" depending upon the server generating the response.
-*/
-.server.environment.badging {
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	font-family: "Arial Narrow", san-serif;
-	font-size: 300pt;
-	font-weight: bold;
-	font-stretch: condensed;
-	text-align: center;
-}
-.server.environment.badging.test {
-	color: #2956bc;
-}
-.server.environment.badging.base {
-	color: #d20000;
 }
