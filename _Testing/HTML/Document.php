@@ -120,5 +120,9 @@ $document->addStylesheet('/DataGeneral/css/main.css');
 
 $document->addContent($document->debugDumpVariable($_POST, 'Post Data'));
 
+$document->addContent($document->migrateElementToElementOfType($document->createElement('h1', 'Migrate this H1 to an H2', array('style' => 'color: red;')), 'h2'));
+
+$document->addContent($document->migrateElementToElementOfType($document->convertHTML('<p style="color: blue;">Convert and migrate this paragraph html <i>with sub element</i> to an H1</p>'), 'h1'));
+
 // output the document content
 echo $document->saveXML();
