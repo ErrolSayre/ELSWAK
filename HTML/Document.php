@@ -26,7 +26,7 @@ class ELSWAK_HTML_Document
 		else {
 			// set up the default xhtml content
 			// determine the installation path
-			$this->load(dirname(__FILE__).'/Document/Template.xhtml');
+			$this->load(dirname(__FILE__).'/Document/Template.html');
 		}
 		
 		// setup references to generic elements
@@ -122,10 +122,20 @@ class ELSWAK_HTML_Document
 		// grab the body of the new document
 		$body = $document->getElementsByTagName('body')->item(0);
 		
-		// determine how many children the body has
-		if ((count($body->childNodes) == 1) && ($body->firstChild instanceof DOMElement)) {
-			$element = $this->importNode($body->firstChild, true);
-			if ($key !== null) {
+		// extract all of the body's child elements
+		$elements = array();
+		$current = $body->firstChild;
+		while ($current) {
+			if ($current instanceof DOMElement) {
+				$elements[] = $current;
+			}
+			$body->removeChild($current);
+			$current = $body->firstChild;
+		}
+		if (count($elements) == 1) {
+			// only one element exists, import it directly
+			$element = $this->importNode($elements[0], true);
+			if ($element && $key != null) {
 				$element->setAttribute('id', $key);
 				$this->registerElementWithIdIndex($element);
 			}
@@ -133,17 +143,15 @@ class ELSWAK_HTML_Document
 		}
 		
 		// create a container for the new content
-		if ($key !== null) {
+		if ($key != null) {
 			$container = $this->createDiv(null, array('id' => $key));
-			$this->registerElementWithIdIndex($container);
 		} else {
 			$container = $this->createDiv();
 		}
 		
 		// import all the children of the new document's body into this container
-		while ($body->hasChildNodes()) {
-			$container->appendChild($this->importNode($body->firstChild, true));
-			$body->removeChild($body->firstChild);
+		foreach ($elements as $element) {
+			$container->appendChild($this->importNode($element, true));
 		}
 		return $container;
 	}
@@ -427,13 +435,7 @@ class ELSWAK_HTML_Document
 	A "form field" in this document is made of a "field" container, which has a "label", "input" and "description".
 */
 		// set up the class
-		if ($attributes == null)
-			$attributes = array();
-		if (array_key_exists('class', $attributes)) {
-			$attributes['class'] = trim('field '.$attributes['class']);
-		} else {
-			$attributes['class'] = 'field';
-		}
+		$attributes = $this->addClassToAttributesArray('field', $attributes);
 		
 		// create the field container
 		$fieldContainer = $this->createDiv(null, $attributes);
@@ -450,26 +452,24 @@ class ELSWAK_HTML_Document
 				// add this element as the label within a container
 				$fieldContainer->appendChild($this->createLabel($label));
 			}
-		} else {
+		} else if ($label !== false) {
 			// add the label as text to the label element
-			$fieldContainer->appendChild($this->createElement('label'))->appendChild($this->createTextNode($label));
+			$fieldContainer->appendChild($this->createLabel($label));
 		}
 		
 		// add the input
 		// determine if the input provided is a DOM element
 		if ($input instanceof DOMElement) {
 			// determine if this is an input
-			if (
-				strtolower($input->tagName) == 'input' ||
-				($input->hasAttribute('class') && $input->getAttribute('class') == 'input')
-			) {
-				// add this element as the input for this form item
+			if (strtolower($input->tagName) == 'input') {
+				$fieldContainer->appendChild($input);
+			} else if (strtolower($input->tagName) == 'div') {
+				$fieldContainer->appendChild($this->addClassToElement('input', $input));
+			} else if ($input->hasAttribute('class') && $input->getAttribute('class') == 'input') {
 				$fieldContainer->appendChild($input);
 			} else {
 				// add this element as the input within a container
-				$inputContainer = $fieldContainer->appendChild($this->createElement('div'));
-				$inputContainer->setAttribute('class', 'input');
-				$inputContainer->appendChild($input);
+				$fieldContainer->appendChild($this->createDiv($input, array('class' => 'input')));
 			}
 		} else {
 			// add the input as text to the input element
@@ -521,8 +521,6 @@ class ELSWAK_HTML_Document
 			$attributes = array();
 		if (empty($attributes['type']))
 			$attributes['type'] = 'text';
-		if (empty($attributes['size']))
-			$attributes['size'] = 20;
 		return $this->createHiddenInput($name, $value, $attributes);
 	}
 	public function createLabeledTextInput($name, $value = null, $label, array $attributes = null, array $labelAttributes = null) {
@@ -694,6 +692,20 @@ class ELSWAK_HTML_Document
 		}
 		return $element;
 	}
+	public function addStringToElementAsParagraphsWithBreaks($string, DOMElement $element) {
+		$paragraphs = explode(LF.LF, str_replace(CR, LF, str_replace(CRLF, LF, $string)));
+		foreach ($paragraphs as $paragraph) {
+			$lines = explode(LF, $paragraph);
+			if (count($lines) > 0) {
+				$p = $element->appendChild($this->createParagraph(array_shift($lines)));
+				foreach ($lines as $line) {
+					$p->appendChild($this->createBreak());
+					$p->appendChild($this->createTextNode($line));
+				}
+			}
+		}
+		return $element;
+	}
 	public function addClassToElement($class, DOMElement $element) {
 		// setup the existing classes
 		$classes = array();
@@ -706,8 +718,12 @@ class ELSWAK_HTML_Document
 		
 		// set the class
 		$element->setAttribute('class', implode(' ', $classes));
+		return $element;
 	}
-	public static function addClassToAttributesArray($class, $attributes) {
+	public static function addClassToAttributesArray($class, array $attributes = null) {
+		if ($attributes == null) {
+			$attributes = array();
+		}
 		if (array_key_exists('class', $attributes)) {
 			$attributes['class'] = self::addClassToClassString($class, $attributes['class']);
 		} else {
@@ -824,7 +840,7 @@ class ELSWAK_HTML_Document
 		return $this->cleanup()->save();
 	}
 	public function save() {
-		return parent::saveXML();
+		return parent::saveHTML();
 	}
 	public function saveHTMLFile() {
 		return $this->save();
