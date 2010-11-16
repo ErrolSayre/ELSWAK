@@ -28,7 +28,7 @@ if (isset($classPath)) {
 	// include the file
 	echo '<p>Including Class File</p>'.LF;
 	
-	include_once($classPath);
+	include_once $classPath;
 }
 
 // determine if the class exists
@@ -50,31 +50,25 @@ if (class_exists($className)) {
 				// try to construct the object with the parameters
 				
 				// collect the parameters into a comma separated list
-				$parameterList = '';
-				$prettyParameterList = '';
+				$parameters = array();
 				foreach ($objectData['constructor parameters'] as $value) {
 					if (is_array($value)	||
 						is_object($value)) {
-						$parameterList .= 'unserialize(\''.serialize($value).'\'), ';
-						$prettyParameterList .= 'serialized '.get_class($value).', ';
+						$parameters[] = get_class($value);
 					} else if (is_null($value)) {
-						$parameterList .= 'null, ';
-						$prettyParameterList .= 'null, ';
+						$parameters[] = 'null';
 					} else if (is_numeric($value)) {
-						$parameterList .= $value.', ';
-						$prettyParameterList .= $value.', ';
+						$parameters[] = $value;
 					} else {
-						$parameterList .= '"'.$value.'", ';
-						$prettyParameterList .= '"'.$value.'", ';
+						$parameters[] = '"'.$value.'"';
 					}
 				}
-				
-				// strip the last 2 characters off
-				$parameterList = substr($parameterList, 0, -2);
-				$prettyParameterList = substr($prettyParameterList, 0, -2);
-				echo '<h4>Using arguments ('.$prettyParameterList.')</h4>'.LF;
+
+				echo '<h4>Using arguments ('.implode(', ', $parameters).')</h4>'.LF;
 				try {
-					$object = eval('return new '.$className.'('.$parameterList.');');
+					// use reflection to create a new instance
+					$reflector = new ReflectionClass($className); 
+					$object = $reflector->newInstanceArgs($objectData['constructor parameters']);
 				} catch (Exception $e) {
 					echo '<p>Exception! '.$e->getMessage().'</p>'.LF;
 					// just create the default object
@@ -158,7 +152,7 @@ if (class_exists($className)) {
 									echo LF;
 								} else
 									echo htmlentities($result).BR.LF;
-								echo 'given value "'.htmlentities($value).'": '.BR.LF;
+								echo '; given value: "'.htmlentities($value).'"'.BR.LF;
 							} else {
 								echo 'Method Returns: '.LF;
 								$result = $object->{$method}();
@@ -179,8 +173,7 @@ if (class_exists($className)) {
 			}
 			
 			// test the specified suite of methods
-			if (isset($classMethods)	&&
-				is_array($classMethods)) {
+			if (isset($classMethods) && is_array($classMethods)) {
 				foreach ($classMethods as $method => $value) {
 					if (method_exists($object, $method)) {
 						// try to call the method with the supplied value
@@ -197,7 +190,7 @@ if (class_exists($className)) {
 									echo LF;
 								} else
 									echo htmlentities($result).BR.LF;
-								echo 'given value "'.htmlentities($value).'": '.BR.LF;
+								echo '; given value: "'.htmlentities($value).'"'.BR.LF;
 							} else {
 								echo 'Method Returns: '.LF;
 								$result = $object->{$method}();
