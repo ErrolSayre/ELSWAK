@@ -4,27 +4,21 @@ $className = 'ELSWAK_MySQL_Database';
 $classPath = 'ELSWAK/MySQL/Database.php';
 
 // set test data
-$classData = array
-(
-	array
-	(
-		'constructor parameters' => array
-		(
+$classData = array(
+	array(
+		'constructor parameters' => array(
 			'GrahamCracker',
 			'research.olemiss.edu',
 			'gcuser',
 			'gcpasswords are great'
 		),
-		'additional methods' => array
-		(
+		'additional methods' => array(
 			'prettyName' => null,
 			'name' => null
 		)
 	),
-	array
-	(
-		'constructor parameters' => array
-		(
+	array(
+		'constructor parameters' => array(
 			'iCookie',
 			'localhost',
 			'icookieman',
@@ -32,12 +26,10 @@ $classData = array
 		),
 	),
 );
-$classMethods = array
-(
+$classMethods = array(
 	'prettyName' => null,
 	'name' => null
 );
 
 // include the class tester
-include('Area51/ClassTester.php');
-?>
+require_once 'ELSWAK/Utilities/ClassTester.php';
