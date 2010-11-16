@@ -468,17 +468,6 @@ class ELSWAK_Settable {
 		}
 		return $time;
 	}
-	public static function timeAsRelativeDateWithFormat($time, $format = 'm/d/y') {
-		$today = strtotime(date('Y-m-d'));
-		$yesterday = $today - 86400;
-		if ($time >= $yesterday) {
-			if ($time >= $today) {
-				return 'Today';
-			}
-			return 'Yesterday';
-		}
-		return date($format, $time);
-	}
 	protected function _getPropertyAsDatetime($property, $format = 'Y-m-d H:i:s') {
 		return $this->_getPropertyAsDate($property, $format);
 	}
@@ -522,7 +511,10 @@ class ELSWAK_Settable {
 		}
 		return $this->{$property};
 	}
-	public static function _makeYearValue($value) {
+// ================== 
+// !Static Methods   
+// ================== 
+	public static function makeYearValue($value) {
 		$value = abs(intval($value));
 		if ($value < 100) {
 			if ($value + 2000 < date('Y') + 25) {
@@ -532,6 +524,17 @@ class ELSWAK_Settable {
 			}
 		}
 		return $value;
+	}
+	public static function timeAsRelativeDateWithFormat($time, $format = 'm/d/y') {
+		$today = strtotime(date('Y-m-d'));
+		$yesterday = $today - 86400;
+		if ($time >= $yesterday) {
+			if ($time >= $today) {
+				return 'Today';
+			}
+			return 'Yesterday';
+		}
+		return date($format, $time);
 	}
 }
 class ELSWAK_Settable_Model_Helper {
