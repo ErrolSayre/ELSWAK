@@ -9,7 +9,13 @@ class example
 	protected $date;
 	protected $gettable;
 	protected $settable;
+	protected $cerifications;
+	protected $responses;
 	
+	public function __construct($import = null) {
+		parent::__construct($import);
+		$this->responses = array();
+	}
 	public function setId($value) {
 		return $this->_setPropertyAsId('id', $value);
 	}
@@ -44,6 +50,37 @@ class example
 	public function setVirtual($value) {
 		$this->setName(substr($value, 0, strpos($value, ' (')));
 		return $this;
+	}
+	public function setCertifications($list) {
+		return $this->_setArrayProperty('certifications', $list);
+	}
+	public function _verifyCertificationsItem($item) {
+		return is_string($item);
+	}
+	public function responseForQuestion($question) {
+		if (isset($this->responses[$question])) {
+			return $this->responses[$question];
+		} else {
+			$key = $this->_validateValueAgainstList($question, $this->questions());
+			if (isset($this->responses[$key])) {
+				return $this->responses[$key];
+			}
+		}
+		return null;
+	}
+	public function setResponseForQuestion($response, $question) {
+		try {
+			$key = $this->_validateValueAgainstList($question, $this->questions());
+			$this->responses[$key] = $response;
+		} catch (Exception $e) {
+			throw new Exception('Unable to set response for “'.$question.'”. Invalid question identifier.');
+		}
+		return $this;
+	}
+	public static function questions() {
+		return array(
+			'MAIDEN' => 'Mother’s Maiden Name'
+		);
 	}
 }
 
@@ -90,15 +127,45 @@ try { $var1->Virtual = 'Errol Sayre (esayre (at) olemiss.edu)'; echo $var1->virt
 echo '<h2>Setting virtual as "Errol Sayre (esayre (at) olemiss.edu)"</h2>'.LF;
 try { $var1->virtual = 'Errol Sayre (esayre (at) olemiss.edu)'; echo $var1->virtual; } catch (Exception $e) { echo $e->getMessage().BR.LF; }
 
+$tests = array(
+	array(
+		'ACMT',
+		'CDPT',
+		'ELEE',
+		'LCA',
+		'LCE'
+	),
+	array(
+		'ACPT',
+		array(),
+		'MARGC',
+		new stdClass
+	)
+);
+foreach ($tests as $input) {
+	echo '<h2>Setting cerifications to "'.json_encode($input).'"</h2>'.LF;
+	try { $var1->certifications = $input; echo json_encode($var1->certifications); } catch (Exception $e) { echo $e->getMessage().BR.LF; }
+}
+
+$tests = array(
+	'maiden' => 'Lewis',
+	'father' => 'Bertram',
+	'Mother’s Maiden Name' => 'Louis',
+	'MAIDEN' => 'Hooowah'
+);
+foreach ($tests as $question => $response) {
+	echo '<h2>Setting response for “', $question, '” to “', $response, '”</h2>', LF;
+	try { $var1->setResponseForQuestion($response, $question); echo $var1->responseForQuestion($question); } catch (Exception $e) { echo $e->getMessage(), BR, LF; }
+}
+
 echo '<h2>Resulting object</h2>'.LF;
 print_r_html($var1);
 
 echo '<h2>Exporting object to array</h2>'.LF;
 print_r_html($var1->_export);
 
-echo '<h1>Creating var2 by import of associative array</h1>'.LF;
-$var2 = new example();
-$var2->_import(array('date' => time(), 'name' => 'George McDudal', 'settable' => 'Your mom', 'gettable' => 'Horray'));
+echo '<h1>Creating var2 by injection of associative array into default constructor</h1>'.LF;
+$var2 = new example(array('date' => time(), 'name' => 'George McDudal', 'settable' => 'Your mom', 'gettable' => 'Horray'));
 
 echo '<h2>Resulting object</h2>'.LF;
 print_r_html($var2);
