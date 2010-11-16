@@ -6,5 +6,10 @@ abstract class ELSWAK_ManagedObject
 	abstract public function uri();
 
 	abstract public static function modelLabel();
-	abstract public static function modelPlural();
+	public static function modelPlural() {
+		return static::modelLabel().'s';
+	}
+	public static function modelClassLabel() {
+		return strtolower(static::modelLabel());
+	}
 }
