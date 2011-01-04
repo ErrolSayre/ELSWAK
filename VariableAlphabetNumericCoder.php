@@ -8,6 +8,15 @@
 	
 	I haven't performed extensive tests, however it seems the reliability of the encoding procedure comes into question with integer values greater than 52 bits.
 */
+
+// ====================== 
+// ! Related Exceptions   
+// ====================== 
+class ELSWAK_VariableAlphabetNumericCoder_Exception extends ELSWAK_Exception {}
+class ELSWAK_VariableAlphabetNumericCoder_InvalidInput_Exception extends ELSWAK_VariableAlphabetNumericCoder_Exception {}
+class ELSWAK_VariableAlphabetNumericCoder_InvalidAlphabet_Exception extends ELSWAK_VariableAlphabetNumericCoder_Exception {}
+
+
 class ELSWAK_VariableAlphabetNumericCoder {
 	const DEFAULT_ALPHABET = "23456789abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ";
 	protected $alphabet;
@@ -88,6 +97,3 @@ class ELSWAK_VariableAlphabetNumericCoder {
 		throw new ELSWAK_VariableAlphabetNumericCoder_InvalidInput_Exception('Unable to decode value. Only proper string values are supported.');
 	}
 }
-class ELSWAK_VariableAlphabetNumericCoder_Exception extends ELSWAK_Exception {}
-class ELSWAK_VariableAlphabetNumericCoder_InvalidInput_Exception extends ELSWAK_VariableAlphabetNumericCoder_Exception {}
-class ELSWAK_VariableAlphabetNumericCoder_InvalidAlphabet_Exception extends ELSWAK_VariableAlphabetNumericCoder_Exception {}
