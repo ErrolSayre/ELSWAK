@@ -125,8 +125,7 @@ class ELSWAK_HTTP_Response {
 		if (!$modified) {
 			$this->setResponseCode(304);
 			$this->isModified = false;
-		}
-		else {
+		} else {
 			if ($this->responseCode == 304)
 				$this->setResponseCode(200);
 			$this->isModified = true;
@@ -137,11 +136,11 @@ class ELSWAK_HTTP_Response {
 		return $this->responseCode;
 	}
 	public function setResponseCode($code) {
-		if (!is_int($code) || (100 > $code) || (599 < $code))
+		if (!is_int($code) || ($code < 100) || ($code > 599))
 			throw new Exception('Invalid HTTP response code.');
 		
 		// determine if this code corresponds to a redirect
-		if ((300 <= $code) && (307 >= $code))
+		if (($code <= 300) && ($code >= 307))
 			$this->isRedirect = true;
 		else
 			$this->isRedirect = false;
