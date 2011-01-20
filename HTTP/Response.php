@@ -23,6 +23,9 @@ class ELSWAK_HTTP_Response {
 		
 		// setup the application uri
 		$this->applicationPath = dirname($_SERVER['PHP_SELF']);
+		
+		// setup frame blocking by default, requiring the user to change this behavior
+		$this->setHeader('X-Frame-Options', 'DENY');
 	}
 	public function serverUri() {
 		return $this->serverUri;
