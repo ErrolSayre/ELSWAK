@@ -13,15 +13,15 @@ class ELSWAK_MySQL_Conditional_Group
 	protected $conditions;
 	protected $conjunction;
 	
-	public function __construct(array $conditions = null, ELSWAK_MySQL_Conjunction $conjunction = null) {
-		$this->setConditions ( ($conditions !== null)?
-				$conditions:
-				array()
-		);
-		$this->setConjunction ( ($conjunction !== null)?
-				$conjunction:
-				new ELSWAK_MySQL_Conjunction()
-		);
+	public function __construct($conditions = null, $conjunction = null) {
+		if (!is_array($conditions)) {
+			$conditions = array();
+		}
+		$this->setConditions($conditions);
+		if (!($conjunction instanceof ELSWAK_MySQL_Conjunction)) {
+			$conjunction = new ELSWAK_MySQL_Conjunction($conjunction);
+		}
+		$this->setConjunction($conjunction);
 	}
 	public function conditionForKey($index) {
 		if (isset($this->conditions[$index])) {
@@ -38,6 +38,11 @@ class ELSWAK_MySQL_Conditional_Group
 		$conditional = new ELSWAK_MySQL_Conditional($leftSide, $operator, $rightSide);
 		$this->addCondition($conditional);
 		return $conditional;
+	}
+	public function newConditionGroup($conditions = null, $conjunction = null) {
+		$group = new ELSWAK_MySQL_Conditional_Group($conditions, $conjunction);
+		$this->addCondition($group);
+		return $group;	
 	}
 	public function removeConditionForKey($index) {
 		if (isset($this->conditions[$index])) {
