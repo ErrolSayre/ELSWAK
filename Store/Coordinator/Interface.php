@@ -12,12 +12,9 @@
 		• Deep objects will include the primary object and any subordinate objects (objects that do not have their own store coordinator).
 		• Complete objects will include the primary object, its subordinates, and its external related objects (objects referenced by the primary object but which have their own store coordinator).
 */
-require_once('ELSWAK/Store/Search.php');
-interface ELSWAK_Store_Coordinator_Interface
-{
-	public static function load($context, $depth = null);
+interface ELSWAK_Store_Coordinator_Interface {
+	public static function load($context = null, $depth = null);
 	public static function save($context, $depth = null);
 	public static function delete($context, $depth = null);
 	public static function search(ELSWAK_Store_Search $search);
 }
-?>
