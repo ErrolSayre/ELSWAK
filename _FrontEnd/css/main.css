@@ -35,6 +35,8 @@ div.loud.error * {
 }
 .loud.warning {
 	padding: 2em;
+	font-weight: inherit;
+	color: #da6e00;
 	background-color: #efe09b;
 }
 .left {
