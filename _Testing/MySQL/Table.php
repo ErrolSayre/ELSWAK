@@ -48,5 +48,5 @@ $classMethods = array
 	'name' => null
 );
 // include the class tester
-include('Area51/ClassTester.php');
+include('ELSWAK/Utilities/ClassTester.php');
 ?>
