@@ -79,5 +79,5 @@ $classMethods = array
 	'sql' => 'database.table.field'
 );
 // include the class tester
-include('Area51/ClassTester.php');
+include('ELSWAK/Utilities/ClassTester.php');
 ?>
