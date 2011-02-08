@@ -11,7 +11,11 @@ class ELSWAK_Postal_Address
 	protected $country;
 	
 	public function __construct($line1 = '', $line2 = '', $city = '', $state = '', $postal = '', $country = '') {
-		$this->setAddress($line1, $line2, $city, $state, $postal, $country);
+		if (is_array($line1)) {
+			$this->import($line1);
+		} else {
+			$this->setAddress($line1, $line2, $city, $state, $postal, $country);
+		}
 	}
 	public function address($format = 'plain-text') {
 		// determine the line separator
@@ -26,7 +30,9 @@ class ELSWAK_Postal_Address
 		// assemble the address line by line
 		$address = '';
 		foreach ($this->lines as $line) {
-			$address .= $line.$lineSeparator;
+			if ($line != null) {
+				$address .= $line.$lineSeparator;
+			}
 		}
 		
 		// add the city, state zip as best fits
@@ -58,6 +64,21 @@ class ELSWAK_Postal_Address
 		$this->setState($state);
 		$this->setPostal($postal);
 		$this->setCountry($country);
+		return $this;
+	}
+	public function import($data) {
+		$this->_import($data);
+		if (is_array($data)) {
+			if (array_key_exists('line1', $data)) {
+				$this->setLine1($data['line1']);
+			}
+			if (array_key_exists('line2', $data)) {
+				$this->setLine2($data['line2']);
+			}
+			if (array_key_exists('zip', $data)) {
+				$this->setPostal($data['zip']);
+			}
+		}
 		return $this;
 	}
 	public function line($line) {
