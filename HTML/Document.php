@@ -287,16 +287,9 @@ class ELSWAK_HTML_Document
 	public function createElement($tagName, $content = null, array $attributes = null) {
 		$element = parent::createElement($tagName);
 		
-		// determine if any content was provided
-		if ($content instanceof DOMElement) {
-			$element->appendChild($content);
-		} else if (is_object($content)) {
-			if (method_exists($content, '__toString')) {
-				$element->appendChild($this->createTextNode($content->__toString()));
-			}
-		} else if ($content !== null) {
-			$element->appendChild($this->createTextNode($content));
-		}
+		// process any provided content
+		$this->processContentIntoElement($element, $content);
+		
 		// set attributes
 		if (is_array($attributes)) {
 			foreach ($attributes as $attributeKey => $attributeValue) {
@@ -310,6 +303,22 @@ class ELSWAK_HTML_Document
 				$element->setAttribute('id', $attributes['id']);
 				$this->registerElementWithIdIndex($element);
 			}
+		}
+		return $element;
+	}
+	public function processContentIntoElement(DOMElement $element, $content) {
+		if ($content instanceof DOMElement) {
+			$element->appendChild($content);
+		} else if (is_object($content)) {
+			if (method_exists($content, '__toString')) {
+				$element->appendChild($this->createTextNode($content->__toString()));
+			}
+		} else if (is_array($content)) {
+			foreach ($content as $item) {
+				$this->processContentIntoElement($element, $item);
+			}
+		} else if ($content !== null) {
+			$element->appendChild($this->createTextNode($content));
 		}
 		return $element;
 	}
