@@ -685,6 +685,14 @@ class ELSWAK_HTML_Document
 			$attributes['size'] = 40;
 		return $this->createElement('input', null, $attributes);
 	}
+	public function createIFrame($src = '', array $attributes = null) {
+		if (!is_array($attributes))
+			$attributes = array();
+		if (empty($attributes['src'])) {
+			$attributes['src'] = $src;
+		}
+		return $this->createElement('iframe', null, $attributes);
+	}
 // ========================== 
 // !Element Utility Methods   
 // ========================== 
