@@ -25,7 +25,7 @@ class ELSWAK_HTTP_Response {
 		$this->applicationPath = dirname($_SERVER['PHP_SELF']);
 		
 		// setup frame blocking by default, requiring the user to change this behavior
-		$this->setHeader('X-Frame-Options', 'DENY');
+		$this->setFramePermission();
 	}
 	public function serverUri() {
 		return $this->serverUri;
@@ -78,6 +78,17 @@ class ELSWAK_HTTP_Response {
 	}
 	protected function filterContentByType($content, $type) {
 		return $content;
+	}
+	public function setFramePermission($type = null) {
+		$type = strtolower($type);
+		if ($type == 'allowed') {
+			$this->setHeader('X-Frame-Options');
+		} else if ($type == 'local' || $type == 'sameorigin') {
+			$this->setHeader('X-Frame-Options', 'SAMEORIGIN');
+		} else {
+			$this->setHeader('X-Frame-Options', 'DENY');
+		}
+		return $this;
 	}
 	public function headers($delimeter = CRLF) {
 		return implode($delimiter, $this->headers);
