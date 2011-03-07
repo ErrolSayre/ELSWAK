@@ -396,12 +396,24 @@ class ELSWAK_HTML_Document
 	public function createUl($content = null, array $attributes = null) {
 		return $this->createElement('ul', $content, $attributes);
 	}
+	public function createOl($content = null, array $attributes = null) {
+		return $this->createElement('ol', $content, $attributes);
+	}
 	public function createLi($content = null, array $attributes = null) {
 		return $this->createElement('li', $content, $attributes);
 	}
 // ===================== 
 // !	Table Elements   
 // ===================== 
+	public function createThead($content = null, array $attributes = null) {
+		return $this->createElement('thead', $content, $attributes);
+	}
+	public function createTbody($content = null, array $attributes = null) {
+		return $this->createElement('tbody', $content, $attributes);
+	}
+	public function createTfoot($content = null, array $attributes = null) {
+		return $this->createElement('tfoot', $content, $attributes);
+	}
 	public function createTr($content = null, array $attributes = null) {
 		return $this->createElement('tr', $content, $attributes);
 	}
