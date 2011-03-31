@@ -12,10 +12,53 @@ class ELSWAK_HTTP_Response {
 	protected $status = '';
 	protected $messages = array();
 	protected $body = array();
-	protected $responseCode = 200;
+	protected $statusCode = 200;
 	protected $isRedirect = false;
 	protected $isModified = true;
 	protected $debugRedirects = false;
+	
+	public static $reasonPhrases = array(
+		100 => 'Continue',
+		101 => 'Switching Protocols',
+		200 => 'OK',
+		201 => 'Created',
+		202 => 'Accepted',
+		203 => 'Non-Authoritative Information',
+		204 => 'No Content',
+		205 => 'Reset Content',
+		206 => 'Partial Content',
+		300 => 'Multiple Choices',
+		301 => 'Moved Permanently',
+		302 => 'Found',
+		303 => 'See Other',
+		304 => 'Not Modified',
+		305 => 'Use Proxy',
+		307 => 'Temporary Redirect',
+		400 => 'Bad Request',
+		401 => 'Unauthorized',
+		402 => 'Payment Required',
+		403 => 'Forbidden',
+		404 => 'Not Found',
+		405 => 'Method Not Allowed',
+		406 => 'Not Acceptable',
+		407 => 'Proxy Authentication Required',
+		408 => 'Request Time-out',
+		409 => 'Conflict',
+		410 => 'Gone',
+		411 => 'Length Required',
+		412 => 'Precondition Failed',
+		413 => 'Request Entity Too Large',
+		414 => 'Request-URI Too Large',
+		415 => 'Unsupported Media Type',
+		416 => 'Requested range not satisfiable',
+		417 => 'Expectation Failed',
+		500 => 'Internal Server Error',
+		501 => 'Not Implemented',
+		502 => 'Bad Gateway',
+		503 => 'Service Unavailable',
+		504 => 'Gateway Time-out',
+		505 => 'HTTP Version not supported',
+	);
 	
 	public function __construct() {
 		// setup the server uri
@@ -119,7 +162,7 @@ class ELSWAK_HTTP_Response {
 	public function setRedirect($url, $code = 303) {
 		// set the location header using the given url
 		$this->setHeader('Location', $url, true)
-			->setResponseCode($code);
+			->setStatusCode($code);
 		return $this;
 	}
 	public function unsetRedirect() {
@@ -137,19 +180,19 @@ class ELSWAK_HTTP_Response {
 	}
 	public function setIsModified($modified = true) {
 		if (!$modified) {
-			$this->setResponseCode(304);
+			$this->setStatusCode(304);
 			$this->isModified = false;
 		} else {
-			if ($this->responseCode == 304)
-				$this->setResponseCode(200);
+			if ($this->statusCode == 304)
+				$this->setStatusCode(200);
 			$this->isModified = true;
 		}
 		return $this;
 	}
-	public function responseCode() {
-		return $this->responseCode;
+	public function statusCode() {
+		return $this->statusCode;
 	}
-	public function setResponseCode($code) {
+	public function setStatusCode($code) {
 		if (!is_int($code) || ($code < 100) || ($code > 599))
 			throw new Exception('Invalid HTTP response code.');
 		
@@ -158,8 +201,14 @@ class ELSWAK_HTTP_Response {
 			$this->isRedirect = true;
 		else
 			$this->isRedirect = false;
-		$this->responseCode = $code;
+		$this->statusCode = $code;
 		return $this;
+	}
+	public function responseCode() {
+		return $this->statusCode();
+	}
+	public function setResponseCode($code) {
+		return $this->setStatusCode($code);
 	}
 	public function setContentType($type = 'text/html', $set = 'utf-8') {
 		if (!empty($set))
@@ -215,8 +264,8 @@ class ELSWAK_HTTP_Response {
 		return !$headersSent;
 	}
 	protected function sendHeaders() {
-		// send the header code
-		header('HTTP/1.1 '.$this->responseCode);
+		// send the status line
+		header('HTTP/1.1 '.$this->statusCode.self::reasonPhraseForStatusCode($this->statusCode));
 		
 		// process the headers
 		foreach ($this->headers as $header) {
@@ -240,5 +289,11 @@ class ELSWAK_HTTP_Response {
 	public function sendContent() {
 		echo $this->content();
 		return $this;
+	}
+	public static function reasonPhraseForStatusCode($code) {
+		if (array_key_exists($code, self::$reasonPhrases)) {
+			return ' '.self::$reasonPhrases[$code];
+		}
+		return '';
 	}
 }
