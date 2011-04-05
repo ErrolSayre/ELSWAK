@@ -43,10 +43,7 @@ class ELSWAK_HTML_Document
 			$this->scripts[] = $script;
 		
 		// collect any stylesheets in the template
-		$this->stylesheets = array();
-		foreach ($this->getElementsByTagName('link') as $link)
-			if (strtolower($link->getAttribute('rel')) == 'stylesheet')
-				$this->stylesheets[] = $link;
+		$this->collectStylesheets();
 		
 		// setup the element id index
 		$this->elementIdIndex = array();
@@ -809,22 +806,53 @@ class ELSWAK_HTML_Document
 	}
 	public function addStylesheet($source, $media = 'all', array $attributes = null) {
 		// prevent duplicate stylesheets from being added
-		$uniqueStylesheet = true;
-		foreach ($this->stylesheets as $link)
-			if ($link->getAttribute('href') == $source)
-				$uniqueStylesheet = false;
-		
-		if ($uniqueStylesheet) {
+		if ($this->isStylesheetUnique($source)) {
 			if (!is_array($attributes))
 				$attributes = array();
-			if (empty($attributes['href']))
-				$attributes['href'] = $source;
-			if (empty($attributes['rel']))
-				$attributes['rel'] = 'stylesheet';
+			// overwrite the href to ensure the supplied source is used
+			$attributes['href'] = $source;
+			// overwrite the rel to ensure the link is treated as a stylesheet
+			$attributes['rel'] = 'stylesheet';
 			if (empty($attributes['media']))
 				$attributes['media'] = $media;
 			$this->stylesheets[] = $this->headNode->appendChild($this->createElement('link', null, $attributes));
 		}
+		return $this;
+	}
+	public function collectStylesheets() {
+		$this->stylesheets = array();
+		foreach ($this->getElementsByTagName('link') as $link) {
+			if (strtolower($link->getAttribute('rel')) == 'stylesheet') {
+				$this->stylesheets[$link->getAttribute('href')] = $link;
+			}
+		}
+		return $this;
+	}
+	public function hasStylesheet($href) {
+		if (array_key_exists($href, $this->stylesheets)) {
+			return true;
+		}
+		return false;
+	}
+	public function isStylesheetUnique($href) {
+		return !$this->hasStylesheet($href);
+	}
+	public function removeStylesheet($href) {
+		if ($this->hasStylesheet($href)) {
+			// remove the element
+			$link = $this->stylesheets[$href];
+			$link->parentNode->removeChild($link);
+			unset($this->stylesheets[$href]);
+			return $link;
+		}
+		return false;
+	}
+	public function removeStylesheets() {
+		// remove all the stylesheet references
+		foreach ($this->stylesheets as $link) {
+			$link->parentNode->removeChild($link);
+		}
+		$this->stylesheets = array();
 		return $this;
 	}
 // ================ 
