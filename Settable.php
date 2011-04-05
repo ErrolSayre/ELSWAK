@@ -35,7 +35,7 @@ class ELSWAK_Settable {
 		// determine if this property has been examined before
 		if (!isset(self::$_setters[$className][$property])) {
 			// determine if this property can be set or not
-			$method = 'set'.$property;
+			$method = 'set'.ucfirst($property);
 			if (ELSWAK_Settable_Model_Helper::methodExistsForClass($method, $this)) {
 				// the property has a public setter method, set the value using the method
 				self::$_setters[$className][$property] = 2;
