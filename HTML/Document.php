@@ -490,10 +490,8 @@ class ELSWAK_HTML_Document
 				$fieldContainer->appendChild($this->createDiv($input, array('class' => 'input')));
 			}
 		} else {
-			// add the input as text to the input element
-			$inputContainer = $fieldContainer->appendChild($this->createElement('div'));
-			$inputContainer->setAttribute('class', 'input');
-			$inputContainer->appendChild($this->createTextNode($input));
+			// add the input(s) to the an input container
+			$inputContainer = $fieldContainer->appendChild($this->createDiv($input, array('class' => 'input')));
 		}
 		
 		// add the description
