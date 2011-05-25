@@ -76,6 +76,9 @@ class ELSWAK_HTTP_Response {
 	public function applicationPath() {
 		return $this->applicationPath;
 	}
+	public function overrideApplicationPath($path) {
+		$this->applicationPath = pathinfo($path, PATHINFO_DIRNAME);
+	}
 	public function applicationUri() {
 		return $this->serverUri.$this->applicationPath;
 	}
