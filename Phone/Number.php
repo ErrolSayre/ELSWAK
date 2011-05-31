@@ -6,7 +6,8 @@
 	
 	Letters are converted to numbers according to the standard phone keypad. The parse does take into account the possibility that a 9 immediately follows the last 4 digits of the number and assumes that this is an "x" that has been converted to a 9. For this reason you should always add a delimiter if your extension begins with a 9, though most internal phone systems don't allow extensions to begin with 9 since it is commonly used as the external access prefix.
 */
-class ELSWAK_Phone_Number {
+class ELSWAK_Phone_Number
+	extends ELSWAK_Settable {
 	const TEN_DIGIT_REGEX_BASE = '/\+?(1?)[\s\-\.]?[\(]?([[2-9]\d{2}]?)[\)]?[\s\-\.]?([[2-9]\d{2}]?)[\s\-\.]?(\d{4})[9\s\-\.]?(\d*)/';
 	const TEN_DIGIT_REGEX = '/^\+?(1?)[\s\-\.]?[\(]?([[2-9]\d{2}]?)[\)]?[\s\-\.]?([[2-9]\d{2}]?)[\s\-\.]?(\d{4})[9\s\-\.]?(\d*)$/';
 	const SEVEN_DIGIT_REGEX_BASE = '/([[2-9]\d{2}]?)[\s\-\.]?(\d{4})[9\s\-\.]?(\d*)/';
@@ -37,37 +38,47 @@ class ELSWAK_Phone_Number {
 		return $number;
 	}
 	public function setNumber($number) {
-		if ($number != null) {
-			// determine if the number is made up of the valid characters
-			// first replace letters with their number counter parts
-			$number = $this->translateLettersToNumbers($number);
-			
-			// determine if the number is a 10 digit number
-			if (preg_match(self::TEN_DIGIT_REGEX, $number, $matches) == 1) {
-				// this is a 10+ digit number
-				$this->countryCode	= ($matches[1] != '')?	$matches[1]:	($matches[2] != '')?	1:	'';
-				$this->areaCode		= ($matches[2] != '')?	$matches[2]:	'';
-				$this->localPrefix	= ($matches[3] != '')?	$matches[3]:	'';
-				$this->localSuffix	= ($matches[4] != '')?	$matches[4]:	'';
-				$this->extension	= ($matches[5] != '')?	$matches[5]:	'';
-			} else if (preg_match(self::SEVEN_DIGIT_REGEX, $number, $matches) == 1) {
-				// this is a 7 digit number
-				$this->countryCode	= '';
-				$this->areaCode		= '';
-				$this->localPrefix	= ($matches[1] != '')?	$matches[1]:	'';
-				$this->localSuffix	= ($matches[2] != '')?	$matches[2]:	'';
-				$this->extension	= ($matches[3] != '')?	$matches[3]:	'';
-			} else {
-				// the number has illegal characters
-				throw new Exception('Invalid Phone Number: Number should only contain numbers, letters, spaces, or the following characters: -, (, ).');
-			}
-		} else {
-			// set the number blank
+		// reset the number blank
+		$this->countryCode	= '';
+		$this->areaCode		= '';
+		$this->localPrefix	= '';
+		$this->localSuffix	= '';
+		$this->extension	= '';
+		
+		// first replace letters with their number counter parts
+		$number = $this->translateLettersToNumbers($number);
+		
+		// determine if the number is a 10 digit number
+		if (preg_match(self::TEN_DIGIT_REGEX, $number, $matches) == 1) {
+			// this is a 10+ digit number
+			$this->countryCode	= $matches[1]?	$matches[1]:	$matches[2]? 1:	'';
+			$this->areaCode		= $matches[2];
+			$this->localPrefix	= $matches[3];
+			$this->localSuffix	= $matches[4];
+			$this->extension	= $matches[5];
+		} else if (preg_match(self::SEVEN_DIGIT_REGEX, $number, $matches) == 1) {
+			// this is a 7 digit number
 			$this->countryCode	= '';
 			$this->areaCode		= '';
-			$this->localPrefix	= '';
-			$this->localSuffix	= '';
-			$this->extension	= '';
+			$this->localPrefix	= $matches[1];
+			$this->localSuffix	= $matches[2];
+			$this->extension	= $matches[3];
+		} else {
+			// try to fit international numbers into the components
+			// process string right to left placing numbers into the components based on US formatting
+			$number = preg_replace('/[^0-9]/', '', $number);
+			$length = strlen($number);
+			for ($offset = 1; $offset <= $length; ++$offset) {
+				if ($offset < 5) {
+					$this->localSuffix = $number[$length - $offset].$this->localSuffix;
+				} else if ($offset < 8) {
+					$this->localPrefix = $number[$length - $offset].$this->localPrefix;
+				} else if ($offset < 11) {
+					$this->areaCode = $number[$length - $offset].$this->areaCode;
+				} else {
+					$this->countryCode = $number[$length - $offset].$this->countryCode;
+				}
+			}
 		}
 		return $this;
 	}
