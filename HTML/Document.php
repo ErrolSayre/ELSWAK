@@ -402,23 +402,50 @@ class ELSWAK_HTML_Document
 // ===================== 
 // !	Table Elements   
 // ===================== 
+	public function createTable($content = null, array $attributes = null) {
+		return $this->createElement('table', $content, $attributes);
+	}
 	public function createThead($content = null, array $attributes = null) {
 		return $this->createElement('thead', $content, $attributes);
+	}
+	public function createTableHeader($content = null, array $attributes = null) {
+		return $this->createThead($content, $attributes);
 	}
 	public function createTbody($content = null, array $attributes = null) {
 		return $this->createElement('tbody', $content, $attributes);
 	}
+	public function createTableBody($content = null, array $attributes = null) {
+		return $this->createTbody($content, $attributes);
+	}
 	public function createTfoot($content = null, array $attributes = null) {
 		return $this->createElement('tfoot', $content, $attributes);
+	}
+	public function createTableFooter($content = null, array $attributes = null) {
+		return $this->createTfoot($content, $attributes);
 	}
 	public function createTr($content = null, array $attributes = null) {
 		return $this->createElement('tr', $content, $attributes);
 	}
+	public function createTableRow($content = null, array $attributes = null) {
+		return $this->createTr($content, $attributes);
+	}
 	public function createTh($content = null, array $attributes = null) {
 		return $this->createElement('th', $content, $attributes);
 	}
+	public function createTableHeaderCell($content = null, array $attributes = null) {
+		return $this->createTh($content, $attributes);
+	}
 	public function createTd($content = null, array $attributes = null) {
 		return $this->createElement('td', $content, $attributes);
+	}
+	public function createTableDataCell($content = null, array $attributes = null) {
+		return $this->createTd($content, $attributes);
+	}
+	public function createTableCell($content = null, array $attributes = null, $header = false) {
+		if ($header) {
+			return $this->createTh($content, $attributes);
+		}
+		return $this->createTd($content, $attributes);
 	}
 // ==================== 
 // !	Form Elements   
@@ -712,6 +739,19 @@ class ELSWAK_HTML_Document
 				if ($line != null) {
 					$element->appendChild($this->createParagraph($line));
 				}
+			}
+		}
+		return $element;
+	}
+	public function addLinesToElementWithBreaks($lines, DOMElement $element) {
+		if (is_string($lines)) {
+			$lines = explode(LF, $lines);
+		}
+		if (is_array($lines)) {
+			$element->appendChild($this->createTextNode(array_shift($lines)));
+			foreach ($lines as $line) {
+				$element->appendChild($this->createBreak());
+				$element->appendChild($this->createTextNode($line));
 			}
 		}
 		return $element;
