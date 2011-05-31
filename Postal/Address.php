@@ -11,8 +11,12 @@ class ELSWAK_Postal_Address
 	protected $country;
 	
 	public function __construct($line1 = '', $line2 = '', $city = '', $state = '', $postal = '', $country = '') {
-		if (is_array($line1)) {
-			$this->import($line1);
+		if ($line1 && !$line2 && !$city && !$state && !$postal && !$country) {
+			if (is_array($line1)) {
+				$this->import($line1);
+			} else {
+				$this->parseAddress($line1);
+			}
 		} else {
 			$this->setAddress($line1, $line2, $city, $state, $postal, $country);
 		}
@@ -28,34 +32,47 @@ class ELSWAK_Postal_Address
 		}
 		
 		// assemble the address line by line
-		$address = '';
-		foreach ($this->lines as $line) {
-			if ($line != null) {
-				$address .= $line.$lineSeparator;
+		$address = array();
+		if (is_array($this->lines)) {
+			foreach ($this->lines as $line) {
+				if ($line) {
+					$address[] = $line;
+				}
 			}
 		}
 		
 		// add the city, state zip as best fits
-		if (($this->city != '')		&& ($this->state != '')	&& ($this->postal != '')) {
-			$address .= $this->city.', '.$this->state.' '.$this->postal.$lineSeparator;
-		} else if (($this->city != '')	&& ($this->postal != '')) {
-			$address .= $this->city.' '.$this->postal.$lineSeparator;
-		} else if ($this->city != '') {
-			$address .= $this->city.$lineSeparator;
-		}
-		if ($this->country != '') {
-			$address .= $this->country.$lineSeparator;
+		$cityStateZip = $this->cityStateZipLine($format);
+		if ($cityStateZip) {
+			$address[] = $cityStateZip;
 		}
 		
-		// remove the trailing line separator
-		$address = substr($address, 0, -1 * strlen($lineSeparator));
+		// add the country if set
+		if ($this->country) {
+			$address[] = $this->country;
+		}
 		
-		// trim off the excess whitespace and send the address back
-		return trim($address);
+		// return the address as requested
+		if ($format == 'array') {
+			return $address;
+		}
+		return implode($lineSeparator, $address);
+	}
+	public function cityStateZipLine() {
+		if ( $this->city && $this->state && $this->postal ) {
+			return $this->city.', '.$this->state.' '.$this->postal;
+		} else if ( $this->city && $this->postal ) {
+			return $this->city.' '.$this->postal;
+		} else if ( $this->city && $this->state ) {
+			return $this->city.', '.$this->state;
+		} else if ( $this->city ) {
+			return $this->city;
+		}
+		return '';
 	}
 	public function setAddress($line1, $line2, $city, $state, $postal, $country) {
 		// reset the lines array
-		$this->lines = null;
+		$this->lines = array();
 		$this->addLine($line1);
 		$this->addLine($line2);
 		
@@ -65,6 +82,34 @@ class ELSWAK_Postal_Address
 		$this->setPostal($postal);
 		$this->setCountry($country);
 		return $this;
+	}
+	public function parseAddress($address) {
+		// determine if this address is line formatted (as on an envelope)
+		if (strpos($address, LF) !== false) {
+			$this->parseLineFormattedAddress($address);
+		} else if (strpos($address, ' $ ')) {
+			// this is likely a UM LDAP encoded address, replace the delimiter with a line feed
+			$this->parseLineFormattedAddress(str_replace(' $ ', LF, $address));
+		}
+		return $this;
+	}
+	public function parseLineFormattedAddress($address) {
+		// reset the address
+		$this->setAddress(null, null, null, null, null, null);
+		
+		// break the lines out
+		$lines = explode(LF, $address);
+		foreach ($lines as $line) {
+			// determine if this line matches a likely city/state/zip line
+			$matches = array();
+			if (preg_match("/([a-zA-Z]+)\s*\,\s*([a-zA-Z]+)\s+([0-9-]+)/", $line, $matches) > 0) {
+				$this->setCity($matches[1]);
+				$this->setState($matches[2]);
+				$this->setPostal($matches[3]);
+			} else {
+				$this->addLine($line);
+			}
+		}
 	}
 	public function import($data) {
 		$this->_import($data);
@@ -82,10 +127,9 @@ class ELSWAK_Postal_Address
 		return $this;
 	}
 	public function line($line) {
-		if (isset($this->lines[$line - 1])) {
+		if (array_key_exists($line - 1, $this->lines)) {
 			return $this->lines[$line - 1];
 		}
-		
 		return '';
 	}
 	protected function setLines() {}
@@ -98,8 +142,8 @@ class ELSWAK_Postal_Address
 		return $this;
 	}
 	public function addLine($line) {
-		if ($line != '') {
-			$this->lines[] = $line;
+		if ($line) {
+			$this->lines[] = strval($line);
 		}
 	}
 	public function lineCount() {
