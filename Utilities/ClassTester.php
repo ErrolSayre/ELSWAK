@@ -52,9 +52,10 @@ if (class_exists($className)) {
 				// collect the parameters into a comma separated list
 				$parameters = array();
 				foreach ($objectData['constructor parameters'] as $value) {
-					if (is_array($value)	||
-						is_object($value)) {
+					if (is_object($value)) {
 						$parameters[] = get_class($value);
+					} else if (is_array($value)) {
+						$parameters[] = 'array';
 					} else if (is_null($value)) {
 						$parameters[] = 'null';
 					} else if (is_numeric($value)) {
