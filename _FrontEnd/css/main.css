@@ -76,7 +76,6 @@ div.loud.error * {
 	clear: both;
 	margin: 0 0 1.5em 0;
 	padding: 0;
-	overflow: hidden;
 }
 .field.highlight,
 .field:target {
