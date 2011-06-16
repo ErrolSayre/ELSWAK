@@ -73,7 +73,10 @@ class ELSWAK_MySQL_Conditional_Group
 	public function conjunction() {
 		return $this->conjunction;
 	}
-	public function setConjunction(ELSWAK_MySQL_Conjunction $conjunction) {
+	public function setConjunction($conjunction) {
+		if (!($conjunction instanceof ELSWAK_MySQL_Conjunction)) {
+			$conjunction = new ELSWAK_MySQL_Conjunction($conjunction);
+		}
 		$this->conjunction = $conjunction;
 		return $this;
 	}
