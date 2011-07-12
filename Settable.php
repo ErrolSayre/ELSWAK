@@ -163,7 +163,7 @@ class ELSWAK_Settable {
 		$keys = array_keys(get_object_vars($this));
 		foreach ($keys as $property) {
 			try {
-				$value = $this->__get($property);
+				$value = $this->{$property};
 				if ($value instanceof ELSWAK_Settable) {
 					$value = $value->_describe($padding.TAB, $json);
 				} else {
