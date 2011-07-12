@@ -184,24 +184,30 @@ if (class_exists($className)) {
 							if ($value !== null) {
 								echo 'Method Returns:'.LF;
 								$result = $object->{$method}($value);
-								if ($result === $object)
+								if ($result === $object) {
 									echo 'self'.LF;
-								else if ((is_array($result)) || (is_object($result))) {
+								} else if ((is_array($result)) || (is_object($result))) {
 									print_r_html($result);
 									echo LF;
-								} else
+								} else if (strpos($result, LF)) {
+									echo '<pre>'.htmlentities($result).'</pre>'.BR.LF;
+								} else {
 									echo htmlentities($result).BR.LF;
+								}
 								echo '; given value: "'.htmlentities($value).'"'.BR.LF;
 							} else {
 								echo 'Method Returns: '.LF;
 								$result = $object->{$method}();
-								if ($result === $object)
+								if ($result === $object) {
 									echo 'self'.LF;
-								else if ((is_array($result)) || (is_object($result))) {
+								} else if ((is_array($result)) || (is_object($result))) {
 									print_r_html($result);
 									echo LF;
-								} else
+								} else if (strpos($result, LF)) {
+									echo '<pre>'.htmlentities($result).'</pre>'.BR.LF;
+								} else {
 									echo htmlentities($result).BR.LF;
+								}
 							}
 						} catch (Exception $e) {
 							echo $e->getMessage().LF;
