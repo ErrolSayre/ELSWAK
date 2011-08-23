@@ -20,6 +20,10 @@ class ELSWAK_HTML_Document
 		// create the DOMDocument
 		parent::__construct();
 		
+		// set the document to provide output formatting
+		$this->preserveWhiteSpace = false;
+		$this->formatOutput = true;
+		
 		// load our template file
 		if (($templateFile !== null) && is_file($templateFile))
 			$this->load($templateFile);
@@ -28,10 +32,6 @@ class ELSWAK_HTML_Document
 			// determine the installation path
 			$this->load(dirname(__FILE__).'/Document/Template.html');
 		}
-		
-		// set the document to provide output formatting
-		$this->preserveWhiteSpace = false;
-		$this->formatOutput = true;
 		
 		// setup references to generic elements
 		$this->rootNode = $this->getElementsByTagName('html')->item(0);
