@@ -30,6 +30,7 @@ class ELSWAK_HTML_Document
 		}
 		
 		// set the document to provide output formatting
+		$this->preserveWhiteSpace = false;
 		$this->formatOutput = true;
 		
 		// setup references to generic elements
