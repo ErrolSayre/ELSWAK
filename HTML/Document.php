@@ -29,6 +29,9 @@ class ELSWAK_HTML_Document
 			$this->load(dirname(__FILE__).'/Document/Template.html');
 		}
 		
+		// set the document to provide output formatting
+		$this->formatOutput = true;
+		
 		// setup references to generic elements
 		$this->rootNode = $this->getElementsByTagName('html')->item(0);
 		$this->headNode = $this->getElementsByTagName('head')->item(0);
