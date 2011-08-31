@@ -224,6 +224,9 @@ class ELSWAK_Settable {
 		}
 		return $this;
 	}
+	protected function _arrayPropertyHasItems($property) {
+		return count($this->{$property}) > 0;
+	}
 	protected function _addArrayPropertyItem($property, $value) {
 		// validate the value if applicable
 		if (method_exists($this, '_verify'.$property.'Item')) {
