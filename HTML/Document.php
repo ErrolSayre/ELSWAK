@@ -239,6 +239,85 @@ class ELSWAK_HTML_Document
 		else
 			throw new Exception('Element not registered: node must be a valid element with an id attribute.');
 	}
+	public function locateElementsByClassName($classQueryString = '', $scope = null) {
+/*
+	Akin to the locateElementById method, this class replicates the functionality of the newer getElementsByClassName method which has yet to be included in the PHP DOMDocument class.
+*/
+		$matches = array();
+		
+		// allow "OR" based queries using a comma to separate collections
+		$hasQuery = false;
+		$query = array();
+		$clauses = explode(',', $classQueryString);
+		foreach ($clauses as $clause) {
+			$clauseQuery = array();
+			
+			// break out the clause into component classes
+			$classes = explode(' ', $clause);
+			foreach ($classes as $class) {
+				// ensure that the class is not a duplicate, nor is null
+				if ($class) {
+					$clauseQuery[$class] = $class;
+					$hasQuery = true;
+				}
+			}
+			$query[$clause] = $clauseQuery;
+		}
+		
+		// ensure that the proper scope is set
+		if (!($scope instanceof DOMElement)) {
+			$scope = $this;
+		}
+		
+		// now that the query is processed, traverse the elements to determine if there are any matches
+		if ($hasQuery) {
+			// grab the elements
+			$elements = $scope->getElementsByTagName('*');
+			
+			$count = $elements->length;
+			for ($i = 0; $i < $count; ++$i) {
+				$element = $elements->item($i);
+				$elementClasses = explode(' ', $element->getAttribute('class'));
+				foreach ($query as $clauseQuery) {
+					$match = true;
+					foreach ($clauseQuery as $class) {
+						// ensure that the element has all the classes in this clause
+						if (!in_array($class, $elementClasses)) {
+							// since this class is missing, break out of the loop
+							$match = false;
+							break;
+						}
+					}
+					if ($match) {
+						// since match is true, this element matches this clause, there is no need to test the other clauses
+						$matches[] = $element;
+						break;
+					}
+				}
+			}
+		} else if ($classQueryString === false) {
+			// locate all elements that do not have a class attribute
+			$elements = $scope->getElementsByTagName('*');
+			$count = $elements->length;
+			for ($i = 0; $i < $count; ++$i) {
+				$element = $elements->item($i);
+				if (!$element->hasAttribute('class')) {
+					$matches[] = $element;
+				}
+			}
+		} else if ($classQueryString == null) {
+			// locate all the elements that have an empty class attribute
+			$elements = $scope->getElementsByTagName('*');
+			$count = $elements->length;
+			for ($i = 0; $i < $count; ++$i) {
+				$element = $elements->item($i);
+				if ($element->hasAttribute('class') && !$element->getAttribute('class')) {
+					$matches[] = $element;
+				}
+			}
+		}
+		return $matches;
+	}
 	public function title() {
 		// determine if we have a reference to the title text node
 		if ($this->titleTextNode == null) {
