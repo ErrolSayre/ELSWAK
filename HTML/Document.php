@@ -25,11 +25,11 @@ class ELSWAK_HTML_Document
 		
 		// load our template file
 		if (($templateFile !== null) && is_file($templateFile))
-			$this->load($templateFile);
+			$this->loadHTMLFile($templateFile);
 		else {
 			// set up the default xhtml content
 			// determine the installation path
-			$this->load(dirname(__FILE__).'/Document/Template.html');
+			$this->loadHTMLFile(dirname(__FILE__).'/Document/Template.html');
 		}
 		
 		// set the document to provide output formatting
