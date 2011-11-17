@@ -57,7 +57,7 @@ class ELSWAK_Settable {
 		} else if (self::$_setters[$className][$property] == 2) {
 			$this->{$method}($value);
 		} else if (self::$_setters[$className][$property] == -1) {
-			throw new Exception('Unable to set property "'.$property.'". Property is protected and has no publically accessible setter method.');
+			throw new Exception('Unable to set property "'.$property.'". Property is protected and has no publicly accessible setter method.');
 		} else {
 			throw new Exception('Unable to set property "'.$property.'". Property is not defined within the class "'.$className.'".');
 		}
