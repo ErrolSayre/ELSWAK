@@ -23,7 +23,9 @@ class ELSWAK_Settable {
 	private static $_callers;
 	
 	public function __construct($import = null) {
-		$this->_import($import);
+		if ($import) {
+			$this->_import($import);
+		}
 	}
 	public function __set($property, $value) {
 		// determine if this class has been examined before
