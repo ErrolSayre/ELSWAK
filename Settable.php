@@ -333,49 +333,12 @@ class ELSWAK_Settable {
 		return $this->_setPropertyAsPositiveInteger($property, $value);
 	}
 	protected function _setPropertyAsBoolean($property, $value) {
-		if (is_numeric($value)) {
-			if ($value > 0) {
-				$value = true;
-			} else {
-				$value = false;
-			}
-		}
-		if (is_string($value)) {
-			$value = strtolower($value);
-			if (($value == 'yes') ||
-				($value == 'y') ||
-				($value == 'true')
-			) {
-				$value = true;
-			} else {
-				$value = false;
-			}
-		}
-		
-		if ($value) {
-			$this->{$property} = true;
-		} else {
-			$this->{$property} = false;
-		}
+		$this->{$property} = $this->valueAsBoolean($value);
 		return $this;
 	}
 	protected function _setPropertyAsNullBoolean($property, $value) {
-		// if a value is a null string, set it to a null value, otherwise forward it to the boolean checks to make it false
-		if (is_string($value)) {
-			$value = strtolower($value);
-			if (($value == 'pending') ||
-				($value == 'null') ||
-				($value == 'p' ||
-				($value == null))
-			) {
-				$value = null;
-			}
-		}
-		if ($value === null) {
-			$this->{$property} = null;
-			return $this;
-		}
-		return $this->_setPropertyAsBoolean($property, $value);
+		$this->{$property} = $this->valueAsNullBoolean($value);
+		return $this;
 	}
 	protected function _setPropertyAsStringOfMaximumLength($property, $value, $length = 255) {
 		if (($value = substr($value, 0, $length)) !== false) {
@@ -519,6 +482,86 @@ class ELSWAK_Settable {
 // ================== 
 // !Static Methods   
 // ================== 
+	public static function valueAsBoolean($value) {
+		// look for potential string matches
+		if (is_string($value)) {
+			$value = strtolower(trim($value));
+			if (in_array($value, self::acceptableTrueValues())) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		// look for a boolean masquerading as a number
+		if (is_numeric($value)) {
+			if ($value > 0) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		// perform one last casting using PHP's rules
+		if ($value) {
+			return true;
+		}
+		return false;
+	}
+	public static function acceptableTrueValues() {
+		// these values should be listed in order of decreasing likelihood to match in order to minimize comparisons
+		return array(
+			'yes',
+			'y',
+			'true',
+			'x', // SAP style boolean
+		);
+	}
+	public static function acceptableFalseValues() {
+		// please note that in the case of valueAsBoolean and valueAsNullBoolean ALL strings that are not null or true matches are considered false
+		// these values should be listed in order of decreasing likelihood to match in order to minimize comparisons
+		return array(
+			'no',
+			'n',
+			' ', // SAP style boolean
+			'',
+			'none',
+			'not',
+		);
+	}
+	public static function valueAsNullBoolean($value) {
+		// determine if a value is specifically null, otherwise cast it as a boolean
+		if ($value === null) {
+			return null;
+		}
+		// look for potential string matches
+		if (is_string($value)) {
+			$compare = strtolower($value);
+			if (in_array($compare, self::acceptableNullValues())) {
+				return null;
+			}
+		}
+		// use the number line to as a false, null, true scale
+		if (is_numeric($value)) {
+			if ($value > 0) {
+				return true;
+			} else if ($value < 0) {
+				return false;
+			} else {
+				return null;
+			}
+		}
+		return self::valueAsBoolean($value);
+	}
+	public static function acceptableNullValues() {
+		// these values should be listed in order of decreasing likelihood to match in order to minimize comparisons
+		return array(
+			'null',
+			'pending',
+			'p',
+			'',
+			'nil',
+			'none',
+		);
+	}
 	public static function makeYearValue($value) {
 		$value = abs(intval($value));
 		if ($value < 100) {

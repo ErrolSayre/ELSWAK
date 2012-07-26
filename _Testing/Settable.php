@@ -84,6 +84,91 @@ class example
 	}
 }
 
+echo '<h1>Testing static methods</h1>', LF;
+$values = array(
+	'yes',
+	'y',
+	'true',
+	'x',
+	'Yes',
+	'Ye',
+	'Y',
+	'no',
+	'n',
+	' ',
+	'',
+	'none',
+	'not',
+	'null',
+	'none',
+	'NO',
+	'No',
+	'n',
+	'maybe',
+	'sorta',
+	'positively',
+	'pending',
+	'p',
+	'nil',
+	'NULL',
+	'nil',
+	'null' => null,
+	'false' => false,
+	'true' => true,
+);
+
+echo '<table style="border-collapse:collapse;">', LF;
+echo '	<thead>', LF;
+echo '		<tr>', LF;
+echo '			<th>Value</th>', LF;
+echo '			<th>valueAsBoolean</th>', LF;
+echo '			<th>valueAsNullBoolean</th>', LF;
+echo '		</tr>', LF;
+echo '	</thead>', LF;
+$trues = ELSWAK_Settable::acceptableTrueValues();
+$falses = ELSWAK_Settable::acceptableFalseValues();
+$nulls = ELSWAK_Settable::acceptableNullValues();
+
+foreach ($values as $label => $value) {
+	echo '		<tr style="border-top:1px solid black;">', LF;
+	if (is_string($label)) {
+		echo '			<td>', $label, '</td>', LF;
+	} else {
+		echo '			<td>“'.$value.'”</td>', LF;
+	}
+	
+	$methods = array(
+		'valueAsBoolean',
+		'valueAsNullBoolean',
+	);
+	foreach ($methods as $method) {
+		$bool = ELSWAK_Settable::$method($value);
+		$style = '';
+		if ($bool === true) {
+			if (in_array(strtolower($value), $trues)) {
+				$style = ' style="background-color:green;"';
+			}
+			echo '				<td', $style, '>true</td>', LF;
+		} else if ($bool === false) {
+			if (in_array(strtolower($value), $falses)) {
+				$style = ' style="background-color:green;"';
+			}
+			echo '				<td', $style, '>false</td>', LF;
+		} else if ($bool === null) {
+			if (in_array(strtolower($value), $nulls)) {
+				$style = ' style="background-color:green;"';
+			}
+			echo '				<td', $style, '>null</td>', LF;
+		} else {
+			echo '				<td>“'.$bool.'” - ', gettype($bool), '</td>', LF;
+		}
+	}
+	
+	echo '		</tr>', LF;
+}
+echo '	</tbody>', LF;
+echo '</table>', LF;
+
 
 echo '<h1>Creating var1</h1>'.LF;
 $var1 = new example();
