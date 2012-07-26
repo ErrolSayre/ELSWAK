@@ -1,9 +1,9 @@
 <?php
 /*
 	ELSWAK HTML Document
-	
+
 	This class defines an extension of the DOMDocument that provides generic helpful features specific to HTML. It is intended to be used with ELSWAK HTML Response Container but can be used on its own.
-	
+
 	This extension to the DOMDocument provides locateElementById as a replacement for the HTML specific getElementById because PHP only recognized the id attribute for elements that existed in the document at the time of the last validation (or on initial load of an HTML file). This method caches ALL ids that it finds, but whenever it doesn't have a cached reference for a given id, it searches the entire document tree. Since the DOM is not ordered in any particular way it must be iterated sequentially, however since most elements are appended to existing items it is most likely that new items will be at the "bottom" of the tree. For this reason, I start the search for items at the last child of a given node and work toward the first child. Please note that you can avoid this search by creating elements through the given methods of this class, or by registering a given element with the cache using the registerElementWithIdIndex method.
 */
 class ELSWAK_HTML_Document
@@ -15,14 +15,14 @@ class ELSWAK_HTML_Document
 	protected $stylesheets;
 	protected $titleTextNode;
 	protected $elementIdIndex;
-	
+
 	public function __construct($templateFile = null) {
 		// create the DOMDocument
 		parent::__construct();
-		
+
 		// ignore whitespace in the template in order to provide output formatting
 		$this->preserveWhiteSpace = false;
-		
+
 		// load our template file
 		if (($templateFile !== null) && is_file($templateFile))
 			$this->loadHTMLFile($templateFile);
@@ -31,26 +31,26 @@ class ELSWAK_HTML_Document
 			// determine the installation path
 			$this->loadHTMLFile(dirname(__FILE__).'/Document/Template.html');
 		}
-		
+
 		// set the document to provide output formatting
 		$this->formatOutput = true;
-		
+
 		// setup references to generic elements
 		$this->rootNode = $this->getElementsByTagName('html')->item(0);
 		$this->headNode = $this->getElementsByTagName('head')->item(0);
 		$this->bodyNode = $this->getElementsByTagName('body')->item(0);
-		
+
 		// setup the primary content container
 		$this->contentNode = $this->bodyNode;
-		
+
 		// collect any scripts in the template
 		$this->scripts = array();
 		foreach ($this->getElementsByTagName('script') as $script)
 			$this->scripts[] = $script;
-		
+
 		// collect any stylesheets in the template
 		$this->collectStylesheets();
-		
+
 		// setup the element id index
 		$this->elementIdIndex = array();
 	}
@@ -121,10 +121,10 @@ class ELSWAK_HTML_Document
 		// wrap the provided html in proper tags and create a new dom
 		$document = new DOMDocument();
 		$document->loadHTML('<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8" /></head><body>'.$html.'</body></html>');
-		
+
 		// grab the body of the new document
 		$body = $document->getElementsByTagName('body')->item(0);
-		
+
 		// extract all of the body's child elements
 		$elements = array();
 		$current = $body->firstChild;
@@ -144,14 +144,14 @@ class ELSWAK_HTML_Document
 			}
 			return $element;
 		}
-		
+
 		// create a container for the new content
 		if ($key != null) {
 			$container = $this->createDiv(null, array('id' => $key));
 		} else {
 			$container = $this->createDiv();
 		}
-		
+
 		// import all the children of the new document's body into this container
 		foreach ($elements as $element) {
 			$container->appendChild($this->importNode($element, true));
@@ -163,7 +163,7 @@ class ELSWAK_HTML_Document
 		if (is_array($content) ||
 			(is_object($content) && !method_exists($content, '__toString')))
 			return $this->debugDumpVariable($content, $key);
-		
+
 		// try to import the contents of the variable into a div
 		return $this->createDiv($content, array('id' => $key));
 	}
@@ -182,14 +182,14 @@ class ELSWAK_HTML_Document
 				// save the current reference if the element has an id
 				if (($otherId = $this->elementIdIndex[$id]->getAttribute('id')) != '')
 					$this->elementIdIndex[$otherId] = $this->elementIdIndex[$id];
-				
+
 				// remove the current reference for the given id
 				$this->elementIdIndex[$id] = null;
-				
+
 				// look for the element within the document's native mechanism
 				if ($this->getElementById($id) !== null)
 					return $this->searchDomTreeForElementById($this->getElementById($id), $id);
-				
+
 				// search for a matching element in the tree
 				return $this->searchDomTreeForElementById($this->rootNode, $id);
 			}
@@ -203,15 +203,15 @@ class ELSWAK_HTML_Document
 		// determine if the current node has an id
 		if (($node->nodeType == XML_ELEMENT_NODE) && $node->hasAttribute('id')) {
 			// this node has an id
-			
+
 			// save a reference in the index
 			$this->elementIdIndex[$node->getAttribute('id')] = $node;
-			
+
 			// determine if this node is the requested node
 			if ($node->getAttribute('id') == $id)
 				return $node;
 		}
-		
+
 		// determine if the current node has children
 		if ($node->hasChildNodes()) {
 			// process each child
@@ -219,16 +219,16 @@ class ELSWAK_HTML_Document
 			while ($currentNode !== null) {
 				// search this node's tree
 				$found = $this->searchDomTreeForElementById($currentNode, $id);
-				
+
 				// determine if the requested node was found
 				if ($found !== null)
 					return $found;
-				
+
 				// move on to the next node
 				$currentNode = $currentNode->previousSibling;
 			}
 		}
-		
+
 		// the node wasn't found
 		return null;
 	}
@@ -244,14 +244,14 @@ class ELSWAK_HTML_Document
 	Akin to the locateElementById method, this class replicates the functionality of the newer getElementsByClassName method which has yet to be included in the PHP DOMDocument class.
 */
 		$matches = array();
-		
+
 		// allow "OR" based queries using a comma to separate collections
 		$hasQuery = false;
 		$query = array();
 		$clauses = explode(',', $classQueryString);
 		foreach ($clauses as $clause) {
 			$clauseQuery = array();
-			
+
 			// break out the clause into component classes
 			$classes = explode(' ', $clause);
 			foreach ($classes as $class) {
@@ -263,17 +263,17 @@ class ELSWAK_HTML_Document
 			}
 			$query[$clause] = $clauseQuery;
 		}
-		
+
 		// ensure that the proper scope is set
 		if (!($scope instanceof DOMElement)) {
 			$scope = $this;
 		}
-		
+
 		// now that the query is processed, traverse the elements to determine if there are any matches
 		if ($hasQuery) {
 			// grab the elements
 			$elements = $scope->getElementsByTagName('*');
-			
+
 			$count = $elements->length;
 			for ($i = 0; $i < $count; ++$i) {
 				$element = $elements->item($i);
@@ -334,7 +334,7 @@ class ELSWAK_HTML_Document
 			$this->locateTitleTextNode();
 		}
 		$this->titleTextNode->nodeValue = $title;
-		
+
 		return $this;
 	}
 	public function setPageTitle($title) {
@@ -344,34 +344,34 @@ class ELSWAK_HTML_Document
 		// locate the existing title tags
 		$titleElements = $this->headNode->getElementsByTagName('title');
 		$titleElement = $titleElements->item(0);
-		
+
 		// remove all but the first
 		while ($titleElements->length > 1) {
 			$element = $titleElements->item($titleElements->length - 1);
 			$element->parentNode->removeChild($element);
 		}
-		
+
 		// create a new title if necessary
 		if ($titleElement == null)
 			$titleElement = $this->headNode->appendChild($this->createElement('title'));
-		
+
 		// setup the title text node
 		$title = $titleElement->textContent;
 		while ($titleElement->hasChildNodes())
 			$titleElement->removeChild($titleElement->firstChild);
 		$this->titleTextNode = $titleElement->appendChild($this->createTextNode($title));
-		
+
 		return $this;
 	}
-// =========================== 
-// !Element Creation Methods   
-// =========================== 
+// ===========================
+// !Element Creation Methods
+// ===========================
 	public function createElement($tagName, $content = null, array $attributes = null) {
 		$element = parent::createElement($tagName);
-		
+
 		// process any provided content
 		$this->processContentIntoElement($element, $content);
-		
+
 		// set attributes
 		if (is_array($attributes)) {
 			foreach ($attributes as $attributeKey => $attributeValue) {
@@ -417,9 +417,9 @@ class ELSWAK_HTML_Document
 		}
 		return $newElement;
 	}
-// ======================= 
-// !	Display Elements   
-// ======================= 
+// =======================
+// !	Display Elements
+// =======================
 	public function createDiv($content = null, array $attributes = null) {
 		return $this->createElement('div', $content, $attributes);
 	}
@@ -447,6 +447,12 @@ class ELSWAK_HTML_Document
 	public function createParagraph($content = null, array $attributes = null) {
 		return $this->createElement('p', $content, $attributes);
 	}
+	public function createSmall($content = null, array $attributes = null) {
+		return $this->createElement('small', $content, $attributes);
+	}
+	public function createBlockquote($content = null, array $attributes = null) {
+		return $this->createElement('blockquote', $content, $attributes);
+	}
 	public function createBreak(array $attributes = null) {
 		return $this->createElement('br', null, $attributes);
 	}
@@ -466,6 +472,9 @@ class ELSWAK_HTML_Document
 			$attributes['alt'] = $alt;
 		return $this->createElement('img', null, $attributes);
 	}
+	public function createImage($src, $alt = null, array $attributes = null) {
+		return $this->createImg($src, $alt, $attributes);
+	}
 	public function createDl($content = null, array $attributes = null) {
 		return $this->createElement('dl', $content, $attributes);
 	}
@@ -484,9 +493,9 @@ class ELSWAK_HTML_Document
 	public function createLi($content = null, array $attributes = null) {
 		return $this->createElement('li', $content, $attributes);
 	}
-// ===================== 
-// !	Table Elements   
-// ===================== 
+// =====================
+// !	Table Elements
+// =====================
 	public function createTable($content = null, array $attributes = null) {
 		return $this->createElement('table', $content, $attributes);
 	}
@@ -532,9 +541,12 @@ class ELSWAK_HTML_Document
 		}
 		return $this->createTd($content, $attributes);
 	}
-// ==================== 
-// !	Form Elements   
-// ==================== 
+	public function createCaption($content = null, array $attributes = null) {
+		return $this->createElement('caption', $content, $attributes);
+	}
+// ====================
+// !	Form Elements
+// ====================
 	public function createForm($action = '', $method = 'POST', $content = null, array $attributes = null) {
 		$method = strtoupper($method);
 		if ($method != 'GET')
@@ -566,11 +578,11 @@ class ELSWAK_HTML_Document
 */
 		// set up the class
 		$attributes = $this->addClassToAttributesArray('field', $attributes);
-		
+
 		// create the field container
 		$fieldContainer = $this->createDiv(null, $attributes);
 		$this->addClassToElement('field', $fieldContainer);
-		
+
 		// add the label
 		// determine if the label provided is a DOM element
 		if ($label instanceof DOMElement) {
@@ -586,7 +598,7 @@ class ELSWAK_HTML_Document
 			// add the label as text to the label element
 			$fieldContainer->appendChild($this->createLabel($label));
 		}
-		
+
 		// add the input
 		// determine if the input provided is a DOM element
 		if ($input instanceof DOMElement) {
@@ -605,7 +617,7 @@ class ELSWAK_HTML_Document
 			// add the input(s) to the an input container
 			$inputContainer = $fieldContainer->appendChild($this->createDiv($input, array('class' => 'input')));
 		}
-		
+
 		// add the description
 		if ($description !== null) {
 			// determine if the description provided is a DOM element
@@ -618,7 +630,7 @@ class ELSWAK_HTML_Document
 				$fieldContainer->appendChild($this->createDiv($description, array('class' => 'description')));
 			}
 		}
-		
+
 		// return this element
 		return $fieldContainer;
 	}
@@ -741,7 +753,7 @@ class ELSWAK_HTML_Document
 		if (empty($attributes['name']))
 			$attributes['name'] = $name;
 		$select = $this->createElement('select', null, $attributes);
-		
+
 		// set up the first value
 		if (is_array($selectedValue)) {
 			$optionValue = isset($selectedValue['value'])? $selectedValue['value']: '';
@@ -753,10 +765,10 @@ class ELSWAK_HTML_Document
 			$select->appendChild($this->createSelectOption($selectedValue, $selectedValue));
 		else if (!empty($noValueLabel))
 			$select->appendChild($this->createSelectOption(null, $noValueLabel));
-		
+
 		// add a spacer between the label and the rest
 		$select->appendChild($this->createSelectOption(null, null, array('disabled' => true)));
-		
+
 		// create the options
 		if (is_array($options))
 			foreach ($options as $key => $option) {
@@ -782,7 +794,7 @@ class ELSWAK_HTML_Document
 	}
 	public function createSelectOption($value = null, $content = null, array $attributes = null) {
 		$option = $this->createElement('option', null, $attributes);
-		
+
 		// determine how to label this option
 		if ($value !== null && $content !== null) {
 			$option->appendChild($this->createTextNode(strval($content)));
@@ -812,9 +824,9 @@ class ELSWAK_HTML_Document
 		}
 		return $this->createElement('iframe', null, $attributes);
 	}
-// ========================== 
-// !Element Utility Methods   
-// ========================== 
+// ==========================
+// !Element Utility Methods
+// ==========================
 	public function addLinesToElementAsParagraphs($lines, DOMElement $element) {
 		if (is_string($lines)) {
 			$lines = explode(LF, $lines);
@@ -860,11 +872,11 @@ class ELSWAK_HTML_Document
 		$classes = array();
 		if ($element->hasAttribute('class'))
 			$classes = explode(' ', $element->getAttribute('class'));
-		
+
 		// determine if this class is new
 		if (!in_array($class, $classes))
 			$classes[] = $class;
-		
+
 		// set the class
 		$element->setAttribute('class', implode(' ', $classes));
 		return $element;
@@ -887,9 +899,9 @@ class ELSWAK_HTML_Document
 		}
 		return trim($classString);
 	}
-// ===================== 
-// !CSS & JS Additions   
-// ===================== 
+// =====================
+// !CSS & JS Additions
+// =====================
 	public function addScript($source = null, $content = null, $useHeader = false, array $attributes = null) {
 		// determine if a script source was provided and prevent duplicates
 		$uniqueScript = true;
@@ -897,7 +909,7 @@ class ELSWAK_HTML_Document
 			foreach ($this->scripts as $script)
 				if ($script->getAttribute('src') == $source)
 					$uniqueScript = false;
-		
+
 		if ($uniqueScript) {
 			if (!is_array($attributes))
 				$attributes = array();
@@ -905,7 +917,7 @@ class ELSWAK_HTML_Document
 				$attributes['type'] = 'text/javascript';
 			if (empty($attributes['src']) && !empty($source))
 				$attributes['src'] = $source;
-			
+
 			// defaultly add scripts to the end of the document, unless requested to add it to the header
 			$targetNode = $this->bodyNode;
 			if ($useHeader)
@@ -978,9 +990,9 @@ class ELSWAK_HTML_Document
 		$this->stylesheets = array();
 		return $this;
 	}
-// ================ 
-// !Console Tools   
-// ================ 
+// ================
+// !Console Tools
+// ================
 	public function debugDumpVariable($var, $label = '') {
 		// create a new element to contain the variable
 		$div = $this->createDiv(null, array('class' => 'ELSWAK-Variable-Dump'));
@@ -995,15 +1007,15 @@ class ELSWAK_HTML_Document
 		if (is_array($var) || is_object($var)) {
 			// add a definition list for this variable
 			$dl = $container->appendChild($this->createElement('dl'));
-			
+
 			// process each item
 			foreach ($var as $key => $value) {
 				// add a new term for this key
 				$dl->appendChild($this->createDt($key));
-				
+
 				// create a definition for the value
 				$dd = $dl->appendChild($this->createDd());
-				
+
 				// add this value
 				$this->debugRecurseDumpVariable($value, $dd);
 			}
