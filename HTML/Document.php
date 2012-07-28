@@ -73,6 +73,11 @@ class ELSWAK_HTML_Document
 	public function addMessage($message, $key = null, $type = null) {
 		return $this->addContent($message, $key, $type);
 	}
+	public function setContentNodeById($id) {
+		if (($node = $this->locateElementById($id)) != null) {
+			$this->contentNode = $node;
+		}
+	}
 	public function setContent($content = null, $key = null, $type = null) {
 		// like the original function in the HTTP response, overwrite the existing content within the document with that provided
 		$this->removeChildren($this->contentNode);
