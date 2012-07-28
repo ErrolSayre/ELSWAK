@@ -11,7 +11,7 @@ class ELSWAK_HTML_Response
 		$this->setDocument(
 			$document != null?
 				$document:
-				new ELSWAK_HTML_Document()
+				new ELSWAK_HTML_Document
 		);
 	}
 	public function document() {
