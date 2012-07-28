@@ -38,7 +38,9 @@ class ELSWAK_ClassLoader {
 	}
 	public function storeCache() {
 		// attempt to write the cache data to the store
-		file_put_contents($this->cacheFilePath, serialize($this->classFileIndex));
+		if ($this->cacheFilePath) {
+			file_put_contents($this->cacheFilePath, serialize($this->classFileIndex));
+		}
 	}
 	public function loadCache() {
 		if (is_file($this->cacheFilePath)) {
