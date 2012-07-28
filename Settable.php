@@ -26,9 +26,10 @@ if (!defined('TAB')) {
 }
 
 class ELSWAK_Settable {
-	private static $_getters;
-	private static $_setters;
-	private static $_callers;
+	private static $_getters = array();
+	private static $_setters = array();
+	private static $_callers = array();
+	private static $_methods = array();
 	
 	public function __construct($import = null) {
 		if ($import) {
@@ -49,9 +50,11 @@ class ELSWAK_Settable {
 			if (ELSWAK_Settable_Model_Helper::methodExistsForClass($method, $this)) {
 				// the property has a public setter method, set the value using the method
 				self::$_setters[$className][$property] = 2;
+				$this->_registerMethod($method);
 			} else if (method_exists($this, $method)) {
 				// the property has a protected setter method, protect the property
 				self::$_setters[$className][$property] = -1;
+				$this->_registerMethod($method);
 			} else if (property_exists($this, $property)) {
 				// the property has no setter method, set the value directly
 				self::$_setters[$className][$property] = 1;
@@ -88,15 +91,19 @@ class ELSWAK_Settable {
 			if (ELSWAK_Settable_Model_Helper::methodExistsForClass($method, $this)) {
 				// the property has a public getter method, return the value using the method
 				self::$_getters[$className][$property] = 2;
+				$this->_registerMethod($method);
 			} else if (method_exists($this, $method)) {
 				// the property has a protected getter method, protect the property
 				self::$_getters[$className][$property] = -1;
+				$this->_registerMethod($method);
 			} else if (ELSWAK_Settable_Model_Helper::methodExistsForClass($property, $this)) {
 				// the property has a public getter method named as the property, return the value using the method
 				self::$_getters[$className][$property] = 3;
+				$this->_registerMethod($method);
 			} else if (method_exists($this, $property)) {
 				// the property has a protected getter method named as the property, protect the property
 				self::$_getters[$className][$property] = -1;
+				$this->_registerMethod($method);
 			} else if (property_exists($this, $property)) {
 				// the property is has no getter method, return the value directly
 				self::$_getters[$className][$property] = 1;
@@ -128,7 +135,7 @@ class ELSWAK_Settable {
 		}
 		
 		// determine if this method has been examined before
-		if (!isset(self::$_callers[$className][$method]) || !is_array(self::$_callers[$className][$method])) {
+		if (!array_key_exists($method, self::$_callers[$className]) || !is_array(self::$_callers[$className][$method])) {
 			// set the default
 			self::$_callers[$className][$method] = array(
 				'type' => 0,
@@ -140,6 +147,7 @@ class ELSWAK_Settable {
 				// the method exists but is inaccessible (otherwise the __call method would not have been called)
 				// protect the method
 				self::$_callers[$className][$method]['type'] = -1;
+				$this->_registerMethod($method);
 			} else if ((stripos($method, 'set') === 0)) {
 				self::$_callers[$className][$method]['type'] = 1;
 				self::$_callers[$className][$method]['property'] = strtolower(substr($method, 3, 1)).substr($method, 4);
@@ -164,6 +172,31 @@ class ELSWAK_Settable {
 		}
 		// since no matching method exists and there is not an appropriate number of arguments for a set operation, attempt to get the property, allowing the __get method to throw any appropriate exceptions
 		return $this->__get(self::$_callers[$className][$method]['property']);
+	}
+	protected function _registerMethod($method) {
+		$className = get_class($this);
+		if (!array_key_exists($className, self::$_methods)) {
+			self::$_methods[$className] = array();
+		}
+		self::$_methods[$className][strtolower($method)] = true;
+		return $this;
+	}
+	public function _methodExists($method) {
+		$className = get_class($this);
+		if (!array_key_exists($className, self::$_methods)) {
+			self::$_methods[$className] = array();
+		}
+		if (array_key_exists(strtolower($method), self::$_methods[$className])) {
+			if (self::$_methods[$className] === true) {
+				return true;
+			}
+		} else {
+			if (method_exists($this, $method)) {
+				$this->_registerMethod($method);
+				return true;
+			}
+		}
+		return false;
 	}
 	public function __toString() {
 		return $this->_describe();
@@ -239,7 +272,8 @@ class ELSWAK_Settable {
 	}
 	protected function _addArrayPropertyItem($property, $value) {
 		// validate the value if applicable
-		if (method_exists($this, '_verify'.$property.'Item')) {
+		// determine if a verify method exists
+		if ($this->_methodExists('_verify'.$property.'Item')) {
 			if (!$this->{'_verify'.$property.'Item'}($value)) {
 				throw new Exception('Unable to add item to '.$property.'. Provided value is invalid.');
 			}
@@ -270,13 +304,13 @@ class ELSWAK_Settable {
 		return $this->_arrayItemForKey($this->{$property}, $key);
 	}
 	protected function _arrayPropertyHasItemForKey($property, $key) {
-		if (method_exists($this, '_verify'.$property.'Key')) {
+		if ($this->_methodExists('_verify'.$property.'Key')) {
 			if (!$this->{'_verify'.$property.'Key'}($key)) {
 				throw new Exception('Unable to set '.$property.' for key “'.$key.'”. Supplied key does not match accepted keys list.');
 			}
 		}
 		if (isset($this->{$property}[$key])) {
-			if (method_exists($this, '_verify'.$property.'Item')) {
+			if ($this->_methodExists('_verify'.$property.'Item')) {
 				if ($this->{'_verify'.$property.'Item'}($this->{$property}[$key])) {
 					return true;
 				}
@@ -287,13 +321,13 @@ class ELSWAK_Settable {
 	}
 	protected function _setArrayPropertyItemForKey($property, $key, $value) {
 		// validate the key if applicable
-		if (method_exists($this, '_verify'.$property.'Key')) {
+		if ($this->_methodExists('_verify'.$property.'Key')) {
 			if (!$this->{'_verify'.$property.'Key'}($key)) {
 				throw new Exception('Unable to set '.$property.' for key “'.$key.'”. Supplied key does not match accepted keys list.');
 			}
 		}
 		// validate the value if applicable
-		if (method_exists($this, '_verify'.$property.'Item')) {
+		if ($this->_methodExists('_verify'.$property.'Item')) {
 			if (!$this->{'_verify'.$property.'Item'}($value)) {
 				throw new Exception('Unable to set '.$property.' for key “'.$key.'”. Provided value is invalid.');
 			}
@@ -314,7 +348,7 @@ class ELSWAK_Settable {
 		return count($this->{$property});
 	}
 	protected function _verifyArrayPropertyKey($property, $key) {
-		if (method_exists($this, '_list'.$property.'Keys')) {
+		if ($this->_methodExists('_list'.$property.'Keys')) {
 			$keys = $this->{'_list'.$property.'Keys'}();
 			if (in_array($key, $keys)) {
 				return true;
