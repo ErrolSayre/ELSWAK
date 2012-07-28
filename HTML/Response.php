@@ -2,9 +2,6 @@
 /*
 	ELSWAK HTML Response
 */
-require_once 'ELSWAK/HTML/Document.php';
-require_once 'ELSWAK/HTTP/Response.php';
-
 class ELSWAK_HTML_Response
 	extends ELSWAK_HTTP_Response {
 	protected $sendHtml = false;
