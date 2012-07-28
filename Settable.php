@@ -17,6 +17,14 @@ This class utilizes the following conventions:
 	• getter methods should be the name of the property with or without "get" appended to the beginning of the name. (Either approach is supported.)
 	• a property name can be utilized as a getter or a setter by calling the method with no arguments (or more than one) to operate as a getter or with a single argument to operate as a setter. This functionality will only be provided if no method with the matching name exists and the method call matches the case of the property name exactly or matches the get and set prefix conventions.
 */
+
+if (!defined('LF')) {
+	define('LF', "\n");
+}
+if (!defined('TAB')) {
+	define('TAB', "	");
+}
+
 class ELSWAK_Settable {
 	private static $_getters;
 	private static $_setters;
