@@ -1,5 +1,5 @@
 <?php
-require_once 'ELSWAK/Settable.php';
+require_once 'setup-environment.php';
 class example
 	extends ELSWAK_Settable {
 	protected $id;
