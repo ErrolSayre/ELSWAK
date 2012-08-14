@@ -1,4 +1,7 @@
 <?php
+// setup handy defaults
+if (!defined('LF')) { define('LF', "\n"); }
+
 // locate the path to the "include path"
 $path = pathinfo(pathinfo(pathinfo(__FILE__, PATHINFO_DIRNAME), PATHINFO_DIRNAME), PATHINFO_DIRNAME);
 
