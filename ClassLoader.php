@@ -21,10 +21,19 @@ class ELSWAK_ClassLoader {
 			$this->addClassPath($classPaths);
 		}
 		if ($includeIncludePaths) {
-// implement this later
+			// get the include path from the system
+			$include = ini_get('include_path');
+			$paths = explode(':', $include);
+			foreach ($paths as $path) {
+				$this->addClassPath($path);
+			}
 		}
-		if ($cachePath) {
+		if (is_writable($cachePath)) {
 			$this->cacheFilePath = $cachePath;
+			$this->loadCache();
+		} elseif ($cachePath === true) {
+			// utilize the default cache path
+			$this->cacheFilePath = $this->path().'/ClassLoader.cache';
 			$this->loadCache();
 		}
 		
@@ -112,5 +121,15 @@ class ELSWAK_ClassLoader {
 			}
 		}
 		return $this->classFileIndex[$class];
+	}
+	public static function path() {
+		return pathinfo(__FILE__, PATHINFO_DIRNAME);
+	}
+	public static function storagePath() {
+		$path = self::path();
+		if (is_dir($path.'/_Storage') || mkdir($path.'/_Storage')) {
+			return $path.'/_Storage';
+		}
+		return false;
 	}
 }
