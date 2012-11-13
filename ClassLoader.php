@@ -69,6 +69,9 @@ class ELSWAK_ClassLoader {
 		}
 		return $this;
 	}
+	public function classPaths() {
+		return $this->classPaths;
+	}
 	public function loadClass($class) {
 		$file = self::locateClassFile($class);
 		if ($file && file_exists($file)) {
