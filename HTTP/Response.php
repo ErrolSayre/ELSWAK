@@ -5,6 +5,9 @@
 	This class was derived from the Zend Controller Response Abstract in order to provide some of the low level HTTP response items (such as headers) to the HTML, XML, and JSON response objects. It also serves as a common ancestor for those classes.
 	If you need the advanced features this class is lacking, it is recommended that you use the Zend class.
 */
+
+require '../StandardConstants.php';
+
 class ELSWAK_HTTP_Response {
 	protected $serverUri;
 	protected $applicationPath;

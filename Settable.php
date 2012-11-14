@@ -18,12 +18,7 @@ This class utilizes the following conventions:
 	• a property name can be utilized as a getter or a setter by calling the method with no arguments (or more than one) to operate as a getter or with a single argument to operate as a setter. This functionality will only be provided if no method with the matching name exists and the method call matches the case of the property name exactly or matches the get and set prefix conventions.
 */
 
-if (!defined('LF')) {
-	define('LF', "\n");
-}
-if (!defined('TAB')) {
-	define('TAB', "	");
-}
+require 'StandardConstants.php';
 
 class ELSWAK_Settable {
 	private static $_getters = array();

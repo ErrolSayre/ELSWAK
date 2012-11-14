@@ -2,6 +2,9 @@
 /*
 	ELSWAK Postal Address
 */
+
+require '../StandardConstants.php';
+
 class ELSWAK_Postal_Address
 	extends ELSWAK_Settable {
 	protected $lines;
