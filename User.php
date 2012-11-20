@@ -8,25 +8,17 @@ Since this generic class is expecting to be coupled with a file or cache based s
 
 ## Password Hash
 
-Rather than storing a plain-text password (or even a reversably encrypted password) this class expects that you'll need to store passwords in a potentially vulnerable position. This class utilizes PHP 5.3.7’s Blowfish support within the crypt function. By hashing the password with fairly immutable user attributes (account name), none of the hashes stored are directly related to each other and thus each would have a unique rainbow table. The underlying mechanism utilizes an extremely high number of iterations to provide further entropy to the hash.
+Rather than storing a plain-text password (or even a reversably encrypted password) this class expects that you'll need to store passwords in a potentially vulnerable position. This class utilizes PHP 5.3.7’s Blowfish support within the crypt() function.
 
-## A note about the hash salt.
-
-
-The hash salt is stored within this class as a static attribute to aid in global configuration. It is highly recommended that this value be overridden by subclasses (perhaps as a static method call below the class definition) to provide extra entropy within the local application. This should happen before the class is ever actually used so that any generated data is not invalidated. Please note that this must be a 22 digit string made up of only alphanumeric characters and period and forward slash. Alternatively the salt could be stored within the database but this class assumes it is adequate to use a global salt peppered with user details and stored separately from the user records.
-
-Please also note that the password hash will change if the user’s account is renamed. This is easy to deal with if prompting the user for password confirmation when changing the account name.
+Since crypt() returns the salt as a part of the value but simply fills in salt space with '$', this class generates a random salt each time a password hash is generated.
 
 */
+
+class ELSWAK_User_Exception extends ELSWAK_Exception {}
+class ELSWAK_User_InvalidKeyFactor_Exception extends ELSWAK_User_Exception {}
+
 class ELSWAK_User
 	extends ELSWAK_Settable {
-	
-	// configuration values (see notes above before overriding)
-	// Key factor passed to Blowfish algorithmeter —must be a 2 digit integer between 04-31
-	public static $keyFactor = '09';
-	// Salt passed to crypt —must be a 22 character string made of the characters A-z0-9./
-	//                         '<-- 22 characters --->'
-	public static $salt      = 'OverrideThisSaltPlease';
 	
 	protected $account;
 	protected $passwordHash;
@@ -60,13 +52,35 @@ class ELSWAK_User
 		$this->passwordHash = $this->generatePasswordHash($password);
 		return $this;
 	}
+/*
+	Hash the password with a random salt; peppering with the user account name.
+*/
 	protected function generatePasswordHash($password) {
-		// hash the password with the class salt; peppering with the user account name
+		// generate the salt
+		$salt = '';
+		$alphabet = $this->saltAlphabet();
+		$alphabetLength = strlen($alphabet) - 1;
+		for ($i = 0; $i < 22; ++$i) {
+			$salt .= $alphabet[rand(0, $alphabetLength)];
+		}
+		
 		// utilize the blowfish encryption guaranteed to be present in PHP 5.3 and later
-		return crypt($this->account.$password, '$2y$'.self::$keyFactor.'$'.self::$salt.'$');
+		$hash = crypt($this->pepperPassword($password), '$2y$'.$this->keyFactor().'$'.$salt);
+		
+		// ensure the hash is valid (exactly 60 characters for Blowfish)
+		if (strlen($hash) == 60) {
+			return $hash;
+		}
+		throw new ELSWAK_User_InvalidKeyFactor_Exception('Unable to generate proper password hash. Please verify supplied key factor.');
+	}
+	protected function pepperPassword($password) {
+		// for now just pepper the password by appending the account name
+		return $this->account.$password;
 	}
 	public function verifyPassword($password) {
-		if ($this->passwordHash == $this->generatePasswordHash($password)) {
+		// compare the hash of the input to the current hash
+		// since the crypt function includes the appropriate metadata in the hash it can be passed as the salt
+		if ($this->passwordHash == crypt($this->pepperPassword($password), $this->passwordHash)) {
 			return true;
 		}
 		return false;
@@ -76,13 +90,21 @@ class ELSWAK_User
 
 /* !ELSWAK Pseudo-Property Accessors */	
 	public function identifier() {
-		return md5($this->account.self::$salt);
+		return md5($this->account);
 	}
 	
 	
 	
 /* !Static Methods */
-	public static function setSalt($salt) {
-		self::$salt = strval($salt);
+	public static function keyFactor() {
+/*
+	Return a valid key factor for Blowfish.
+	Override this method in subclass to provide an alternate 2 digit integer from 04 to 31. The recommended value should quickly enough for the system to be responsive but long enough to slowdown a brute-force attack to unreasonable times.
+*/
+		return '09';
+	}
+	public static function saltAlphabet() {
+		// return valid characters for use within the random salt
+		return './ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 	}
 }
