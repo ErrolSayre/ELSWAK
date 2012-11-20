@@ -8,18 +8,25 @@ Since this generic class is expecting to be coupled with a file or cache based s
 
 ## Password Hash
 
-Rather than storing a plain-text password (or even a reversably encrypted password) this class expects that you'll need to store passwords in a potentially vulnerable position. This class utilizes SHA512 as an irreversible hashing mechanism including user account name and a separate class-wide salt string to add further entropy. By hashing the password with fairly immutable user attributes, none of the hashes stored are directly related to each other and are thus each would have a unique rainbow table. Additionally this process is iterated several thousand times to provide further entropy.
+Rather than storing a plain-text password (or even a reversably encrypted password) this class expects that you'll need to store passwords in a potentially vulnerable position. This class utilizes PHP 5.3.7’s Blowfish support within the crypt function. By hashing the password with fairly immutable user attributes (account name), none of the hashes stored are directly related to each other and thus each would have a unique rainbow table. The underlying mechanism utilizes an extremely high number of iterations to provide further entropy to the hash.
 
 ## A note about the hash salt.
 
-In order to prevent the user and password hashes from having a readily discernable value, this string is used to provide some configurable salting to the hashes. It is highly recommended that this value be overridden by subclasses (perhaps as a static method call below the class definition) to provide extra entropy within the local application. This should happen before the class is ever actually used so that any generated data is not invalidated. Please also note that stored hashes will need to be updated at any point this value needs to change. A side-effect of this could be a mass password invalidation simply by changing the salt —a mechanism to ease resetting one’s password would be recommended.
 
-Please also note that the passwordHash will change if the user's account is renamed. This is easy to deal with if prompting the user for password confirmation when changing the account name.
+The hash salt is stored within this class as a static attribute to aid in global configuration. It is highly recommended that this value be overridden by subclasses (perhaps as a static method call below the class definition) to provide extra entropy within the local application. This should happen before the class is ever actually used so that any generated data is not invalidated. Please note that this must be a 22 digit string made up of only alphanumeric characters and period and forward slash. Alternatively the salt could be stored within the database but this class assumes it is adequate to use a global salt peppered with user details and stored separately from the user records.
+
+Please also note that the password hash will change if the user’s account is renamed. This is easy to deal with if prompting the user for password confirmation when changing the account name.
+
 */
 class ELSWAK_User
 	extends ELSWAK_Settable {
 	
-	public static $salt = 'OverrideThisValueInSubclasses';
+	// configuration values (see notes above before overriding)
+	// Key factor passed to Blowfish algorithmeter —must be a 2 digit integer between 04-31
+	public static $keyFactor = '09';
+	// Salt passed to crypt —must be a 22 character string made of the characters A-z0-9./
+	//                         '<-- 22 characters --->'
+	public static $salt      = 'OverrideThisSaltPlease';
 	
 	protected $account;
 	protected $passwordHash;
@@ -54,12 +61,9 @@ class ELSWAK_User
 		return $this;
 	}
 	protected function generatePasswordHash($password) {
-		// take the password and hash it up a few thousand times
-		$hash = hash('sha512', $password.''.self::$salt.''.$this->account);
-		for ($i = 0; $i < 4343; ++$i) {
-			$hash = hash('sha512', $password.''.self::$salt.''.$hash.$this->account);
-		}
-		return $hash;
+		// hash the password with the class salt; peppering with the user account name
+		// utilize the blowfish encryption guaranteed to be present in PHP 5.3 and later
+		return crypt($this->account.$password, '$2y$'.self::$keyFactor.'$'.self::$salt.'$');
 	}
 	public function verifyPassword($password) {
 		if ($this->passwordHash == $this->generatePasswordHash($password)) {
