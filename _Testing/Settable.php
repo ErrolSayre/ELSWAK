@@ -70,16 +70,24 @@ class example
 	}
 	public function setResponseForQuestion($response, $question) {
 		try {
-			$key = $this->_validateValueAgainstList($question, $this->questions());
-			$this->responses[$key] = $response;
+			$this->responses[
+				$this->_keyForValueValidatedAgainstList($question, $this->questions())
+			] = $response;
 		} catch (Exception $e) {
 			throw new Exception('Unable to set response for “'.$question.'”. Invalid question identifier.');
 		}
 		return $this;
 	}
+	public function removeResponseForQuestion($question) {
+		return $this->_removeArrayPropertyItemForKey(
+			'responses',
+			$this->_keyForValueValidatedAgainstList($question, $this->questions())
+		);
+	}
 	public static function questions() {
 		return array(
-			'MAIDEN' => 'Mother’s Maiden Name'
+			'MAIDEN' => 'Mother’s Maiden Name',
+			'SCHOOL' => 'School where you attended first grade',
 		);
 	}
 }
@@ -209,9 +217,6 @@ try { echo $var1->virtual.BR.LF; } catch (Exception $e) { echo $e->getMessage().
 echo '<h2>Setting Virtual as "Errol Sayre (esayre (at) olemiss.edu)"</h2>'.LF;
 try { $var1->Virtual = 'Errol Sayre (esayre (at) olemiss.edu)'; echo $var1->virtual; } catch (Exception $e) { echo $e->getMessage().BR.LF; }
 
-echo '<h2>Setting virtual as "Errol Sayre (esayre (at) olemiss.edu)"</h2>'.LF;
-try { $var1->virtual = 'Errol Sayre (esayre (at) olemiss.edu)'; echo $var1->virtual; } catch (Exception $e) { echo $e->getMessage().BR.LF; }
-
 $tests = array(
 	array(
 		'ACMT',
@@ -236,7 +241,8 @@ $tests = array(
 	'maiden' => 'Lewis',
 	'father' => 'Bertram',
 	'Mother’s Maiden Name' => 'Louis',
-	'MAIDEN' => 'Hooowah'
+	'MAIDEN' => 'Hooowah',
+	'SCHOOL' => 'Arbuckle Elementary',
 );
 foreach ($tests as $question => $response) {
 	echo '<h2>Setting response for “', $question, '” to “', $response, '”</h2>', LF;
@@ -244,19 +250,22 @@ foreach ($tests as $question => $response) {
 }
 
 echo '<h2>Resulting object</h2>'.LF;
-print_r_html($var1);
+var_dump($var1);
+
+echo '<h2>Removing response for “Mother’s Maiden Name”</h2>', LF;
+$var1->removeResponseForQuestion('MAIDEN');
 
 echo '<h2>Exporting object to array</h2>'.LF;
-print_r_html($var1->_export);
+var_dump($var1->_export);
 
 echo '<h1>Creating var2 by injection of associative array into default constructor</h1>'.LF;
 $var2 = new example(array('date' => time(), 'name' => 'George McDudal', 'settable' => 'Your mom', 'gettable' => 'Horray'));
 
 echo '<h2>Resulting object</h2>'.LF;
-print_r_html($var2);
+var_dump($var2);
 
 echo '<h2>Exporting object to array</h2>'.LF;
-print_r_html($var2->_export);
+var_dump($var2->_export);
 
 /*
 echo '<h1>Creating var3 via factory method with associative array</h1>'.LF;

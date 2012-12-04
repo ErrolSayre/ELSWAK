@@ -331,10 +331,22 @@ class ELSWAK_Settable {
 		return $this;
 	}
 	protected function _removeArrayPropertyItemForKey($property, $key) {
-		if (!empty($this->{$property}[$key])) {
-			array_splice($this->{$property}, $key, 1);
-		}
+		// utilize the remove and return item method but return $this for backward compatibility
+		$this->_removeAndReturnArrayPropertyItemForKey($property, $key);
 		return $this;
+	}
+	protected function _removeAndReturnArrayPropertyItemForKey($property, $key) {
+/*
+	Remove an item and return it to the caller.
+	
+	Due to the prior remove method, this method required a different name to provide the differing behavior.
+*/
+		$value = null;
+		if (array_key_exists($key, $this->{$property})) {
+			$value = $this->{$property}[$key];
+			unset($this->{$property}[$key]);
+		}
+		return $value;
 	}
 	protected function _arrayPropertyKeys($property) {
 		return array_keys($this->{$property});
@@ -410,7 +422,7 @@ class ELSWAK_Settable {
 		$this->{$property} = $this->_validateValueAgainstList($value, $values, $ignoreCase);
 		return $this;
 	}
-	protected static function _validateValueAgainstList($value, $values, $ignoreCase = true) {
+	protected static function _validateValueAgainstList($value, $values, $ignoreCase = true, $returnKey = false) {
 		if ($ignoreCase)
 			$value = strtolower($value);
 		foreach ($values as $validKey => $validValue) {
@@ -418,18 +430,21 @@ class ELSWAK_Settable {
 			if ($ignoreCase)
 				$compareValue = strtolower($compareValue);
 			if ($value == $compareValue) {
-				return $validValue;
+				return $returnKey? $validKey: $validValue;
 			} else if (!is_numeric($validKey)) {
 				// try to compare the value against the key
 				$compareValue = $validKey;
 				if ($ignoreCase)
 					$compareValue = strtolower($compareValue);
 				if ($value == $compareValue) {
-					return $validValue;
+					return $returnKey? $validKey: $validValue;
 				}
 			}
 		}
 		throw new Exception('Supplied value does not match accepted values list.');
+	}
+	protected static function _keyForValueValidatedAgainstList($value, $values, $ignoreCase = true) {
+		return self::_validateValueAgainstList($value, $values, $ignoreCase, true);
 	}
 	protected function _setPropertyAsObjectOfClass($property, $value, $class) {
 		if ($this->_verifyItemAsObjectOfClass($value, $class)) {
