@@ -1,5 +1,5 @@
 <?php
-require_once 'ELSWAK/HTTP/Response.php';
+require_once '../setup-environment.php';
 
 $response = new ELSWAK_HTTP_Response();
 $response->addContent($response->serverUri().BR);
@@ -20,4 +20,4 @@ if (isset($_REQUEST['full']))
 else if (isset($_REQUEST['content']))
 	$response->sendContent();
 else
-	print_r_html($response);
+	var_dump($response);
