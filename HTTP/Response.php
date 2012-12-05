@@ -29,7 +29,7 @@ class ELSWAK_HTTP_Response {
 		// setup the application uri
 		$this->applicationPath = dirname($_SERVER['PHP_SELF']);
 		
-		// setup frame blocking by default, requiring the user to change this behavior
+		// setup frame blocking by default, requiring the developer to change this behavior
 		$this->setFramePermission();
 	}
 	public function serverUri() {
@@ -98,6 +98,10 @@ class ELSWAK_HTTP_Response {
 		}
 		return $this;
 	}
+	
+	
+	
+// !Header Methods
 	public function headers($delimeter = CRLF) {
 		return implode($delimiter, $this->headers);
 	}
@@ -121,6 +125,10 @@ class ELSWAK_HTTP_Response {
 			unset($this->headers[$name]);
 		return $this;
 	}
+	
+	
+	
+// !Redirection Methods
 	public function isRedirect() {
 		return $this->isRedirect;
 	}
@@ -140,6 +148,10 @@ class ELSWAK_HTTP_Response {
 		}
 		return $this;
 	}
+	
+	
+	
+// !Modification Flag Methods
 	public function isModified() {
 		return $this->isModified;
 	}
@@ -154,6 +166,10 @@ class ELSWAK_HTTP_Response {
 		}
 		return $this;
 	}
+	
+	
+	
+// !HTTP Status Methods
 	public function statusCode() {
 		return $this->statusCode;
 	}
