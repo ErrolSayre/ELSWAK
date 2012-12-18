@@ -13,6 +13,7 @@ class ELSWAK_DictionaryTest
 	public function testImport() {
 		$var = new ELSWAK_Dictionary(array('name' => 'Bertram'));
 		$this->assertEquals('Bertram', $var->valueForKey('name'));
+		$this->assertNull($var->valueForKey('First'));
 	}
 	
 	public function testAddName() {
@@ -20,6 +21,7 @@ class ELSWAK_DictionaryTest
 		$var->add('Bertram', 'name');
 		$this->assertEquals('Bertram', $var->get('name'));
 		$this->assertEquals($var->get('name'), $var->valueForKey('name'));
+		$this->assertEquals('Bertram', $var->valueForKeyWithException('name'));
 		return $var;
 	}
 	
@@ -43,6 +45,7 @@ class ELSWAK_DictionaryTest
 		// add another blank record
 		$var->add('ASDF');
 		// remove the items to cause a collision
+		$var->remove('Item-010');
 		$var->remove('Item-1');
 		$key = $var->uniqueKeyForValue();
 		$value = 'Some content that doesn’t have a key';
@@ -74,7 +77,7 @@ class ELSWAK_DictionaryTest
 	 */
 	public function testInvalidKeyAccess() {
 		$var = new ELSWAK_Dictionary;
-		$var->valueForKey('MONKEYS');
+		$var->valueForKeyWithException('MONKEYS');
 	}
 	
 	/**
@@ -82,9 +85,9 @@ class ELSWAK_DictionaryTest
 	 */
 	public function testInvalidKeyRemoval() {
 		$var = new ELSWAK_Dictionary;
-		$var->remove('qwer');
-		$var->valueForKey('MONKEYS');
-		$this->assertFalse($var->has('Wonkies'));
+		$var->add('ASDF', 'QWER');
+		$var->removeValueForKeyWithException('QWER');
+		$var->removeValueForKeyWithException('qwer');
 	}
 	
 	

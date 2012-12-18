@@ -13,24 +13,38 @@ class ELSWAK_Dictionary
 	implements Iterator {
 	
 	/**
-	 * Private position variable for use with iteration.
-	 * @var int
-	 */
-	private $position;
-	/**
 	 * Protected array used to store the dictionary contents.
 	 * @var array
 	 */
 	protected $store;
 	
+//!Private Properties
+	/**
+	 * Position marker for use with iteration.
+	 * @var int
+	 */
+	private $_position;
+	/**
+	 * Prefix used for creating unique keys
+	 * @var string
+	 */
+	private $_uniqueKeyPrefix;
+	/**
+	 * Suffix used for creating unique keys
+	 * @var string
+	 */
+	private $_uniqueKeySuffix;
+	
 	/**
 	 * Construct a new dictionary with optional import values.
 	 * @param array|object
 	 */
-	public function __construct($import = null) {
-		$this->position = 0;
+	public function __construct($import = null, $prefix = 'Item-', $suffix = '') {
+		$this->_position = 0;
 		$this->setStore(array());
 		$this->import($import);
+		$this->_uniqueKeyPrefix = $prefix;
+		$this->_uniqueKeySuffix = $suffix;
 	}
 	public function import($import) {
 		// determine if the value is importable
@@ -52,11 +66,11 @@ class ELSWAK_Dictionary
 	
 	
 	/*
-	 * Add the item to the collection if there is not already an item with that value or there is a way to auto-generate a key.
+	 * Add the item to the collection, creating a key if none is provided or an item with that key exists.
 	 * @return ELSWAK_Dictionary reference to this instance
 	 */
 	public function add($value, $key = null) {
-		if ($key == null) {
+		if ($key == null || $this->hasValueForKey($key)) {
 			$key = $this->uniqueKeyForValue($value);
 		}
 		return $this->setValueForKey($value, $key);
@@ -111,7 +125,7 @@ class ELSWAK_Dictionary
 			unset($this->store[$key]);
 			return $value;
 		}
-		return null
+		return null;
 	}
 	/*
 	 * Behave like removeValueForKey but throw an exception on an invalid key.
@@ -132,6 +146,12 @@ class ELSWAK_Dictionary
 	public function count() {
 		return count($this->store);
 	}
+	public function hasItems() {
+		return count($this->store) > 0;
+	}
+	
+	
+	
 	/*
 	 * Generate a unique key for the value.
 	 *
@@ -139,13 +159,11 @@ class ELSWAK_Dictionary
 	 * @return string a unique key for the value
 	 */
 	public function uniqueKeyForValue($value = null) {
-		$count = count($this->store);
-		$prefix = $this->generatedKeyPrefix();
-		$suffix = $this->generatedKeySuffix();
-		while (array_key_exists($prefix.$count.$suffix, $this->store)) {
+		$count = count($this->store) + 1;
+		while (array_key_exists($this->_uniqueKeyPrefix.$count.$this->_uniqueKeySuffix, $this->store)) {
 			++$count;
 		}
-		return $prefix.$count.$suffix;
+		return $this->_uniqueKeyPrefix.$count.$this->_uniqueKeySuffix;
 	}
 	
 	
@@ -192,33 +210,23 @@ class ELSWAK_Dictionary
 	
 //!Iterator Methods
 	public function rewind() {
-		$this->position = 0;
+		$this->_position = 0;
 	}
 	public function current() {
 		return $this->store[$this->key()];
 	}
 	public function key() {
 		$keys = array_keys($this->store);
-		if (array_key_exists($this->position, $keys)) {
-			return $keys[$this->position];
+		if (array_key_exists($this->_position, $keys)) {
+			return $keys[$this->_position];
 		}
 		return null;
 	}
 	public function next() {
-		++$this->position;
+		++$this->_position;
 	}
 	public function valid() {
 		$keys = array_keys($this->store);
-		return array_key_exists($this->position, $keys);
-	}
-	
-	
-	
-//!Class Methods
-	public static function generatedKeyPrefix() {
-		return 'Item-';
-	}
-	public static function generatedKeySuffix() {
-		return '';
+		return array_key_exists($this->_position, $keys);
 	}
 }
