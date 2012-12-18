@@ -22,10 +22,11 @@ class ELSWAK_ClassLoader {
 		}
 		if ($includeIncludePaths) {
 			// get the include path from the system
-			$include = ini_get('include_path');
-			$paths = explode(':', $include);
-			foreach ($paths as $path) {
-				$this->addClassPath($path);
+			$paths = explode(':', ini_get('include_path'));
+			if (is_array($paths)) {
+				foreach ($paths as $path) {
+					$this->addClassPath($path);
+				}
 			}
 		}
 		if (strlen($cachePath) > 0) {
@@ -73,8 +74,10 @@ class ELSWAK_ClassLoader {
 			$cache = unserialize(file_get_contents($this->cacheFilePath));
 			// determine if there were new files before loading the cache
 			$hasNewFiles = $this->newFiles;
-			foreach ($cache as $class => $file) {
-				$this->cacheFileForClass($file, $class);
+			if (is_array($cache)) {
+				foreach ($cache as $class => $file) {
+					$this->cacheFileForClass($file, $class);
+				}
 			}
 			// if there were no new files before loading cache denote this so we don't write a new cache file
 			$this->newFiles = $hasNewFiles;
