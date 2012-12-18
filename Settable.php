@@ -20,6 +20,11 @@ This class utilizes the following conventions:
 
 require 'StandardConstants.php';
 
+class ELSWAK_Settable_Exception extends ELSWAK_Exception {}
+class ELSWAK_Settable_NonexistentProperty_Exception extends ELSWAK_Settable_Exception {}
+class ELSWAK_Settable_ProtectedProperty_Exception extends ELSWAK_Settable_Exception {}
+class ELSWAK_Settable_ProtectedMethod_Exception extends ELSWAK_Settable_Exception {}
+
 class ELSWAK_Settable {
 	private static $_getters = array();
 	private static $_setters = array();
@@ -65,9 +70,9 @@ class ELSWAK_Settable {
 		} else if (self::$_setters[$className][$property] == 2) {
 			$this->{$method}($value);
 		} else if (self::$_setters[$className][$property] == -1) {
-			throw new Exception('Unable to set property "'.$property.'". Property is protected and has no publicly accessible setter method.');
+			throw new ELSWAK_Settable_ProtectedProperty_Exception('Unable to set property "'.$property.'". Property is protected and has no publicly accessible setter method.');
 		} else {
-			throw new Exception('Unable to set property "'.$property.'". Property is not defined within the class "'.$className.'".');
+			throw new ELSWAK_Settable_NonexistentProperty_Exception('Unable to set property "'.$property.'". Property is not defined within the class "'.$className.'".');
 		}
 		return $this;
 	}
@@ -116,9 +121,9 @@ class ELSWAK_Settable {
 		} else if (self::$_getters[$className][$property] == 3) {
 			return $this->{$property}();
 		} else if (self::$_getters[$className][$property] == -1) {
-			throw new Exception('Unable to get property "'.$property.'". Property is protected and has no publically accessible getter method.');
+			throw new ELSWAK_Settable_ProtectedProperty_Exception('Unable to get property "'.$property.'". Property is protected and has no publically accessible getter method.');
 		} else {
-			throw new Exception('Unable to get property "'.$property.'". Property is not defined within the class "'.$className.'".');
+			throw new ELSWAK_Settable_NonexistentProperty_Exception('Unable to get property "'.$property.'". Property is not defined within the class "'.$className.'".');
 		}
 		return $this;
 	}
@@ -157,7 +162,7 @@ class ELSWAK_Settable {
 		
 		// perform the determined operation
 		if (self::$_callers[$className][$method]['type'] == -1) {
-			throw new Exception('Unable to call method "'.$method.'". Method is protected.');
+			throw new ELSWAK_Settable_ProtectedMethod_Exception('Unable to call method "'.$method.'". Method is protected.');
 		} else if (
 			(self::$_callers[$className][$method]['type'] == 1) &&
 			(count($arguments) == 1)
