@@ -4,8 +4,7 @@
 	
 	This class handles responses which read files on the local filesystem to the response.
 */
-require_once 'ELSWAK/HTTP/Response.php';
-require_once 'ELSWAK/File/Type/Detector.php';
+
 class ELSWAK_File_Response
 	extends ELSWAK_HTTP_Response {
 	protected $fileName;
