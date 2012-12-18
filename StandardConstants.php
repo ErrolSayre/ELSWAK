@@ -20,23 +20,17 @@ if (!defined('BR'))
 	define('BR', '<br />');
 
 // Time Constants
-if (!defined('TIME_SECONDS_IN_DAY')) {
+if (!defined('TIME_SECONDS_IN_DAY'))
 	define('TIME_SECONDS_IN_DAY', 86400);
-}
-if (!defined('TIME_ONE_DAY')) {
+if (!defined('TIME_ONE_DAY'))
 	define('TIME_ONE_DAY', TIME_SECONDS_IN_DAY);
-}
-if (!defined('TIME_TWO_DAYS')) {
+if (!defined('TIME_TWO_DAYS'))
 	define('TIME_TWO_DAYS', 2 * TIME_ONE_DAY);
-}
-if (!defined('TIME_ONE_WEEK')) {
+if (!defined('TIME_ONE_WEEK'))
 	define('TIME_ONE_WEEK', 7 * TIME_ONE_DAY);
-}
-if (!defined('TIME_ONE_YEAR')) {
+if (!defined('TIME_ONE_YEAR'))
 	define('TIME_ONE_YEAR', 31556926);
-}
 
 // Date Formats
-if (!defined('DATETIME')) {
+if (!defined('DATETIME'))
 	define('DATETIME', 'Y-m-d H:i:s');
-}
