@@ -83,6 +83,17 @@ class ELSWAK_Dictionary
 		if ($this->hasValueForKey($key)) {
 			return $this->store[$key];
 		}
+		return null;
+	}
+	/*
+	 * Behave like valueForKey but throw an exception on an invalid key.
+	 * @return mixed
+	 * @throws ELSWAK_Dictionary_InvalidKey_Exception
+	 */
+	public function valueForKeyWithException($key) {
+		if ($this->hasValueForKey($key)) {
+			return $this->store[$key];
+		}
 		throw new ELSWAK_Dictionary_InvalidKey_Exception('Unable to get value. Invalid key.');
 	}
 	public function has($key) {
@@ -92,6 +103,22 @@ class ELSWAK_Dictionary
 		return array_key_exists($key, $this->store);
 	}
 	public function remove($key) {
+		return $this->removeValueForKey($key);
+	}
+	public function removeValueForKey($key) {
+		if ($this->hasValueForKey($key)) {
+			$value = $this->store[$key];
+			unset($this->store[$key]);
+			return $value;
+		}
+		return null
+	}
+	/*
+	 * Behave like removeValueForKey but throw an exception on an invalid key.
+	 * @return mixed
+	 * @throws ELSWAK_Dictionary_InvalidKey_Exception
+	 */
+	public function removeValueForKeyWithException($key) {
 		if ($this->hasValueForKey($key)) {
 			$value = $this->store[$key];
 			unset($this->store[$key]);
@@ -99,6 +126,9 @@ class ELSWAK_Dictionary
 		}
 		throw new ELSWAK_Dictionary_InvalidKey_Exception('Unable to remove value. Invalid key.');
 	}
+	
+	
+		
 	public function count() {
 		return count($this->store);
 	}
