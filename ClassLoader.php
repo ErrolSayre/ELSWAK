@@ -12,7 +12,7 @@ class ELSWAK_ClassLoader {
 	protected $classFileIndex = array();
 	protected $newFiles = false;
 	
-	public function __construct($cachePath = null, $classPaths = null, $includeIncludePaths = false) {
+	public function __construct($cachePath = null, $classPaths = null, $includeIncludePaths = false, $autoRegister = true) {
 		if (is_array($classPaths)) {
 			foreach ($classPaths as $path) {
 				$this->addClassPath($path);
@@ -28,9 +28,14 @@ class ELSWAK_ClassLoader {
 				$this->addClassPath($path);
 			}
 		}
-		if (is_writable($cachePath)) {
-			$this->cacheFilePath = $cachePath;
-			$this->loadCache();
+		if (strlen($cachePath) > 0) {
+			// determine if the file exists
+			if (is_writeable($cachePath)) {
+				$this->cacheFilePath = $cachePath;
+				$this->loadCache();
+			} elseif (file_put_contents($cachePath, '') !== false) {
+				$this->cacheFilePath = $cachePath;
+			}
 		} elseif ($cachePath === true) {
 			// utilize the default cache path
 			$this->cacheFilePath = $this->path().'/ClassLoader.cache';
@@ -38,13 +43,25 @@ class ELSWAK_ClassLoader {
 		}
 		
 		// register this instance as an auto loader
-		spl_autoload_register(array($this, 'loadClass'));
+		if ($autoRegister) {
+			$this->register();
+		}
 	}
 	public function __destruct() {
 		if ($this->newFiles) {
 			$this->storeCache();
 		}
+		$this->unregister();
 	}
+	public function register() {
+		spl_autoload_register(array($this, 'loadClass'));
+	}
+	public function unregister() {
+		spl_autoload_unregister(array($this, 'loadClass'));
+	}
+	
+	
+	
 	public function storeCache() {
 		// attempt to write the cache data to the store
 		if ($this->cacheFilePath) {
@@ -73,10 +90,13 @@ class ELSWAK_ClassLoader {
 		return $this->classPaths;
 	}
 	public function loadClass($class) {
-		$file = self::locateClassFile($class);
-		if ($file && file_exists($file)) {
-			include $file;
-			return true;
+		// ensure we don't attempt to load the same class again (if called manually)
+		if (!class_exists($class, false)) {
+			$file = self::locateClassFile($class);
+			if ($file && file_exists($file)) {
+				include $file;
+				return true;
+			}
 		}
 		return false;
 	}
