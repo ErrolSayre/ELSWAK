@@ -44,6 +44,8 @@ class ELSWAK_DictionaryTest
 		$this->assertEquals($value, $var->get($key));
 		// add another blank record
 		$var->add('ASDF');
+		$var->remove($key);
+		$var->add('ASDF');
 		// remove the items to cause a collision
 		$var->remove('Item-010');
 		$var->remove('Item-1');
