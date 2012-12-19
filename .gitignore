@@ -1,2 +1,3 @@
-_Vagrant/
-_Testing/CodeCoverage
+_CodeCoverage
+_Documentation
+_Vagrant
