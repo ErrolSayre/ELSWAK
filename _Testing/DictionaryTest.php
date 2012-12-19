@@ -96,7 +96,7 @@ class ELSWAK_DictionaryTest
 	
 //!Store Methods
 	/**
-	 * @expectedException ELSWAK_Settable_ProtectedMethod_Exception
+	 * @expectedException ELSWAK_Object_ProtectedMethod_Exception
 	 */
 	public function testInvalidStoreSet() {
 		$var = new ELSWAK_Dictionary();

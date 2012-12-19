@@ -1,15 +1,20 @@
 <?php
-/*
-	ELSWAK Dictionary
-	
-	This class is essentially an enhanced associative array offering prebuilt behaviors for adding/setting/getting/removing values in a listing. Its primary purpose is to replace the many support methods within ELSWAK Settable that deal with such array properties.
-*/
-
+//!Related Exception Classes
 class ELSWAK_Dictionary_Exception extends ELSWAK_Exception {}
 class ELSWAK_Dictionary_InvalidKey_Exception extends ELSWAK_Dictionary_Exception {}
 
+/**
+ * Wrap an associative array, throw in some methods, and call it a Dictionary collection.
+ *
+ * This class is essentially an enhanced associative array offering
+ * prebuilt behaviors for adding/setting/getting/removing values in a
+ * listing.
+ *
+ * Its primary purpose is to replace the many support methods within
+ * ELSWAK Settable that deal with such array properties.
+ */
 class ELSWAK_Dictionary
-	extends ELSWAK_Settable
+	extends ELSWAK_Object
 	implements Iterator {
 	
 	/**
