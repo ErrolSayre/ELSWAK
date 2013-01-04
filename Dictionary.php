@@ -3,6 +3,11 @@
 class ELSWAK_Dictionary_Exception extends ELSWAK_Exception {}
 class ELSWAK_Dictionary_InvalidKey_Exception extends ELSWAK_Dictionary_Exception {}
 
+//!Stub Constants
+if (!defined('JSON_PRETTY_PRINT')) {
+	define('JSON_PRETTY_PRINT', 0);
+}
+
 /**
  * Wrap an associative array, throw in some methods, and call it a Dictionary collection.
  *
