@@ -99,7 +99,7 @@ class ELSWAK_User
 	public static function keyFactor() {
 /*
 	Return a valid key factor for Blowfish.
-	Override this method in subclass to provide an alternate 2 digit integer from 04 to 31. The recommended value should quickly enough for the system to be responsive but long enough to slowdown a brute-force attack to unreasonable times.
+	Override this method in subclass to provide an alternate 2 digit integer from 04 to 31. The recommended value should execute quickly enough for the system to be responsive but slow enough to keep brute-force attack to unreasonable times.
 */
 		return '09';
 	}
