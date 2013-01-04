@@ -9,6 +9,7 @@ class ELSWAK_File_Store_Exception extends ELSWAK_Exception {}
 
 class ELSWAK_File_Store 
 	implements ELSWAK_Batch_Store_Interface {
+	
 	protected $filePath;
 	protected $coder;
 	
