@@ -3,7 +3,7 @@
 	ELSWAK Postal Address
 */
 
-require '../StandardConstants.php';
+require dirname(dirname(__FILE__)).'/StandardConstants.php';
 
 class ELSWAK_Postal_Address
 	extends ELSWAK_Settable {

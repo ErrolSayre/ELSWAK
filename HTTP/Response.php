@@ -6,7 +6,7 @@
 	If you need the advanced features this class is lacking, it is recommended that you use the Zend class.
 */
 
-require '../StandardConstants.php';
+require dirname(dirname(__FILE__)).'/StandardConstants.php';
 
 class ELSWAK_HTTP_Response {
 	protected $serverUri;

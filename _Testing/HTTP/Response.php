@@ -1,5 +1,5 @@
 <?php
-require_once '../setup-environment.php';
+require_once dirname(dirname(__FILE__)).'/setup-environment.php';
 
 $response = new ELSWAK_HTTP_Response();
 $response->addContent($response->serverUri().BR);

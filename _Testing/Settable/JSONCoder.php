@@ -1,5 +1,5 @@
 <?php
-require_once '../setup-environment.php';
+require_once dirname(dirname(__FILE__)).'/setup-environment.php';
 
 class TestClass extends ELSWAK_Settable {
 	protected $name;
