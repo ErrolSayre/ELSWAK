@@ -1,6 +1,6 @@
 <?php
 /*
-	ELSWAK SerializedData Coder
+	ELSWAK Data Serializer
 	
 	This class implements the coder interface with a backing of php serialization.
 */
