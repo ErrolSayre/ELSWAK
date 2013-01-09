@@ -1,8 +1,33 @@
 <?php
-//!Related Exception Classes
+/**
+ * ELSWAK Object
+ *
+ * @author Errol Sayre
+ */
+
+/**
+ * Generic exception for ELSWAK Objects.
+ *
+ * @package ELSWAK
+ */
 class ELSWAK_Object_Exception extends ELSWAK_Exception {}
+/**
+ * Exception for attempting to access a non-existent ELSWAK Object property.
+ *
+ * @package ELSWAK
+ */
 class ELSWAK_Object_NonexistentProperty_Exception extends ELSWAK_Object_Exception {}
+/**
+ * Exception for attempting to access an ELSWAK Object property protected by non-public accessors.
+ *
+ * @package ELSWAK
+ */
 class ELSWAK_Object_ProtectedProperty_Exception extends ELSWAK_Object_Exception {}
+/**
+ * Exception for attempting to access a non-public method of an ELSWAK Object.
+ *
+ * @package ELSWAK
+ */
 class ELSWAK_Object_ProtectedMethod_Exception extends ELSWAK_Object_Exception {}
 
 // Place a stub for backward compatibility with PHP < 5.4.0
@@ -11,23 +36,67 @@ if (!interface_exists('JsonSerializable')) {
 }
 
 /**
+ * Basic building block for objects with automatic accessors.
+ * 
  * Provides a replacement for ELSWAK Settable as a more basic building
  * block for building more structured classes with default getters and
  * setters.
+ *
+ * @package ELSWAK
  */
 abstract class ELSWAK_Object
 	implements JsonSerializable {
 	
+	/**
+	 * Memoized getter collection
+	 *
+	 * Collect all of the discovered and automagic setter methods segregated by class such that the result is only stored (and determined) once per class and is accessible to all instances.
+	 */
 	private static $_getters = array();
+
+	/**
+	 * Memoized setter collection
+	 *
+	 * Collect all of the discovered and automagic setter methods segregated by class such that the result is only stored (and determined) once per class and is accessible to all instances.
+	 */
 	private static $_setters = array();
+
+	/**
+	 * Memoized caller collection
+	 *
+	 * Collect all of the discovered and automagic methods segregated by class such that the result is only stored (and determined) once per class and is accessible to all instances.
+	 */
 	private static $_callers = array();
+
+	/**
+	 * Memoized method collection
+	 *
+	 * Collect all of the discovered methods segregated by class such that the result is only stored (and determined) once per class and is accessible to all instances.
+	 */
 	private static $_methods = array();
 	
+	
+	
+	/**
+	 * Default the constructor to include property import.
+	 *
+	 * All objects can natively support importing values from an array or iterable object by key/property. This generic method in-turn means constructors are purely optional to implement.
+	 *
+	 * @param array|object $import Array or iterable object. 
+	 */
 	public function __construct($import = null) {
 		if ($import) {
 			$this->_import($import);
 		}
 	}
+	
+	/**
+	 * Import values from any iterable collection.
+	 *
+	 * @param array|object $import Array or iterable object. 
+	 *
+	 * @return ELSWAK_Object self
+	 */
 	public function _import($import) {
 		if (is_array($import) || is_object($import)) {
 			foreach ($import as $property => $value) {
@@ -36,6 +105,12 @@ abstract class ELSWAK_Object
 		}
 		return $this;
 	}
+	
+	/**
+	 * Export properties of this object as an array.
+	 *
+	 * @return array
+	 */
 	public function _export() {
 		$export = array();
 		$keys = array_keys(get_object_vars($this));
@@ -46,9 +121,21 @@ abstract class ELSWAK_Object
 		}
 		return $export;
 	}
+	
+	/**
+	 * Provide the JSON encoder with an easy to handle array.
+	 *
+	 * @return array
+	 */
 	public function jsonSerialize() {
 		return $this->_export();
 	}
+	
+	/**
+	 * Default to JSON representation like Objective-C's describe method.
+	 *
+	 * @return string
+	 */
 	public function __toString() {
 		return json_encode($this);
 	}
@@ -58,6 +145,11 @@ abstract class ELSWAK_Object
 //!Magic Method Default Getter/Setter methods
 	/**
 	 * Utilize the __set "magic" method to provide all properties a default setter.
+	 *
+	 * @param string $property The property to set.
+	 * @param mixed $value The value to set the given property.
+	 *
+	 * @return ELSWAK_Object self
 	 */
 	public function __set($property, $value) {
 		// determine if this class has been examined before
@@ -70,7 +162,7 @@ abstract class ELSWAK_Object
 		// determine if this property has been examined before
 		if (!isset(self::$_setters[$className][$property])) {
 			// determine if this property can be set or not
-			if (ELSWAK_Object_Model_Helper::methodExistsForClass($method, $this)) {
+			if (ELSWAK_Object_Helper::methodExistsForClass($method, $this)) {
 				// the property has a public setter method, set the value using the method
 				self::$_setters[$className][$property] = 2;
 				$this->_registerMethod($method);
@@ -99,6 +191,14 @@ abstract class ELSWAK_Object
 		}
 		return $this;
 	}
+	
+	/**
+	 * Return the appropriate value from a matching property.
+	 *
+	 * @param string $property The property to get.
+	 *
+	 * @return mixed
+	 */
 	public function __get($property) {
 		// determine if this class has been examined before
 		$className = get_class($this);
@@ -111,7 +211,7 @@ abstract class ELSWAK_Object
 			// determine if this property can be accessed
 			// search for getter methods that include the "get" prefix or not.
 			$method = 'get'.$property;
-			if (ELSWAK_Object_Model_Helper::methodExistsForClass($method, $this)) {
+			if (ELSWAK_Object_Helper::methodExistsForClass($method, $this)) {
 				// the property has a public getter method, return the value using the method
 				self::$_getters[$className][$property] = 2;
 				$this->_registerMethod($method);
@@ -119,7 +219,7 @@ abstract class ELSWAK_Object
 				// the property has a protected getter method, protect the property
 				self::$_getters[$className][$property] = -1;
 				$this->_registerMethod($method);
-			} else if (ELSWAK_Object_Model_Helper::methodExistsForClass($property, $this)) {
+			} else if (ELSWAK_Object_Helper::methodExistsForClass($property, $this)) {
 				// the property has a public getter method named as the property, return the value using the method
 				self::$_getters[$className][$property] = 3;
 				$this->_registerMethod($method);
@@ -150,6 +250,15 @@ abstract class ELSWAK_Object
 		}
 		return $this;
 	}
+	
+	/**
+	 * Call the matching method or pseudo-method.
+	 *
+	 * @param string $method The method to call.
+	 * @param mixed|array $arguments The arguments to pass to the called method.
+	 *
+	 * @return mixed|void
+	 */
 	public function __call($method, $arguments) {
 		// determine if this class has been examined before
 		$className = get_class($this);
@@ -196,7 +305,18 @@ abstract class ELSWAK_Object
 		// since no matching method exists and there is not an appropriate number of arguments for a set operation, attempt to get the property, allowing the __get method to throw any appropriate exceptions
 		return $this->__get(self::$_callers[$className][$method]['property']);
 	}
+	
 //!Magic Method assistance methods
+	
+	/**
+	 * Register a located method.
+	 *
+	 * When a method is determined to exist, add it to the listing to avoid performing another lookup.
+	 *
+	 * @param string $method The method to register/memoize.
+	 *
+	 * @return ELSWAK_Object self
+	 */
 	protected function _registerMethod($method) {
 		$className = get_class($this);
 		if (!array_key_exists($className, self::$_methods)) {
@@ -205,6 +325,14 @@ abstract class ELSWAK_Object
 		self::$_methods[$className][strtolower($method)] = true;
 		return $this;
 	}
+	
+	/**
+	 * Determine if a method exists and wether it is publicly accessible.
+	 *
+	 * @param string $method The method to check.
+	 *
+	 * @return boolean
+	 */
 	public function _methodExists($method) {
 		$className = get_class($this);
 		$compareMethod = strtolower($method);
@@ -224,13 +352,35 @@ abstract class ELSWAK_Object
 		return false;
 	}
 }
+
+
+
 /**
  * Provide an external vantage point for determining the visibility of methods.
+ *
+ * @package ELSWAK
  */
-class ELSWAK_Object_Model_Helper {
+class ELSWAK_Object_Helper {
+	
+	/**
+	 * Get the methods from the other class visible to this class.
+	 *
+	 * @param string|object $class The class to examine.
+	 *
+	 * return array
+	 */
 	public static function methodsForClass($class) {
 		return get_class_methods($class);
 	}
+	
+	/**
+	 * Determine if a method exists for a given class.
+	 *
+	 * @param string $method The method name to check for.
+	 * @param string|object $class The class to check within.
+	 *
+	 * return boolean
+	 */
 	public static function methodExistsForClass($method, $class) {
 		$method = strtolower($method);
 		$methods = self::methodsForClass($class);
