@@ -1,5 +1,4 @@
 <?php
-require_once 'ELSWAK/HTTP/Response.php';
 class ELSWAK_JSON_Response
 	extends ELSWAK_HTTP_Response {
 	public function __construct() {
