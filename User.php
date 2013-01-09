@@ -18,7 +18,7 @@ class ELSWAK_User_Exception extends ELSWAK_Exception {}
 class ELSWAK_User_InvalidKeyFactor_Exception extends ELSWAK_User_Exception {}
 
 class ELSWAK_User
-	extends ELSWAK_Settable {
+	extends ELSWAK_Object {
 	
 	protected $account;
 	protected $passwordHash;
