@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<phpdoc>
+	<parser>
+		<target>_Documentation</target>
+	</parser>
+	<transformer>
+		<target>_Documentation</target>
+	</transformer>
+	<files>
+		<directory>.</directory>
+		<ignore>_Testing/*</ignore>
+	</files>
+</phpdoc>
