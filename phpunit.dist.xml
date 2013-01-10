@@ -1,8 +1,8 @@
-<phpunit bootstrap="setup-environment.php" colors="true">
+<phpunit bootstrap="_Testing/setup-environment.php" colors="true">
 	<testsuite name="Complete">
-		<directory>./</directory>
+		<directory>_Testing</directory>
 	</testsuite>
 	<logging>
-		<log type="coverage-html" target="../_CodeCoverage" charset="UTF-8" yui="true" highlight="false" lowUpperBound="40" highLowerBound="75" />
+		<log type="coverage-html" target="_CodeCoverage" charset="UTF-8" yui="true" highlight="false" lowUpperBound="40" highLowerBound="75" />
 	</logging>
 </phpunit>
