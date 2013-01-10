@@ -1,6 +1,4 @@
 <?php
-require_once dirname(dirname(dirname(__FILE__))).'/setup-environment.php';
-
 class ELSWAK_JSON_Data_CoderTest
 	extends PHPUnit_Framework_TestCase {
 	

@@ -1,6 +1,4 @@
 <?php
-require_once 'setup-environment.php';
-
 class BadUser extends ELSWAK_User {
 	public static function keyFactor() {
 		return 8;

@@ -1,6 +1,4 @@
 <?php
-require_once 'setup-environment.php';
-
 class ELSWAK_DictionaryTest
 	extends PHPUnit_Framework_TestCase {
 		

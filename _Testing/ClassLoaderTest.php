@@ -1,7 +1,4 @@
 <?php
-
-require_once dirname(dirname(__FILE__)).'/ClassLoader.php';
-
 class ELSWAK_ClassLoaderTest
 	extends PHPUnit_Framework_TestCase {
 	

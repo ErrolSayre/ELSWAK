@@ -1,7 +1,4 @@
 <?php
-
-require_once dirname(dirname(__FILE__)).'/setup-environment.php';
-
 class ELSWAK_HTTP_WorkspaceTest
 	extends PHPUnit_Framework_TestCase {
 	
