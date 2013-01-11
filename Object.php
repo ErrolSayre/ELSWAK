@@ -382,6 +382,10 @@ class ELSWAK_Object_Helper {
 	 * return boolean
 	 */
 	public static function methodExistsForClass($method, $class) {
+		// ensure we're inspecting an object rather than getting the output of __toString()
+		if (is_object($class)) {
+			$class = get_class($class);
+		}
 		$method = strtolower($method);
 		$methods = self::methodsForClass($class);
 		foreach ($methods as $name) {
