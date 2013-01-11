@@ -23,12 +23,10 @@ class ELSWAK_URI_FactoryTest
 				'https://localhost:8080/gallery/photos.json?date=20130101',
 				'http://u%24er:p%40ssw0rd@localho%24t:202O/Ole+Miss/Rebel%24.htm%20l?first+name=Errol&display=Mr. Errol#%24dmin' => 'http://u%24er:p%40ssw0rd@localho%24t:202/Ole+Miss/Rebel%24.htm%20l?first+name=Errol&display=Mr.+Errol#%24dmin',
 			),
-/*
 			'ELSWAK_Email_URL' => array(
 				'mailto:steve@apple.com',
 				'mailto:errol@localhost',
 			),
-*/
 			'ELSWAK_URN' => array(
 				'urn:animals:camel:head:nose#leftNostril',
 			),
