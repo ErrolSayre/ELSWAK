@@ -35,4 +35,40 @@ class ELSWAK_HTTP_URL
 		}
 		throw new ELSWAK_HTTP_URL_InvalidScheme_Exception;
 	}
+	
+	/**
+	 * Override to support server relative URLs
+	 * @param boolean $relative
+	 * @return string
+	 */
+	public function uri($relative = false) {
+		// reassemble the various components as a complete URI
+		$uri = '';
+		if (!$relative) {
+			if ($this->scheme) {
+				$uri = $this->scheme().':';
+			}
+			if ($this->hasAuthority()) {
+				$uri .= '//'.$this->authority();
+			}
+		}
+		if ($this->hasPath()) {
+			$uri .= $this->path();
+		}
+		if ($this->hasQuery()) {
+			$uri .= '?'.$this->query();
+		}
+		if ($this->hasFragment()) {
+			$uri .= '#'.$this->fragment();
+		}
+		return $uri;
+	}
+	/**
+	 * Override to support server relative URLs
+	 * @param boolean $relative
+	 * @return string
+	 */
+	public function url($relative = false) {
+		return $this->uri($relative);
+	}
 }
