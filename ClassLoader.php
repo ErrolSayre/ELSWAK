@@ -112,8 +112,10 @@ class ELSWAK_ClassLoader {
 			// search for the file in the various class paths
 			$classFileName = $class;
 			// search by Zend Framework naming convention if applicable
-			if (strpos($class, '_') !== FALSE) {
+			if (strpos($class, '_') !== false) {
 				$classFileName = str_replace('_', '/', $class);
+			} elseif (strpos($class, '\\') !== false) {
+				$classFileName = str_replace('\\', '/', $class);
 			}
 			foreach ($this->classPaths as $path) {
 				$file = $path.'/'.$classFileName.'.php';
