@@ -25,6 +25,17 @@ class ELSWAK_ObjectTest
 		$this->assertEquals('Juan Jiminez', $var->name);
 		$this->assertFalse($var->getMarried());
 	}
+	
+	public function testArrayAccessors() {
+		$var = new ELSWAK_ObjectTest_Person();
+		$var['first'] = 'James';
+		$var['last'] = 'McCoy';
+		$this->assertEquals('James', $var['first']);
+		$var['last'] = null;
+		$this->assertEquals(null, $var['last']);
+		unset($var['first']);
+		$this->assertEquals(null, $var['first']);
+	}
 	/**
 	 * @expectedException ELSWAK_Object_ProtectedProperty_Exception
 	 */

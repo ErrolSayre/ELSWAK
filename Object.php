@@ -45,7 +45,7 @@ if (!interface_exists('JsonSerializable')) {
  * @package ELSWAK
  */
 abstract class ELSWAK_Object
-	implements JsonSerializable {
+	implements JsonSerializable, ArrayAccess {
 	
 	/**
 	 * Memoized getter collection
@@ -139,6 +139,54 @@ abstract class ELSWAK_Object
 	public function __toString() {
 		return json_encode($this);
 	}
+
+
+
+//!ArrayAccess methods
+	/**
+	 * Set a property via array notation.
+	 * @return mixed|ELSWAK_Object self
+	 */
+	public function offsetSet($offset, $value) {
+		return $this->__set($offset, $value);
+	}
+	
+	/**
+	 * Determine if the offset is "gettable" as a real or virtual property.
+	 * @return boolean
+	 */
+	public function offsetExists($offset) {
+		try {
+			$this->__get($offset);
+			return true;
+		} catch (ELSWAK_Object_Exception $e) {}
+		return false;
+	}
+	
+	/**
+	 * Restore the property to a null state.
+	 *
+	 * This will only work if the property is able to be set to null, which may or may not be allowed based upon the extending class definition.
+	 * @return mixed|ELSWAK_Object self
+	 */
+	public function offsetUnset($offset) {
+		try {
+			return $this->__set($offset, null);
+		} catch (ELSWAK_Object_Exception $e) {}
+		return $this;
+	}
+	
+	/**
+	 * Get a property via array notation.
+	 * @return mixed
+	 */
+	public function offsetGet($offset) {
+		try {
+			return $this->__get($offset);
+		} catch (ELSWAK_Object_Exception $e) {}
+		return null;
+	}
+
 	
 	
 	
@@ -148,7 +196,6 @@ abstract class ELSWAK_Object
 	 *
 	 * @param string $property The property to set.
 	 * @param mixed $value The value to set the given property.
-	 *
 	 * @return ELSWAK_Object self
 	 */
 	public function __set($property, $value) {
