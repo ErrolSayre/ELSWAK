@@ -10,6 +10,17 @@ class ELSWAK_Email_URL
 	protected $user;
 	protected $host;
 	
+	public function __construct($import = null) {
+		parent::__construct($import);
+		$this->setScheme();
+	}
+	/**
+	 * Force the scheme to be mailto regardless of selection.
+	 */
+	public function setScheme($value = null) {
+		$this->scheme = 'mailto';
+		return $this;
+	}
 	public function hierarchy() {
 		return $this->user.'@'.$this->host;
 	}
