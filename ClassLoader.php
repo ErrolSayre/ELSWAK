@@ -29,7 +29,13 @@ class ELSWAK_ClassLoader {
 				}
 			}
 		}
-		if (strlen($cachePath) > 0) {
+		
+		// determine if a cache path was provided (or the default requested)
+		if ($cachePath === true) {
+			// utilize the default cache path
+			$this->cacheFilePath = $this->path().'/ClassLoader.cache';
+			$this->loadCache();
+		} elseif (strlen($cachePath)) {
 			// determine if the file exists
 			if (is_writeable($cachePath)) {
 				$this->cacheFilePath = $cachePath;
@@ -37,10 +43,6 @@ class ELSWAK_ClassLoader {
 			} elseif (file_put_contents($cachePath, '') !== false) {
 				$this->cacheFilePath = $cachePath;
 			}
-		} elseif ($cachePath === true) {
-			// utilize the default cache path
-			$this->cacheFilePath = $this->path().'/ClassLoader.cache';
-			$this->loadCache();
 		}
 		
 		// register this instance as an auto loader
