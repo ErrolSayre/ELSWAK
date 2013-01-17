@@ -26,13 +26,13 @@ class ELSWAK_URI
 		$couplets = explode($delimiter, $string);
 		foreach ($couplets as $couplet) {
 			list($key, $value) = explode('=', $couplet.'=');
-			$this->queryComponents->set(urldecode($key), urldecode($value));
+			$this->queryComponents[urldecode($key)] = urldecode($value);
 		}
 		return $this;
 	}
 	public function query() {
 		// reassemble the components into a query string
-		return http_build_query($this->queryComponents()->store);
+		return http_build_query($this->queryComponents()->export());
 	}
 	public function hasQuery() {
 		return $this->queryComponents()->hasItems();

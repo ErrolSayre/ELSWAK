@@ -22,6 +22,8 @@ class ELSWAK_URITest
 		$this->assertEquals('urn:animals:cats:house:abner?birthdate=20060401#calendar', "$uri");
 		$uri = new ELSWAK_URI;
 		$this->assertFalse($uri->hasQuery());
+		$url->query = 'sort=name&descending=true';
+		$this->assertEquals('sort=name&descending=true', $url->query);
 		$this->assertFalse($uri->hasFragment());
 	}
 }
