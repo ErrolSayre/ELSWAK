@@ -11,7 +11,7 @@ class ELSWAK_HTTP_WorkspaceTest
 		$var->setHeader('Location', 'https://www.olemiss.edu');
 		$this->assertEquals('https://www.olemiss.edu', $var->header('Location'));
 		$this->assertEquals(1, count($var->header()));
-		$this->assertEquals(count($var->header()), $var->headers->count);
+		$this->assertEquals(count($var->header()), $var->headers->count());
 		$this->assertFalse($var->hasHeader('X-Purpose'));
 		$var->headerForKey('X-Purpose');
 		$var->removeHeader('Location');
@@ -30,6 +30,6 @@ class ELSWAK_HTTP_WorkspaceTest
 		$var->metadata->add('Errol', 'Author');
 		$var->metadata->set('Author', 'John');
 		$var->metadata->add('this is an inocuous keyword that should just go into the list of items');
-		$this->assertEquals(2, $var->metadata->count);
+		$this->assertEquals(2, $var->metadata->count());
 	}
 }
