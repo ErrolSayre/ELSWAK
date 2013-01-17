@@ -26,15 +26,6 @@ class ELSWAK_DictionaryTest
 	/**
 	 * @depends testAddName
 	 */
-	public function testCount(ELSWAK_Dictionary $var) {
-		$this->assertEquals(1, $var->count);
-		$this->assertEquals($var->count, $var->count());
-		return $var;
-	}
-	
-	/**
-	 * @depends testAddName
-	 */
 	public function testAddUnamed(ELSWAK_Dictionary $var) {
 		$key = $var->uniqueKeyForValue();
 		$value = 'Some content that doesn’t have a key';
@@ -60,8 +51,17 @@ class ELSWAK_DictionaryTest
 	public function testGet(ELSWAK_Dictionary $var) {
 		$data = $var->get();
 		$this->assertGreaterThan(0, count($data));
-		$this->assertEquals(count($data), $var->count);
+		$this->assertEquals(count($data), $var->count());
 		return $var;
+	}
+	
+	public function testArrayAndMagicAccessors() {
+		// test accessing items with array and object notation, as well as foreach support
+		$data = new ELSWAK_Dictionary;
+		$data['first'] = 'Puintus';
+		$data[] = 'An item';
+		$data['last'] = 'Vorenus';
+		$this->assertEquals(array('first', 'Item-2', 'last'), $data->keys());
 	}
 	
 	
@@ -92,17 +92,6 @@ class ELSWAK_DictionaryTest
 	
 	
 	
-//!Store Methods
-	/**
-	 * @expectedException ELSWAK_Object_ProtectedMethod_Exception
-	 */
-	public function testInvalidStoreSet() {
-		$var = new ELSWAK_Dictionary();
-		$var->setStore(array());
-	}
-	
-	
-	
 //!Iteration
 	/**
 	 * @depends testAddUnamed
@@ -129,7 +118,7 @@ class ELSWAK_DictionaryTest
 	 * @depends testAddUnamed
 	 */
 	public function testToString(ELSWAK_Dictionary $var) {
-		$this->assertEquals(json_encode($var->store, JSON_PRETTY_PRINT), $var);
+		$this->assertEquals(json_encode($var, JSON_PRETTY_PRINT), $var);
 	}
 	
 	public function testSortingAndJSONExport() {
