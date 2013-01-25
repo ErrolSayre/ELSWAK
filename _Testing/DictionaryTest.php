@@ -1,7 +1,15 @@
 <?php
 class ELSWAK_DictionaryTest
 	extends PHPUnit_Framework_TestCase {
-		
+	
+	public function testImport() {
+		$var = new ELSWAK_Dictionary(array(
+			'asdf',
+			'qwer' => 'zxcv',
+		));
+		$this->assertEquals(2, $var->count());
+	}
+	
 	public function testAddUnamed() {
 		$var = new ELSWAK_Dictionary;
 		$var->add('Bertram', 'name');
