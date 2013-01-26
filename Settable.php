@@ -351,84 +351,19 @@ class ELSWAK_Settable
 // !Static Methods   
 // ================== 
 	public static function valueAsBoolean($value) {
-		// look for potential string matches
-		if (is_string($value)) {
-			$value = strtolower(trim($value));
-			if (in_array($value, self::acceptableTrueValues())) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-		// look for a boolean masquerading as a number
-		if (is_numeric($value)) {
-			if ($value > 0) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-		// perform one last casting using PHP's rules
-		if ($value) {
-			return true;
-		}
-		return false;
+		return ELSWAK_Boolean::valueAsBoolean($value);
 	}
 	public static function acceptableTrueValues() {
-		// these values should be listed in order of decreasing likelihood to match in order to minimize comparisons
-		return array(
-			'yes',
-			'y',
-			'true',
-			'x', // SAP style boolean
-		);
+		return ELSWAK_Boolean::acceptableTrueValues();
 	}
 	public static function acceptableFalseValues() {
-		// please note that in the case of valueAsBoolean and valueAsNullBoolean ALL strings that are not null or true matches are considered false
-		// these values should be listed in order of decreasing likelihood to match in order to minimize comparisons
-		return array(
-			'no',
-			'n',
-			' ', // SAP style boolean
-			'',
-			'none',
-			'not',
-		);
+		return ELSWAK_Boolean::acceptableFalseValues();
 	}
 	public static function valueAsNullBoolean($value) {
-		// determine if a value is specifically null, otherwise cast it as a boolean
-		if ($value === null) {
-			return null;
-		}
-		// look for potential string matches
-		if (is_string($value)) {
-			$compare = strtolower($value);
-			if (in_array($compare, self::acceptableNullValues())) {
-				return null;
-			}
-		}
-		// use the number line to as a false, null, true scale
-		if (is_numeric($value)) {
-			if ($value > 0) {
-				return true;
-			} else if ($value < 0) {
-				return false;
-			} else {
-				return null;
-			}
-		}
-		return self::valueAsBoolean($value);
+		return ELSWAK_NullBoolean::valueAsNullBoolean($value);
 	}
 	public static function acceptableNullValues() {
-		// these values should be listed in order of decreasing likelihood to match in order to minimize comparisons
-		return array(
-			'null',
-			'pending',
-			'p',
-			'',
-			'nil',
-			'none',
-		);
+		return ELSWAK_NullBoolean::acceptableNullValues();
 	}
 	public static function makeYearValue($value) {
 		$value = abs(intval($value));
