@@ -318,4 +318,43 @@ class ELSWAK_Array
 	public function jsonSerialize() {
 		return $this->store;
 	}
+
+
+
+	/**
+	 * Validate an item within the store.
+	 * @param mixed $item
+	 * @param boolean $returnValue Should the item value be returned instead of the key?
+	 * @return mixed Key or value of the item
+	 */
+	public function validateItemWithinKeysAndValues($item, $returnValue = false) {
+		return $this->validateItemWithinArrayKeysAndValues($item, $this->store, $returnValue);
+	}
+
+	/**
+	 * Alias the validation method to be shorter
+	 * @see validateItemWithinKeysAndValues
+	 */
+	public function validateItem($item, $returnValue = false) {
+		return $this->validateItemWithinKeysAndValues($item, $returnValue);
+	}
+
+
+
+//!Static methods
+	public static function validateItemWithinArrayKeysAndValues($item, array $items, $returnValue = false) {
+		// first look for the value as a key
+		if (array_key_exists($item, $items)) {
+			return $returnValue? $items[$item]: $item;
+		}
+		
+		// look for the value in the labels
+		$item = strtolower($item);
+		foreach ($items as $key => $value) {
+			if (strpos(strtolower($value), $item) !== false) {
+				return $returnValue? $value: $key;
+			}
+		}
+		return null;
+	}
 }

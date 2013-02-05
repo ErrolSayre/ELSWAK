@@ -12,6 +12,11 @@ class ELSWAK_ArrayTest
 		$var = new ELSWAK_Array(array('name' => 'Bertram'));
 		$this->assertEquals('Bertram', $var->valueForKey('name'));
 		$this->assertNull($var->valueForKey('First'));
+		$object = new ELSWAK_Array(array('first' => 'Frank', 'last' => 'Oz'));
+		$this->assertEquals('Frank', $object->first);
+		// import a traversable object...
+		$data = new ELSWAK_Array($object);
+		$this->assertGreaterThan(1, $data->count());
 	}
 	
 	public function testAddName() {
@@ -53,6 +58,12 @@ class ELSWAK_ArrayTest
 		$data[] = 'An item';
 		$data['last'] = 'Vorenus';
 		$this->assertEquals(array('first', 0, 'last'), $data->keys());
+		$this->assertEquals('Vorenus', $data->last);
+		$data->monster = 'Dracula';
+		$this->assertEquals('Dracula', $data->get('monster'));
+		$this->assertTrue($data->offsetExists('monster'));
+		unset($data['first']);
+		$this->assertEquals('Dracula', $data->offsetGet('monster'));
 	}
 	
 	
@@ -170,5 +181,16 @@ class ELSWAK_ArrayTest
 			),
 			$var->toJSON()
 		);
+	}
+	
+	public function testItemSearch() {
+		$var = new ELSWAK_Array(array(
+			'020' => 'Spring Semester',
+			'404' => 'Not Found',
+			'HELO' => 'Not BSG',
+		));
+		$this->assertEquals('HELO', $var->validateItem('BSG'));
+		$this->assertEquals('Not Found', $var->validateItem(404, true));
+		$this->assertNull($var->validateItem(200));
 	}
 }
