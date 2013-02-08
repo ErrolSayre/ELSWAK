@@ -101,7 +101,7 @@ class ELSWAK_Authoritative_URL
 			}
 			$this->setPathComponents($parts);
 		} else {
-			// since there was simply a trailing space, force a trailing slash by setting the target to false
+			// since there was simply a trailing slash, force outputting one by setting the target to false
 			$this->target = false;
 		}
 		return $this;
