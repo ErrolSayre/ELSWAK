@@ -115,6 +115,14 @@ class ELSWAK_Array
 	public function set($key, $value) {
 		return $this->setValueForKey($value, $key);
 	}
+
+	/**
+	 * Set a value
+	 *
+	 * @param mixed $value
+	 * @param mixed $key
+	 * @return ELSWAK_Array self
+	 */
 	public function setValueForKey($value, $key) {
 		$this->store[$key] = $value;
 		return $this;
