@@ -25,6 +25,8 @@ if (!interface_exists('JsonSerializable')) {
  *
  * This class extends the Array Object class to ensure that added items
  * get a reasonable default name...
+ *
+ * @package ELSWAK\Collections
  */
 class ELSWAK_Dictionary
 	extends ELSWAK_Array {

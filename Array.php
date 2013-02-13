@@ -30,7 +30,7 @@ if (!interface_exists('JsonSerializable')) {
  * Its primary purpose is to replace the many support methods within
  * ELSWAK Settable that deal with such array properties.
  *
- * @package ELSWAK
+ * @package ELSWAK\Collections
  */
 class ELSWAK_Array
 	implements JsonSerializable, ArrayAccess, Iterator {
