@@ -246,6 +246,14 @@ class ELSWAK_Postal_Address
 	}
 
 	/**
+	 * Alias line 1
+	 * @return string
+	 */
+	public function line1() {
+		return $this->line(1);
+	}
+
+	/**
 	 * Set line 2
 	 *
 	 * @param string $value
@@ -258,6 +266,14 @@ class ELSWAK_Postal_Address
 			unset($this->lines[1]);
 		}
 		return $this;
+	}
+
+	/**
+	 * Alias line 2
+	 * @return string
+	 */
+	public function line2() {
+		return $this->line(2);
 	}
 
 	/**
