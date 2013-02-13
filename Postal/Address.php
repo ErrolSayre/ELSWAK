@@ -133,8 +133,6 @@ class ELSWAK_Postal_Address
 		$format = strtolower($format);
 		if ($format == 'single-line') {
 			$lineSeparator = ', ';
-		} else if ($format == 'html') {
-			$lineSeparator = BR;
 		}
 		
 		// assemble the address line by line
