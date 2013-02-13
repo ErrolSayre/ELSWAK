@@ -30,6 +30,8 @@ class ELSWAK_Postal_Address
 	 * Utilize a memoization to store the states listing to allow for
 	 * external configuration. This is most helpful if there is a state
 	 * lookup service or if a sub-class is made for other countries.
+	 *
+	 * @type ELSWAK_Array
 	 */
 	 protected static $states;
 
@@ -354,12 +356,12 @@ class ELSWAK_Postal_Address
 		return $address;
 	}
 	
-	public static function setStates(array $states) {
+	public static function setStates(ELSWAK_Array $states) {
 		static::$states = $states;
 	}
 	public static function states() {
 		if (!static::$states) {
-			static::$states = array(
+			static::$states = new ELSWAK_Array(array(
 				'AL' => 'Alabama',
 				'AK' => 'Alaska',
 				'AZ' => 'Arizona',
@@ -411,7 +413,7 @@ class ELSWAK_Postal_Address
 				'WV' => 'West Virginia',
 				'WI' => 'Wisconsin',
 				'WY' => 'Wyoming',
-			);
+			));
 		}
 		return static::$states;
 	}
