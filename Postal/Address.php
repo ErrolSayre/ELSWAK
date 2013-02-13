@@ -85,7 +85,7 @@ class ELSWAK_Postal_Address
 	 */
 	public function __construct($line1 = '', $line2 = '', $city = '', $state = '', $postal = '', $country = '') {
 		// ensure the lines property is set
-		$this->lines = new ELSWAK_Array;
+		$this->setLines();
 
 		// determine if $line1 is for import
 		if (is_array($line1)) {
@@ -197,10 +197,13 @@ class ELSWAK_Postal_Address
 
 
 
-	/**
-	 * Protect lines property
-	 */
-	protected function setLines() {}
+	public function setLines($value = null) {
+		if (!$value instanceof ELSWAK_Array) {
+			$value = new ELSWAK_Array($value);
+		}
+		$this->lines = $value;
+		return $this;
+	}
 
 	/**
 	 * Get array of lines
