@@ -24,5 +24,13 @@ class ELSWAK_Postal_AddressTest
 		$this->assertInstanceOf('ELSWAK_Postal_Address', $address);
 		$this->assertEquals($text, $address->address);
 		$this->assertEquals(38677, $address->zipCode);
+		
+		$text = 'Office of Information Technology 100 Powers Hall University Mississippi 38677-1848';
+		$address = $address->parseAddress($text);
+		$this->assertEquals('University, Mississippi 38677-1848', $address->cityStateZipLine);
+		
+		$text = 'Office of Information Technology 100 Powers Hall University';
+		$address = $address->parseAddress($text);
+		$this->assertEquals('University', $address->city);
 	}
 }

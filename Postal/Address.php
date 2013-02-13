@@ -330,11 +330,8 @@ class ELSWAK_Postal_Address
 		// determine if this address is line formatted (as on an envelope)
 		if (strpos($value, LF) !== false) {
 			return static::parseLineFormattedAddress($value);
-		} else if (strpos($value, ' $ ') !== false) {
-			// this is likely a UM LDAP encoded address, replace the delimiter with a line feed
-			return static::parseLineFormattedAddress(str_replace(' $ ', LF, $value));
 		}
-		return null;
+		return static::parseSpaceDelimitedAddress($value);
 	}
 	public static function parseLineFormattedAddress($value) {
 		// create a new address
@@ -353,6 +350,52 @@ class ELSWAK_Postal_Address
 				$address->addLine($line);
 			}
 		}
+		return $address;
+	}
+	public static function parseSpaceDelimitedAddress($value) {
+		// create a new address
+		$address = new ELSWAK_Postal_Address;
+		
+		// break the items out by spaces and collect them into lines
+		$states = static::states();
+		$pieces = explode(' ', $value.' ');
+		$lines = array();
+		foreach ($pieces as $piece) {
+			if ($piece) {
+				// determine if the value is likely a state
+				if (
+					!$address->state &&
+					$states->validateItem($piece, false, false) != null
+				) {
+					$address->state = $piece;
+					// the last piece (should have been added to lines...) is likely the city
+					$address->city = array_pop($lines);
+					
+				// determine if the value is likely a zip code
+				} elseif (
+					!$address->postal && (
+						(
+							is_numeric($piece) &&
+							$piece > 9999
+						) ||
+						strpos($piece, '-') == 5
+					)
+				) {
+					$address->postal = $piece;
+				} else {
+					$lines[] = $piece;
+				}
+			}
+		}
+		// check for a city, if none, take the last item from the lines array
+		if (!$address->city) {
+			$address->city = array_pop($lines);
+		}
+		
+		// take whatever remains in the lines array and join it back together as a line
+		$address->addLine(implode(' ', $lines));
+		
+		// return the completed address
 		return $address;
 	}
 	
