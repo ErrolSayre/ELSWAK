@@ -327,22 +327,22 @@ class ELSWAK_Array
 	 * @param boolean $returnValue Should the item value be returned instead of the key?
 	 * @return mixed Key or value of the item
 	 */
-	public function validateItemWithinKeysAndValues($item, $returnValue = false) {
-		return $this->validateItemWithinArrayKeysAndValues($item, $this->store, $returnValue);
+	public function validateItemWithinKeysAndValues($item, $returnValue = false, $allowSubstrings = true) {
+		return $this->validateItemWithinArrayKeysAndValues($item, $this->store, $returnValue, $allowSubstrings);
 	}
 
 	/**
 	 * Alias the validation method to be shorter
 	 * @see validateItemWithinKeysAndValues
 	 */
-	public function validateItem($item, $returnValue = false) {
-		return $this->validateItemWithinKeysAndValues($item, $returnValue);
+	public function validateItem($item, $returnValue = false, $allowSubstrings = true) {
+		return $this->validateItemWithinKeysAndValues($item, $returnValue, $allowSubstrings);
 	}
 
 
 
 //!Static methods
-	public static function validateItemWithinArrayKeysAndValues($item, array $items, $returnValue = false) {
+	public static function validateItemWithinArrayKeysAndValues($item, array $items, $returnValue = false, $allowSubstrings = true) {
 		// first look for the value as a key
 		if (array_key_exists($item, $items)) {
 			return $returnValue? $items[$item]: $item;
@@ -351,7 +351,15 @@ class ELSWAK_Array
 		// look for the value in the labels
 		$item = strtolower($item);
 		foreach ($items as $key => $value) {
-			if (strpos(strtolower($value), $item) !== false) {
+			// compare the item as a substring to the value
+			$compare = strtolower($value);
+			if (
+				(
+					$allowSubstrings &&
+					strpos($compare, $item) !== false
+				) ||
+				$compare == $item
+			) {
 				return $returnValue? $value: $key;
 			}
 		}
