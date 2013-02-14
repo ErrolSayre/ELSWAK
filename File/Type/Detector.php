@@ -743,14 +743,12 @@ class ELSWAK_File_Type_Detector {
 	);
 	
 	public static function typeFromName($name) {
-		// determine if the filename has an extension
-		$parts = pathinfo($name);
-		if (isset($parts['extension'])) {
-			$extension = strtolower($parts['extension']);
-			
-			// determine if the extension is in the list
-			if (isset(self::$fileTypes[$extension]))
-				return self::$fileTypes[$extension];
+		return static::typeFromExtension(strtolower(pathinfo($name, PATHINFO_EXTENSION)));
+	}
+	public static function typeFromExtension($extension) {
+		// determine if the extension is in the list
+		if (array_key_exists($extension, static::$fileTypes)) {
+			return static::$fileTypes[$extension];
 		}
 		return 'application/octet-stream';
 	}
