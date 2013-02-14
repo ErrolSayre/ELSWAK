@@ -1,5 +1,33 @@
 <?php
-class ELSWAK_File {
+class ELSWAK_File
+	extends ELSWAK_Object {
+
+	protected $path;
+	protected $name;
+	protected $extension;
+	protected $type;
+
+
+
+	public function __construct($path) {
+		$this->setPath($path);
+	}
+
+
+
+	public function setPath($path) {
+		$this->path = $path;
+		$this->name = pathinfo($path, PATHINFO_BASENAME);
+		$this->extension = pathinfo($path, PATHINFO_EXTENSION);
+		$this->type = ELSWAK_File_Type_Detector::typeFromExtension($this->extension);
+		return $this;
+	}
+	protected function setName() {}
+	protected function setExtension() {}
+	protected function setType() {}
+
+
+
 	public static function sanitizeFileName($name, $pretty = true) {
 		$sanitized = '';
 		
