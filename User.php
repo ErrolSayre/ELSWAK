@@ -57,8 +57,9 @@ class ELSWAK_User
 */
 	protected function generatePasswordHash($password) {
 		// utilize the blowfish encryption guaranteed to be present in PHP 5.3 and later
-		$hash = $this->generateHashForPepperedString($this->pepperPassword($password));
-		
+		return $this->validateHash($this->generateHashForPepperedString($this->pepperPassword($password)));
+	}
+	protected function validateHash($hash) {
 		// ensure the hash is valid (exactly 60 characters for Blowfish)
 		if (strlen($hash) == 60) {
 			return $hash;
