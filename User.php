@@ -92,6 +92,12 @@ class ELSWAK_User
 	public function identifier() {
 		return md5($this->account);
 	}
+
+
+
+	public function __toString() {
+		return $this->displayName.' ('.$this->account.')';
+	}
 	
 	
 	
