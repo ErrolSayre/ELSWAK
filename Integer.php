@@ -62,6 +62,6 @@ class ELSWAK_Integer {
 	 * @return integer Non-negative value
 	 */
 	public static function valueAsPositiveInteger($value) {
-		return self::postitiveIntegerForValue($value);
+		return self::positiveIntegerForValue($value);
 	}
 }
