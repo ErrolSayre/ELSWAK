@@ -742,15 +742,15 @@ class ELSWAK_File_Type_Detector {
 		'zsh' => 'text/x-script.zsh'
 	);
 	
-	public static function typeFromName($name) {
-		return static::typeFromExtension(strtolower(pathinfo($name, PATHINFO_EXTENSION)));
-	}
 	public static function typeFromExtension($extension) {
 		// determine if the extension is in the list
 		if (array_key_exists($extension, static::$fileTypes)) {
 			return static::$fileTypes[$extension];
 		}
 		return 'application/octet-stream';
+	}
+	public static function typeFromName($name) {
+		return static::typeFromExtension(strtolower(pathinfo($name, PATHINFO_EXTENSION)));
 	}
 	public static function typeFromFile($file) {
 		return self::typeFromName($file);
