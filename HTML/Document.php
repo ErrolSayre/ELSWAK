@@ -27,9 +27,9 @@ class ELSWAK_HTML_Document
 		$this->preserveWhiteSpace = false;
 
 		// load our template file
-		if (($templateFile !== null) && is_file($templateFile))
+		if (($templateFile !== null) && is_file($templateFile)) {
 			$this->loadHTMLFile($templateFile);
-		else {
+		} else {
 			// set up the default xhtml content
 			// determine the installation path
 			$this->loadHTMLFile(dirname(__FILE__).'/Document/Template.html');
