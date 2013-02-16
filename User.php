@@ -56,22 +56,17 @@ class ELSWAK_User
 	Hash the password with a random salt; peppering with the user account name.
 */
 	protected function generatePasswordHash($password) {
-		// generate the salt
-		$salt = '';
-		$alphabet = $this->saltAlphabet();
-		$alphabetLength = strlen($alphabet) - 1;
-		for ($i = 0; $i < 22; ++$i) {
-			$salt .= $alphabet[rand(0, $alphabetLength)];
-		}
-		
 		// utilize the blowfish encryption guaranteed to be present in PHP 5.3 and later
-		$hash = crypt($this->pepperPassword($password), '$2y$'.$this->keyFactor().'$'.$salt);
+		$hash = $this->generateHashForPepperedString($this->pepperPassword($password));
 		
 		// ensure the hash is valid (exactly 60 characters for Blowfish)
 		if (strlen($hash) == 60) {
 			return $hash;
 		}
 		throw new ELSWAK_User_InvalidKeyFactor_Exception('Unable to generate proper password hash. Please verify supplied key factor.');
+	}
+	protected function generateHashForPepperedString($peppered) {
+		return crypt($peppered, '$2y$'.$this->keyFactor().'$'.$this->generateSalt());
 	}
 	protected function pepperPassword($password) {
 		// for now just pepper the password by appending the account name
@@ -112,5 +107,15 @@ class ELSWAK_User
 	public static function saltAlphabet() {
 		// return valid characters for use within the random salt
 		return './ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	}
+	public static function generateSalt() {
+		// generate the salt
+		$salt = '';
+		$alphabet = self::saltAlphabet();
+		$alphabetLength = strlen($alphabet) - 1;
+		for ($i = 0; $i < 22; ++$i) {
+			$salt .= $alphabet[rand(0, $alphabetLength)];
+		}
+		return $salt;
 	}
 }
