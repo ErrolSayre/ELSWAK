@@ -12,12 +12,30 @@ class ELSWAK_Integer {
 	public function __construct($value = 0) {
 		$this->setValue($value);
 	}
-	
+
+
+
+	public function value() {
+		return $this->value;
+	}
+
 	public function setValue($value) {
 		$this->value = $this->integerForValue($value);
 	}
-	
+
+
+
 	public function __toString() {
+		return $this->value;
+	}
+
+
+
+	public function __set($property, $value) {
+		$this->setValue($value);
+		return $this;
+	}
+	public function __get($property) {
 		return $this->value;
 	}
 
