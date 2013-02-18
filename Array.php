@@ -258,7 +258,10 @@ class ELSWAK_Array
 		$this->_position = 0;
 	}
 	public function current() {
-		return $this->store[$this->key()];
+		if (($key = $this->key()) !== null) {
+			return $this->store[$key];
+		}
+		return false;
 	}
 	public function key() {
 		$keys = array_keys($this->store);
