@@ -1,6 +1,15 @@
 <?php
 //!Related Exception Classes
+/**
+ * @package ELSWAK\Collections
+ */
 class ELSWAK_Array_Exception extends ELSWAK_Exception {}
+
+
+
+/**
+ * @package ELSWAK\Collections
+ */
 class ELSWAK_Array_InvalidKey_Exception extends ELSWAK_Array_Exception {
 	public function __construct($message = null, $code = 0, Exception $previous = null) {
 		if (!$message) {
@@ -9,6 +18,21 @@ class ELSWAK_Array_InvalidKey_Exception extends ELSWAK_Array_Exception {
 		return parent::__construct($message, $code, $previous);
 	}
 }
+
+
+
+/**
+ * Exception for invalid item
+ *
+ * This exception is defiend here though it's not actually used by this
+ * class. It is intended for use with the subclass ELSWAK Validated
+ * Array.
+ *
+ * @package ELSWAK\Collections
+ */
+class ELSWAK_Array_InvalidItem_Exception extends ELSWAK_Array_Exception {}
+
+
 
 //!Stub Constants
 if (!defined('JSON_PRETTY_PRINT')) {
@@ -19,6 +43,8 @@ if (!defined('JSON_PRETTY_PRINT')) {
 if (!interface_exists('JsonSerializable')) {
 	require_once 'JsonSerializeableInterface.php';
 }
+
+
 
 /**
  * Wrap a normal array in a class that makes its values accessible like object properties.
