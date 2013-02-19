@@ -10,8 +10,7 @@ class ELSWAK_HTTP_WorkspaceTest
 		$var->addHeader('Location', 'https://www.apple.com');
 		$var->setHeader('Location', 'https://www.olemiss.edu');
 		$this->assertEquals('https://www.olemiss.edu', $var->header('Location'));
-		$this->assertEquals(1, count($var->header()));
-		$this->assertEquals(count($var->header()), $var->headers->count());
+		$this->assertEquals(1, $var->headers->count());
 		$this->assertFalse($var->hasHeader('X-Purpose'));
 		$var->headerForKey('X-Purpose');
 		$var->removeHeader('Location');
