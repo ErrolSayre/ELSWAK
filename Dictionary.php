@@ -29,7 +29,7 @@ if (!interface_exists('JsonSerializable')) {
  * @package ELSWAK\Collections
  */
 class ELSWAK_Dictionary
-	extends ELSWAK_Array {
+	extends ELSWAK_Validated_Array {
 
 //!Private Properties
 	/**
@@ -57,18 +57,15 @@ class ELSWAK_Dictionary
 
 
 
-	/*
-	 * Add the item to the collection, creating a key if none is provided or an item with that key exists.
-	 * @return ELSWAK_Dictionary reference to this instance
+	/**
+	 * Override the parent class
+	 *
+	 * When generating the next sequential key, utilize the unique key
+	 * generator.
 	 */
-	public function add($value, $key = null) {
-		if ($key == null || $this->hasValueForKey($key)) {
-			$key = $this->uniqueKeyForValue($value);
-		}
-		return $this->setValueForKey($value, $key);
+	public function nextSequentialKey() {
+		return $this->uniqueKeyForValue(null);
 	}
-
-
 
 	/*
 	 * Generate a unique key for the value.
