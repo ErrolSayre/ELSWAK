@@ -35,6 +35,14 @@ class ELSWAK_DictionaryTest
 		return $var;
 	}
 	
+	public function testAddSet() {
+		$var = new ELSWAK_Dictionary;
+		$var->add('Asdf');
+		$this->assertEquals('Asdf', $var->get('Item-1'));
+		$var->set('Item-1', 'QWER');
+		$this->assertEquals('QWER', $var->get('Item-1'));
+	}
+	
 	public function testArrayAndMagicAccessors() {
 		// test accessing items with array and object notation, as well as foreach support
 		$data = new ELSWAK_Dictionary;
