@@ -96,6 +96,16 @@ class ELSWAK_Array
 		}
 		return $this;
 	}
+	/**
+	 * Give a copy of the store
+	 *
+	 * Since object properties are naturally copy on write, we don't need
+	 * to copy the value. In reality this could be an alias of the store()
+	 * method, but to facilitate subclasses altering the behavior of either
+	 * method leave this duplication intact.
+	 *
+	 * @return array
+	 */
 	public function export() {
 		return $this->store;
 	}
