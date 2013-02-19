@@ -51,7 +51,7 @@ class ELSWAK_Logger
 	 * @return ELSWAK_Logger self
 	 */
 	public function addMessageOfType($string, $type) {
-		$parsed = $this->messageTypes()->validateItem($type);
+		$parsed = $this->messageTypes()->parseItem($type);
 		if (!$parsed) {
 			// utilize the generic message type to support subclasses with a different default/generic type
 			$this->message('Invalid message type: “'.$type.'”. Adding as generic message.');
@@ -77,7 +77,7 @@ class ELSWAK_Logger
 	 */
 	public function messagesOfType($type) {
 		// validate the type against the configured message types
-		$type = $this->messageTypes()->validateItem($type);
+		$type = $this->messageTypes()->parseItem($type);
 		
 		$matches = array();
 		// only search if there is a valid type
@@ -135,7 +135,7 @@ class ELSWAK_Logger
 
 	protected function setTypeDisplaySettings() {}
 	public function setMessageTypeDisplay($type, $value = true) {
-		$this->typeDisplaySettings[$this->messageTypes()->validateItem($type)] = ELSWAK_Boolean::valueAsBoolean($value);
+		$this->typeDisplaySettings[$this->messageTypes()->parseItem($type)] = ELSWAK_Boolean::valueAsBoolean($value);
 		return $this;
 	}
 	public function setDisplayErrors($value = true) {

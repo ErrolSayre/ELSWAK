@@ -364,22 +364,22 @@ class ELSWAK_Array
 	 * @param boolean $returnValue Should the item value be returned instead of the key?
 	 * @return mixed Key or value of the item
 	 */
-	public function validateItemWithinKeysAndValues($item, $returnValue = false, $allowSubstrings = true) {
-		return $this->validateItemWithinArrayKeysAndValues($item, $this->store, $returnValue, $allowSubstrings);
+	public function parseItemFromKeysAndValues($item, $returnValue = false, $allowSubstrings = true) {
+		return $this->parseItemFromArrayKeysAndValues($item, $this->store, $returnValue, $allowSubstrings);
 	}
 
 	/**
 	 * Alias the validation method to be shorter
-	 * @see validateItemWithinKeysAndValues
+	 * @see parseItemFromKeysAndValues
 	 */
-	public function validateItem($item, $returnValue = false, $allowSubstrings = true) {
-		return $this->validateItemWithinKeysAndValues($item, $returnValue, $allowSubstrings);
+	public function parseItem($item, $returnValue = false, $allowSubstrings = true) {
+		return $this->parseItemFromKeysAndValues($item, $returnValue, $allowSubstrings);
 	}
 
 
 
 //!Static methods
-	public static function validateItemWithinArrayKeysAndValues($item, array $items, $returnValue = false, $allowSubstrings = true) {
+	public static function parseItemFromArrayKeysAndValues($item, array $items, $returnValue = false, $allowSubstrings = true) {
 		// first look for the value as a key
 		if (array_key_exists($item, $items)) {
 			return $returnValue? $items[$item]: $item;

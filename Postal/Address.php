@@ -384,7 +384,7 @@ class ELSWAK_Postal_Address
 				// determine if the value is likely a state
 				if (
 					!$address->state &&
-					$states->validateItem($piece, false, false) != null
+					$states->parseItem($piece, false, false) != null
 				) {
 					$address->state = $piece;
 					// the last piece (should have been added to lines...) is likely the city

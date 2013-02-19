@@ -189,8 +189,8 @@ class ELSWAK_ArrayTest
 			'404' => 'Not Found',
 			'HELO' => 'Not BSG',
 		));
-		$this->assertEquals('HELO', $var->validateItem('BSG'));
-		$this->assertEquals('Not Found', $var->validateItem(404, true));
-		$this->assertNull($var->validateItem(200));
+		$this->assertEquals('HELO', $var->parseItem('BSG'));
+		$this->assertEquals('Not Found', $var->parseItem(404, true));
+		$this->assertNull($var->parseItem(200));
 	}
 }
