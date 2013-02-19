@@ -166,15 +166,11 @@ class ELSWAK_Array
 
 
 
-	/*
-	 * Allow the caller to get a single item, or the entire collection with the same method honoring the behavior for invalid keys.
-	 * @return mixed individual value or entire collection
+	/**
+	 * @return mixed
 	 */
 	public function get($key = null) {
-		if ($key != null) {
-			return $this->valueForKey($key);
-		}
-		return $this->store;
+		return $this->valueForKey($key);
 	}
 	public function valueForKey($key) {
 		if ($this->hasValueForKey($key)) {

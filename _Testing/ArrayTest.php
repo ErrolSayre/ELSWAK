@@ -41,14 +41,10 @@ class ELSWAK_ArrayTest
 		return $var;
 	}
 	
-	/**
-	 * @depends testAddUnamed
-	 */
-	public function testGet(ELSWAK_Array $var) {
-		$data = $var->get();
-		$this->assertGreaterThan(0, count($data));
-		$this->assertEquals(count($data), $var->count());
-		return $var;
+	public function testGet() {
+		$var = new ELSWAK_Array;
+		$var->add('ASDF');
+		$this->assertEquals('ASDF', $var->get(0));
 	}
 	
 	public function testArrayAndMagicAccessors() {
