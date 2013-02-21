@@ -237,6 +237,12 @@ class ELSWAK_Array
 
 
 //!Representation methods
+	public function formattedList($delimiter = ', ', $prefix = '', $suffix = '') {
+		if ($this->hasItems()) {
+			return $prefix.implode($delimiter, $this->store).$suffix;
+		}
+		return '';
+	}
 	public function __toString() {
 		return json_encode($this->store, JSON_PRETTY_PRINT);
 	}
