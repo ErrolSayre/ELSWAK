@@ -294,6 +294,7 @@ class ELSWAK_Array
 //!Iterator methods
 	public function rewind() {
 		$this->_position = 0;
+		return $this;
 	}
 	public function current() {
 		if (($key = $this->key()) !== null) {
@@ -310,6 +311,7 @@ class ELSWAK_Array
 	}
 	public function next() {
 		++$this->_position;
+		return $this;
 	}
 	public function valid() {
 		$keys = array_keys($this->store);
