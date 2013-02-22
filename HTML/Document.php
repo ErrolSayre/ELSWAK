@@ -549,20 +549,49 @@ class ELSWAK_HTML_Document
 	public function createDl($content = null, array $attributes = null) {
 		return $this->createElement('dl', $content, $attributes);
 	}
+	public function createDescriptionList($content = null, array $attributes = null) {
+		return $this->createDl($content, $attributes);
+	}
+
 	public function createDt($content = null, array $attributes = null) {
 		return $this->createElement('dt', $content, $attributes);
 	}
+	public function createDescriptionListTerm($content = null, array $attributes = null) {
+		return $this->createDt($content, $attributes);
+	}
+
 	public function createDd($content = null, array $attributes = null) {
 		return $this->createElement('dd', $content, $attributes);
 	}
+	public function createDescriptionListDescription($content = null, array $attributes = null) {
+		return $this->createDd($content, $attributes);
+	}
+
+
+
 	public function createUl($content = null, array $attributes = null) {
 		return $this->createElement('ul', $content, $attributes);
 	}
+	public function createUnorderedList($content = null, array $attributes = null) {
+		return $this->createUl($content, $attributes);
+	}
+
+
+
 	public function createOl($content = null, array $attributes = null) {
 		return $this->createElement('ol', $content, $attributes);
 	}
+	public function createOrderedList($content = null, array $attributes = null) {
+		return $this->createDl($content, $attributes);
+	}
+
+
+
 	public function createLi($content = null, array $attributes = null) {
 		return $this->createElement('li', $content, $attributes);
+	}
+	public function createListItem($content = null, array $attributes = null) {
+		return $this->createLi($content, $attributes);
 	}
 
 
