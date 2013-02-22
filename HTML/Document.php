@@ -751,6 +751,24 @@ class ELSWAK_HTML_Document
 	public function createResetButton($name, $value = null, array $attributes = null) {
 		return $this->createResetButtonInput($name, $value, $attributes);
 	}
+
+
+
+	/**
+	 * Create a button element
+	 *
+	 * Although some use input[type=submit] interchangeably with
+	 * button[type=submit], I'm going to standardize on the input based
+	 * approach. In order to create a button of type submit, use the
+	 * attributes array for createButton.
+	 *
+	 * @param mixed $content
+	 * @param array|null $attributes
+	 * @return DOMElement
+	 */
+	public function createButton($content = null, array $attributes = null) {
+		return $this->createElement('button', $content, $attributes);
+	}
 	public function createRadioInput($name, $value = null, $checked = false, array $attributes = null) {
 		if (!is_array($attributes))
 			$attributes = array();
