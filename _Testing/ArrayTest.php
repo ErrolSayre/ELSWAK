@@ -117,6 +117,9 @@ class ELSWAK_ArrayTest
 	 */
 	public function testToString(ELSWAK_Array $var) {
 		$this->assertEquals(json_encode($var, JSON_PRETTY_PRINT), $var);
+		$this->assertEquals('Bertram, Some content that doesn’t have a key', $var->formattedList());
+		$var = new ELSWAK_Array;
+		$this->assertEmpty($var->formattedList());
 	}
 	
 	public function testSortingAndJSONExport() {
@@ -188,5 +191,24 @@ class ELSWAK_ArrayTest
 		$this->assertEquals('HELO', $var->parseItem('BSG'));
 		$this->assertEquals('Not Found', $var->parseItem(404, true));
 		$this->assertNull($var->parseItem(200));
+	}
+	
+	public function testPushPops() {
+		$var = new ELSWAK_Array;
+		$this->assertEmpty($var->item(1));
+		
+		$var->push('asdf');
+		$var->push('qwer');
+		$var->push('zxcv');
+		
+		$this->assertEquals('asdf', $var->first());
+		$this->assertEquals('qwer', $var->item(1));
+		$this->assertEquals('zxcv', $var->last());
+		
+		$this->assertEquals('zxcv', $var->pop());
+		$this->assertEquals('qwer', $var->last());
+		
+		$this->assertEquals('asdf', $var->shift());
+		$this->assertEquals('qwer', $var->first());
 	}
 }

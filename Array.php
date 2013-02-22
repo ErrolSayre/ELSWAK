@@ -229,8 +229,109 @@ class ELSWAK_Array
 		return count($this->store) > 0;
 	}
 
+
+
+	/**
+	 * Return keys of the array
+	 *
+	 * @return array
+	 */
 	public function keys() {
 		return array_keys($this->store);
+	}
+
+
+
+	/**
+	 * Access the first item
+	 *
+	 * @return mixed|null
+	 */
+	public function first() {
+		$keys = $this->keys();
+		$key = array_shift($keys);
+		return $this->valueForKey($key);
+	}
+
+	/**
+	 * Mirror PHP's array_shift
+	 *
+	 * @return mixed|null
+	 */
+	public function shift() {
+		$keys = $this->keys();
+		$key = array_shift($keys);
+		return $this->removeValueForKey($key);
+	}
+
+	/**
+	 * Mirror PHP's array_unshift
+	 *
+	 * This is a very special case, as adding items to the front of the
+	 * array needs to be done in a manner that is compatible with the
+	 * various subclasses. Subclasses will need to provide an override to
+	 * this method to ensure things such as validation and auto-key-
+	 * generation are done properly.
+	 *
+	 * For now this method serves as an inaccessible placeholder.
+	 *
+	 * @return mixed|null
+	 */
+	private function unshift($value) {}
+
+
+
+
+	/**
+	 * Access the last item
+	 *
+	 * @return mixed|null
+	 */
+	public function last() {
+		$keys = $this->keys();
+		$key = array_pop($keys);
+		return $this->valueForKey($key);
+	}
+
+	/**
+	 * Mirror PHP's array_pop
+	 *
+	 * @return mixed|null
+	 */
+	public function pop() {
+		$keys = $this->keys();
+		$key = array_pop($keys);
+		return $this->removeValueForKey($key);
+	}
+
+	/**
+	 * Mirror PHP's array_push
+	 *
+	 * The add method already has this behavior.
+	 *
+	 * @return ELSWAK_Array self
+	 */
+	public function push($value) {
+		return $this->add($value);
+	}
+
+
+
+	/**
+	 * Mirror JavaScript's item() method
+	 *
+	 * This method allows you to access non-numeric arrays in a numeric
+	 * manner.
+	 *
+	 * @param integer $index
+	 * @return mixed Item at $index
+	 */
+	public function item($index) {
+		$keys = $this->keys();
+		if (array_key_exists($index, $keys)) {
+			return $this->valueForKey($keys[$index]);
+		}
+		return null;
 	}
 
 
