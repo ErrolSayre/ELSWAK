@@ -239,6 +239,54 @@ class ELSWAK_Array
 	public function keys() {
 		return array_keys($this->store);
 	}
+	/**
+	 * Return the key for the item at index
+	 *
+	 * @param $index
+	 * @return mixed
+	 */
+	public function keyForItem($index) {
+		$keys = $this->keys();
+		if (array_key_exists($index, $keys)) {
+			return $keys[$index];
+		}
+		return null;
+	}
+
+	/**
+	 * Return the first key
+	 *
+	 * @return mixed
+	 */
+	public function firstKey() {
+		$keys = $this->keys();
+		return array_shift($keys);
+	}
+
+	/**
+	 * Return the last key
+	 *
+	 * @return mixed
+	 */
+	public function lastKey() {
+		$keys = $this->keys();
+		return array_pop($keys);
+	}
+
+
+
+	/**
+	 * Mirror JavaScript's item() method
+	 *
+	 * This method allows you to access non-numeric arrays in a numeric
+	 * manner.
+	 *
+	 * @param integer $index
+	 * @return mixed Item at $index
+	 */
+	public function item($index) {
+		return $this->valueForKey($this->keyForItem($index));
+	}
 
 
 
@@ -248,9 +296,7 @@ class ELSWAK_Array
 	 * @return mixed|null
 	 */
 	public function first() {
-		$keys = $this->keys();
-		$key = array_shift($keys);
-		return $this->valueForKey($key);
+		return $this->valueForKey($this->firstKey());
 	}
 
 	/**
@@ -259,9 +305,7 @@ class ELSWAK_Array
 	 * @return mixed|null
 	 */
 	public function shift() {
-		$keys = $this->keys();
-		$key = array_shift($keys);
-		return $this->removeValueForKey($key);
+		return $this->removeValueForKey($this->firstKey());
 	}
 
 	/**
@@ -288,9 +332,7 @@ class ELSWAK_Array
 	 * @return mixed|null
 	 */
 	public function last() {
-		$keys = $this->keys();
-		$key = array_pop($keys);
-		return $this->valueForKey($key);
+		return $this->valueForKey($this->lastKey());
 	}
 
 	/**
@@ -299,9 +341,7 @@ class ELSWAK_Array
 	 * @return mixed|null
 	 */
 	public function pop() {
-		$keys = $this->keys();
-		$key = array_pop($keys);
-		return $this->removeValueForKey($key);
+		return $this->removeValueForKey($this->lastKey());
 	}
 
 	/**
@@ -313,25 +353,6 @@ class ELSWAK_Array
 	 */
 	public function push($value) {
 		return $this->add($value);
-	}
-
-
-
-	/**
-	 * Mirror JavaScript's item() method
-	 *
-	 * This method allows you to access non-numeric arrays in a numeric
-	 * manner.
-	 *
-	 * @param integer $index
-	 * @return mixed Item at $index
-	 */
-	public function item($index) {
-		$keys = $this->keys();
-		if (array_key_exists($index, $keys)) {
-			return $this->valueForKey($keys[$index]);
-		}
-		return null;
 	}
 
 
@@ -404,11 +425,7 @@ class ELSWAK_Array
 		return false;
 	}
 	public function key() {
-		$keys = array_keys($this->store);
-		if (array_key_exists($this->_position, $keys)) {
-			return $keys[$this->_position];
-		}
-		return null;
+		return $this->keyForItem($this->_position);
 	}
 	public function next() {
 		++$this->_position;
