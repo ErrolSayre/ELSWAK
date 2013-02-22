@@ -1,14 +1,40 @@
 <?php
-/*
-	ELSWAK HTML Document
-
-	This class defines an extension of the DOMDocument that provides generic helpful features specific to HTML. It is intended to be used with ELSWAK HTML Response Container but can be used on its own.
-
-	This extension to the DOMDocument provides locateElementById as a replacement for the HTML specific getElementById because PHP only recognized the id attribute for elements that existed in the document at the time of the last validation (or on initial load of an HTML file). This method caches ALL ids that it finds, but whenever it doesn't have a cached reference for a given id, it searches the entire document tree. Since the DOM is not ordered in any particular way it must be iterated sequentially, however since most elements are appended to existing items it is most likely that new items will be at the "bottom" of the tree. For this reason, I start the search for items at the last child of a given node and work toward the first child. Please note that you can avoid this search by creating elements through the given methods of this class, or by registering a given element with the cache using the registerElementWithIdIndex method.
-*/
+/**
+ * ELSWAK HTML Document
+ *
+ * @author Errol Sayre
+ *
+ * This class defines an extension of the DOMDocument that provides
+ * generic helpful features specific to HTML. It is intended to be used
+ * with ELSWAK HTML Response Container but can be used on its own.
+ *
+ * This extension to the DOMDocument provides locateElementById as a
+ * replacement for the HTML specific getElementById because PHP only
+ * recognized the id attribute for elements that existed in the document
+ * at the time of the last validation (or on initial load of an HTML
+ * file).
+ *
+ * This method caches ALL ids that it finds, but whenever it
+ * doesn't have a cached reference for a given id, it searches the
+ * entire document tree. Since the DOM is not ordered in any particular
+ * way it must be iterated sequentially, however since most elements are
+ * appended to existing items it is most likely that new items will be
+ * at the "bottom" of the tree. For this reason, I start the search for
+ * items at the last child of a given node and work toward the first
+ * child.
+ *
+ * Please note that you can avoid this search by creating elements
+ * through the given methods of this class, or by registering a given
+ * element with the cache using the registerElementWithIdIndex method.
+ */
 
 require dirname(dirname(__FILE__)).'/StandardConstants.php';
 
+/**
+ * Extended DOM Document
+ *
+ * @package ELSWAK\Content
+ */
 class ELSWAK_HTML_Document
 	extends DOMDocument {
 	protected $rootNode;
@@ -175,10 +201,22 @@ class ELSWAK_HTML_Document
 		// try to import the contents of the variable into a div
 		return $this->createDiv($content, array('id' => $key));
 	}
+
+
+
+	/**
+	 * Get element by ID without document verification
+	 *
+	 * Since PHP requires that the document be verified before using the
+	 * getElementById method, it is costly and painful to use that method
+	 * after making changes to the DOM. To address this shortcoming this
+	 * extension of the DOMDocument model provides an element id searching
+	 * and caching system to replicate the functionality of getElementById.
+	 *
+	 * @param string $id
+	 * @return DOMElement|null
+	 */
 	public function locateElementById($id) {
-/*
-	Since PHP requires that the document be verified before using the getElementById method, it is costly and painful to use that method after making changes to the DOM. To address this shortcoming this extension of the DOMDocument model provides an element id searching and caching system to replicate the functionality of getElementById.
-*/
 		// look for the id in the cache
 		if (isset($this->elementIdIndex[$id])) {
 			// make sure this cached reference is still good
@@ -247,10 +285,21 @@ class ELSWAK_HTML_Document
 		else
 			throw new Exception('Element not registered: node must be a valid element with an id attribute.');
 	}
+
+
+
+	/**
+	 * Locate elements by class name
+	 *
+	 * Akin to the locateElementById method, this class replicates the
+	 * functionality of the newer getElementsByClassName method which has
+	 * yet to be included in the PHP DOMDocument class.
+	 *
+	 * @param string $classQueryString
+	 * @param DOMElement|null $scope
+	 * @return array matching DOMElements
+	 */
 	public function locateElementsByClassName($classQueryString = '', $scope = null) {
-/*
-	Akin to the locateElementById method, this class replicates the functionality of the newer getElementsByClassName method which has yet to be included in the PHP DOMDocument class.
-*/
 		$matches = array();
 
 		// allow "OR" based queries using a comma to separate collections
@@ -371,9 +420,10 @@ class ELSWAK_HTML_Document
 
 		return $this;
 	}
-// ===========================
-// !Element Creation Methods
-// ===========================
+
+
+
+//!Element Creation Methods
 	public function createElement($tagName, $content = null, array $attributes = null) {
 		$element = parent::createElement($tagName);
 
@@ -425,15 +475,20 @@ class ELSWAK_HTML_Document
 		}
 		return $newElement;
 	}
-// =======================
-// !	Display Elements
-// =======================
+
+
+
+//!— Display Elements
 	public function createDiv($content = null, array $attributes = null) {
 		return $this->createElement('div', $content, $attributes);
 	}
 	public function createSpan($content = null, array $attributes = null) {
 		return $this->createElement('span', $content, $attributes);
 	}
+
+
+
+//!— Headers
 	public function createH1($content = null, array $attributes = null) {
 		return $this->createElement('h1', $content, $attributes);
 	}
@@ -452,14 +507,18 @@ class ELSWAK_HTML_Document
 	public function createH6($content = null, array $attributes = null) {
 		return $this->createElement('h6', $content, $attributes);
 	}
+
+
+
+//!— Typographic blocks
 	public function createParagraph($content = null, array $attributes = null) {
 		return $this->createElement('p', $content, $attributes);
 	}
-	public function createSmall($content = null, array $attributes = null) {
-		return $this->createElement('small', $content, $attributes);
-	}
 	public function createBlockquote($content = null, array $attributes = null) {
 		return $this->createElement('blockquote', $content, $attributes);
+	}
+	public function createSmall($content = null, array $attributes = null) {
+		return $this->createElement('small', $content, $attributes);
 	}
 	public function createBreak(array $attributes = null) {
 		return $this->createElement('br', null, $attributes);
@@ -483,6 +542,10 @@ class ELSWAK_HTML_Document
 	public function createImage($src, $alt = null, array $attributes = null) {
 		return $this->createImg($src, $alt, $attributes);
 	}
+
+
+
+//!— Lists
 	public function createDl($content = null, array $attributes = null) {
 		return $this->createElement('dl', $content, $attributes);
 	}
@@ -501,9 +564,10 @@ class ELSWAK_HTML_Document
 	public function createLi($content = null, array $attributes = null) {
 		return $this->createElement('li', $content, $attributes);
 	}
-// =====================
-// !	Table Elements
-// =====================
+
+
+
+//!— Table Elements
 	public function createTable($content = null, array $attributes = null) {
 		return $this->createElement('table', $content, $attributes);
 	}
@@ -540,21 +604,22 @@ class ELSWAK_HTML_Document
 	public function createTd($content = null, array $attributes = null) {
 		return $this->createElement('td', $content, $attributes);
 	}
-	public function createTableDataCell($content = null, array $attributes = null) {
-		return $this->createTd($content, $attributes);
-	}
 	public function createTableCell($content = null, array $attributes = null, $header = false) {
 		if ($header) {
 			return $this->createTh($content, $attributes);
 		}
 		return $this->createTd($content, $attributes);
 	}
+	public function createTableDataCell($content = null, array $attributes = null) {
+		return $this->createTd($content, $attributes);
+	}
 	public function createCaption($content = null, array $attributes = null) {
 		return $this->createElement('caption', $content, $attributes);
 	}
-// ====================
-// !	Form Elements
-// ====================
+
+
+
+//!— Form Elements
 	public function createForm($action = '', $method = 'POST', $content = null, array $attributes = null) {
 		$method = strtoupper($method);
 		if ($method != 'GET')
@@ -580,10 +645,22 @@ class ELSWAK_HTML_Document
 	public function createLabel($content = null, array $attributes = null) {
 		return $this->createElement('label', $content, $attributes);
 	}
+
+
+
+	/**
+	 * Shortcut for creating common element structure
+	 *
+	 * A "form field" in this context is made of a "field" container, which
+	 * has a "label", "input" and "description".
+	 *
+	 * @param DOMElement|string $label
+	 * @param DOMElement|string $input
+	 * @param DOMElement|string|null $description
+	 * @param array|null $attributes
+	 * @return DOMElement
+	 */
 	public function createFormField($label, $input, $description = null, array $attributes = null) {
-/*
-	A "form field" in this document is made of a "field" container, which has a "label", "input" and "description".
-*/
 		// set up the class
 		$attributes = $this->addClassToAttributesArray('field', $attributes);
 
@@ -687,6 +764,10 @@ class ELSWAK_HTML_Document
 			$attributes['type'] = 'password';
 		return $this->createTextInput($name, $value, $attributes);
 	}
+
+
+
+//!— — Button type inputs and button elements
 	public function createButtonInput($name, $value = null, array $attributes = null) {
 		if (!is_array($attributes))
 			$attributes = array();
@@ -769,6 +850,10 @@ class ELSWAK_HTML_Document
 	public function createButton($content = null, array $attributes = null) {
 		return $this->createElement('button', $content, $attributes);
 	}
+
+
+
+//!— — Radio and Checkbox Inputs
 	public function createRadioInput($name, $value = null, $checked = false, array $attributes = null) {
 		if (!is_array($attributes))
 			$attributes = array();
@@ -778,10 +863,24 @@ class ELSWAK_HTML_Document
 			$attributes['checked'] = 'yes';
 		return $this->createHiddenInput($name, $value, $attributes);
 	}
+
+
+
+	/**
+	 * Shortcut for common structure
+	 *
+	 * Labeled radio inputs are radio buttons coupled with a label so
+	 * that the radio is toggled when the text of the label is clicked.
+	 *
+	 * @param string $name
+	 * @param mixed $value
+	 * @param string|DOMElement $label
+	 * @param boolean $checked
+	 * @param array|null $attributes
+	 * @param array|null $labelAttributes
+	 * @return DOMElement
+	 */
 	public function createLabeledRadioInput($name, $value, $label, $checked = false, array $attributes = null, array $labelAttributes = null) {
-/*
-	Labeled check box inputs are check boxes coupled with a label so that the radio is toggled when the text of the label is clicked.
-*/
 		$labelElement = $this->createLabel(null, $labelAttributes);
 		$labelElement->appendChild($this->createRadioInput($name, $value, $checked, $attributes));
 		if ($label instanceof DOMElement)
@@ -799,10 +898,24 @@ class ELSWAK_HTML_Document
 			$attributes['checked'] = 'yes';
 		return $this->createHiddenInput($name, $value, $attributes);
 	}
+
+
+
+	/**
+	 * Shortcut for common structure
+	 *
+	 * Labeled checkbox inputs are check boxes coupled with a label so
+	 * that the checkbox is toggled when the text of the label is clicked.
+	 *
+	 * @param string $name
+	 * @param mixed $value
+	 * @param string|DOMElement $label
+	 * @param boolean $checked
+	 * @param array|null $attributes
+	 * @param array|null $labelAttributes
+	 * @return DOMElement
+	 */
 	public function createLabeledCheckboxInput($name, $value, $label, $checked = false, array $attributes = null, array $labelAttributes = null) {
-/*
-	Labeled check box inputs are check boxes coupled with a label so that the checkbox is toggled when the text of the label is clicked.
-*/
 		$labelElement = $this->createLabel(null, $labelAttributes);
 		$labelElement->appendChild($this->createCheckboxInput($name, $value, $checked, $attributes));
 		if ($label instanceof DOMElement)
@@ -811,12 +924,31 @@ class ELSWAK_HTML_Document
 			$labelElement->appendChild($this->createTextNode(strval($label)));
 		return $labelElement;
 	}
+
+
+
+	/**
+	 * Select menu options should be provided in an associative array where
+	 * the array key is the option value and the array value the option
+	 * content or a multi-dimensional array where the intended option value
+	 * and content are provided in an associative array e.g.
+	 * ```array('value'=>'asdf','content'=>'ASDF')```.
+	 *
+	 * A selected value can be provided as an option array or as a scalar
+	 * value. If a scalar is provided, the given options will be searched,
+	 * or the value will be used as it's own label.
+	 *
+	 * If no selected value is provided, a "label" can be provided that can
+	 * serve as the first option e.g. "Please select an option".
+	 *
+	 * @param string $name
+	 * @param mixed|null $selectValue
+	 * @param array|null $options
+	 * @param string|null $noValueLabel
+	 * @param array|null $attributes
+	 * @return DOMElement
+	 */
 	public function createSelect($name, $selectedValue = null, array $options = null, $noValueLabel = null, array $attributes = null) {
-/*
-	Select menu options should be provided in an associative array where the array key is the option value and the array value the option content or a multi-dimensional array where the intended option value and content are provided in an associative array e.g. array('value'=>'asdf','content'=>'ASDF').
-	A selected value can be provided as an option array or as a scalar value. If a scalar is provided, the given options will be searched, or the value will be used as it's own label.
-	If no selected value is provided, a "label" can be provided that can serve as the first option e.g. "Please select an option".
-*/
 		if (!is_array($attributes))
 			$attributes = array();
 		if (empty($attributes['name']))
@@ -885,6 +1017,10 @@ class ELSWAK_HTML_Document
 			$attributes['size'] = 40;
 		return $this->createElement('input', null, $attributes);
 	}
+
+
+
+//!— Frames
 	public function createIFrame($src = '', array $attributes = null) {
 		if (!is_array($attributes))
 			$attributes = array();
@@ -893,9 +1029,10 @@ class ELSWAK_HTML_Document
 		}
 		return $this->createElement('iframe', null, $attributes);
 	}
-// ==========================
-// !Element Utility Methods
-// ==========================
+
+
+
+//!Element Utility Methods
 	public function addLinesToElementAsParagraphs($lines, DOMElement $element) {
 		if (is_string($lines)) {
 			$lines = explode(LF, $lines);
@@ -968,9 +1105,10 @@ class ELSWAK_HTML_Document
 		}
 		return trim($classString);
 	}
-// =====================
-// !CSS & JS Additions
-// =====================
+
+
+
+//!CSS & JS Additions
 	public function addScript($source = null, $content = null, $useHeader = false, array $attributes = null) {
 		// determine if a script source was provided and prevent duplicates
 		$uniqueScript = true;
@@ -1059,9 +1197,10 @@ class ELSWAK_HTML_Document
 		$this->stylesheets = array();
 		return $this;
 	}
-// ================
-// !Console Tools
-// ================
+
+
+
+//!Console/Debug Tools
 	public function debugDumpVariable($var, $label = '') {
 		// create a new element to contain the variable
 		$div = $this->createDiv(null, array('class' => 'ELSWAK-Variable-Dump'));
