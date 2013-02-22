@@ -701,12 +701,55 @@ class ELSWAK_HTML_Document
 			$attributes['type'] = 'submit';
 		return $this->createHiddenInput($name, $value, $attributes);
 	}
+
+	/**
+	 * Create a submit button
+	 *
+	 * In order to avoid confusion, I'm aliasing this method to ensure a
+	 * predictable interface. Creating a submit button will always create
+	 * an input[type=submit] rather than button[type=submit].
+	 *
+	 * @param string $name
+	 * @param mixed|null $value
+	 * @param array|null $attributes
+	 * @return DOMElement
+	 */
+	public function createSubmitButton($name, $value = null, array $attributes = null) {
+		return $this->createSubmitButtonInput($name, $value, $attributes);
+	}
+
+
+
+	/**
+	 * Create a reset button
+	 *
+	 * @param string $name
+	 * @param mixed|null $value
+	 * @param array|null $attributes
+	 * @return DOMElement
+	 */
 	public function createResetButtonInput($name, $value = null, array $attributes = null) {
 		if (!is_array($attributes))
 			$attributes = array();
 		if (empty($attributes['type']))
 			$attributes['type'] = 'reset';
 		return $this->createHiddenInput($name, $value, $attributes);
+	}
+
+	/**
+	 * Create a reset button
+	 *
+	 * In order to avoid confusion, I'm aliasing this method to ensure a
+	 * predictable interface. Creating a reset button will always create
+	 * an input[type=reset] rather than button[type=reset].
+	 *
+	 * @param string $name
+	 * @param mixed|null $value
+	 * @param array|null $attributes
+	 * @return DOMElement
+	 */
+	public function createResetButton($name, $value = null, array $attributes = null) {
+		return $this->createResetButtonInput($name, $value, $attributes);
 	}
 	public function createRadioInput($name, $value = null, $checked = false, array $attributes = null) {
 		if (!is_array($attributes))
