@@ -649,6 +649,15 @@ class ELSWAK_HTML_Document
 
 
 //!— Form Elements
+	/**
+	 * Create a form element
+	 *
+	 * @param string $action
+	 * @param string $method
+	 * @param mixed|null $content
+	 * @param array|null $attributes
+	 * @return DOMElement
+	 */
 	public function createForm($action = '', $method = 'POST', $content = null, array $attributes = null) {
 		$method = strtoupper($method);
 		if ($method != 'GET')
@@ -661,6 +670,17 @@ class ELSWAK_HTML_Document
 			$attributes['method'] = $method;
 		return $this->createElement('form', $content, $attributes);
 	}
+
+
+
+	/**
+	 * Create a fieldset
+	 *
+	 * @param string $legent
+	 * @param mixed|null $content
+	 * @param array|null $attributes
+	 * @return DOMElement
+	 */
 	public function createFieldset($legend = null, $content = null, array $attributes = null) {
 		// create a new fieldset element
 		$fieldset = $this->createElement('fieldset', $content, $attributes);
@@ -668,9 +688,28 @@ class ELSWAK_HTML_Document
 			$fieldset->insertBefore($this->createLegend($legend), $fieldset->firstChild);
 		return $fieldset;
 	}
+	/**
+	 * Create a legend
+	 *
+	 * Wait for it... -ary element.
+	 *
+	 * @param mixed|null $content
+	 * @param array|null $attributes
+	 * @return DOMElement
+	 */
 	public function createLegend($content = null, array $attributes = null) {
 		return $this->createElement('legend', $content, $attributes);
 	}
+
+
+
+	/**
+	 * Create a label
+	 *
+	 * @param mixed|null $content
+	 * @param array|null $attributes
+	 * @return DOMElement
+	 */
 	public function createLabel($content = null, array $attributes = null) {
 		return $this->createElement('label', $content, $attributes);
 	}
@@ -956,6 +995,7 @@ class ELSWAK_HTML_Document
 
 
 
+//!— — Select Menus
 	/**
 	 * Select menu options should be provided in an associative array where
 	 * the array key is the option value and the array value the option
@@ -1036,6 +1076,10 @@ class ELSWAK_HTML_Document
 
 		return $option;
 	}
+
+
+
+//!— — File Uploads
 	public function createFileInput($name, array $attributes = null) {
 		if (!is_array($attributes))
 			$attributes = array();
