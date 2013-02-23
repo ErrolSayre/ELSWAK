@@ -431,6 +431,17 @@ class ELSWAK_Array
 		++$this->_position;
 		return $this;
 	}
+	/**
+	 * Move backward
+	 *
+	 * This isn't an iterator method, but it fits here nicely
+	 *
+	 * @return mixed
+	 */
+	public function previous() {
+		--$this->_position;
+		return $this;
+	}
 	public function valid() {
 		$keys = array_keys($this->store);
 		return array_key_exists($this->_position, $keys);
