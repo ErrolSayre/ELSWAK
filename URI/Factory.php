@@ -50,4 +50,39 @@ class ELSWAK_URI_Factory {
 		// return the generic URL of the form scheme://
 		return new ELSWAK_Authoritative_URL($components);
 	}
+
+
+
+	public static function baseURLFromServerGlobal() {
+		// create the URL for the current server from $_SERVER
+		return self::baseURLFromServerGlobalLikeArray($_SERVER);
+	}
+	public static function baseURLFromServerGlobalLikeArray(array $data) {
+		$url = new ELSWAK_HTTP_URL;
+		$url->scheme = array_key_exists('HTTPS', $data)? 'https': 'http';
+		$url->host = $data['SERVER_NAME'];
+		if ($data['SERVER_PORT'] != 80 && $data['SERVER_PORT'] != 443) {
+			$url->port = $data['SERVER_PORT'];
+		}
+		return $url;
+	}
+	public static function applicationURLFromServerGlobal() {
+		return self::applicationURLFromServerGlobalLikeArray($_SERVER);
+	}
+	public static function applicationURLFromServerGlobalLikeArray(array $data) {
+		// take the base url and add the path to the current php script (assuming that the application uses "Pretty URLs" that omit the script name
+		$url = self::baseURLFromServerGlobalLikeArray($data);
+		$url->path = dirname($data['PHP_SELF']);
+		return $url;
+	}
+	public static function urlFromServerGlobal() {
+		return self::urlFromServerGlobalLikeArray($_SERVER);
+	}
+	public static function urlFromServerGlobalLikeArray(array $data) {
+		// take the base url and add the requst uri
+		$url = self::baseURLFromServerGlobalLikeArray($data);
+		// import the request uri components (this should just override the things that are set)
+		$url->_import(parse_url($data['REQUEST_URI']));
+		return $url;
+	}
 }
