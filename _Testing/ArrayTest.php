@@ -107,6 +107,15 @@ class ELSWAK_ArrayTest
 		$this->assertNotNull($run1);
 		$this->assertNotNull($run2);
 		$this->assertEquals($run1, $run2);
+		
+		// test the unrelated previous method
+		$item = $var
+			->rewind()
+			->next()
+			->next()
+			->previous()
+			->current();
+		$this->assertEquals($var->item(1), $item);
 	}
 	
 	
