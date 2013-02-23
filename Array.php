@@ -492,7 +492,7 @@ class ELSWAK_Array
 	 * there.
 	 *
 	 * When a value is not found, the position set out of bounds such that
-	 * current() will return false.
+	 * current() will return false and next() will return item 0 if set.
 	 *
 	 * @param mixed $search
 	 * @return ELSWAK_Array self
@@ -516,7 +516,7 @@ class ELSWAK_Array
 	 * can be trusted to line up with it's true position in the store.
 	 *
 	 * When a value is not found, the position set out of bounds such that
-	 * current() will return false.
+	 * current() will return false and next() will return item 0 if set.
 	 *
 	 * @param mixed $search
 	 * @return ELSWAK_Array self
@@ -556,7 +556,9 @@ class ELSWAK_Array
 	/**
 	 * Restore the property to a null state.
 	 *
-	 * This will only work if the property is able to be set to null, which may or may not be allowed based upon the extending class definition.
+	 * This will only work if the property is able to be set to null, which
+	 * may or may not be allowed based upon the extending class definition.
+	 *
 	 * @return mixed|ELSWAK_Object self
 	 */
 	public function offsetUnset($offset) {
