@@ -239,6 +239,41 @@ class ELSWAK_Array
 	public function keys() {
 		return array_keys($this->store);
 	}
+	
+	/**
+	 * Return key for a value
+	 *
+	 * @param mixed $value
+	 * @return integer|false index
+	 */
+	public function keyForValue($value) {
+		return array_search($value, $this->store);
+	}
+	
+	/**
+	 * Return position/item index for a value
+	 *
+	 * @param mixed $value
+	 * @return integer|false index
+	 */
+	public function positionForValue($value) {
+		$key = array_search($value, $this->store);
+		if ($key !== false) {
+			return $this->positionForKey($key);
+		}
+		return false;
+	}
+
+	/**
+	 * Return position/item index for a key
+	 *
+	 * @param mixed $key
+	 * @return integer|false index
+	 */
+	public function positionForKey($key) {
+		return array_search($key, $this->keys());
+	}
+
 	/**
 	 * Return the key for the item at index
 	 *
@@ -463,7 +498,7 @@ class ELSWAK_Array
 	 * @return ELSWAK_Array self
 	 */
 	public function skipToKey($search) {
-		$position = array_search($search, $this->keys());
+		$position = $this->positionForKey($search);
 		if ($position !== false) {
 			$this->_position = $position;
 		} else {
@@ -487,9 +522,9 @@ class ELSWAK_Array
 	 * @return ELSWAK_Array self
 	 */
 	public function skipToValue($search) {
-		$key = array_search($search, $this->store);
-		if ($key !== false) {
-			return $this->skipToKey($key);
+		$position = $this->positionForValue($search);
+		if ($position !== false) {
+			$this->_position = $position;
 		} else {
 			$this->_position = -1;
 		}

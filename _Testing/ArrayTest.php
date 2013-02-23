@@ -138,6 +138,10 @@ class ELSWAK_ArrayTest
 		$this->assertFalse($var->skipToKey(5)->current());
 		
 		$this->assertEquals('four', $var->skipToValue('four')->current());
+		
+		$var->set('005', 'five');
+		$this->assertEquals('five', $var->skipToKey('005')->current());
+		$this->assertEquals('005', $var->keyForValue('five'));
 	}
 	
 	
