@@ -107,8 +107,14 @@ class ELSWAK_ArrayTest
 		$this->assertNotNull($run1);
 		$this->assertNotNull($run2);
 		$this->assertEquals($run1, $run2);
+	}
+	public function testIteratorishMethods() {	
+		$var = new ELSWAK_Array;
+		$var->add('one')
+			->add('two')
+			->add('three')
+			->add('four');
 		
-		// test the unrelated previous method
 		$item = $var
 			->rewind()
 			->next()
@@ -116,6 +122,22 @@ class ELSWAK_ArrayTest
 			->previous()
 			->current();
 		$this->assertEquals($var->item(1), $item);
+		$this->assertEquals('two', $item);
+		
+		// skip well beyond the end
+		$this->assertFalse($var->next()->next()->next()->next()->next()->current());
+		
+		$this->assertEquals('three', $var->skipToValue('three')->current());
+		
+		// skip to a non existent value
+		$this->assertFalse($var->skipToValue('ASDF')->current());
+		
+		$this->assertEquals('two', $var->skipToValue('two')->current());
+		
+		// skip to a non existent key
+		$this->assertFalse($var->skipToKey(5)->current());
+		
+		$this->assertEquals('four', $var->skipToValue('four')->current());
 	}
 	
 	

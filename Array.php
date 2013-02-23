@@ -431,6 +431,14 @@ class ELSWAK_Array
 		++$this->_position;
 		return $this;
 	}
+	public function valid() {
+		$keys = array_keys($this->store);
+		return array_key_exists($this->_position, $keys);
+	}
+
+
+
+//!Iterator-like methods
 	/**
 	 * Move backward
 	 *
@@ -442,9 +450,50 @@ class ELSWAK_Array
 		--$this->_position;
 		return $this;
 	}
-	public function valid() {
-		$keys = array_keys($this->store);
-		return array_key_exists($this->_position, $keys);
+	/**
+	 * Skip to a position
+	 *
+	 * Search the array for the key and set the internal position
+	 * there.
+	 *
+	 * When a value is not found, the position set out of bounds such that
+	 * current() will return false.
+	 *
+	 * @param mixed $search
+	 * @return ELSWAK_Array self
+	 */
+	public function skipToKey($search) {
+		$position = array_search($search, $this->keys());
+		if ($position !== false) {
+			$this->_position = $position;
+		} else {
+			$this->_position = -1;
+		}
+		return $this;
+	}
+	/**
+	 * Skip to a position by value
+	 *
+	 * Search the array for the value and set the internal position
+	 * there.
+	 *
+	 * Don't assume, eveng in a purely numeric array, that the value's key
+	 * can be trusted to line up with it's true position in the store.
+	 *
+	 * When a value is not found, the position set out of bounds such that
+	 * current() will return false.
+	 *
+	 * @param mixed $search
+	 * @return ELSWAK_Array self
+	 */
+	public function skipToValue($search) {
+		$key = array_search($search, $this->store);
+		if ($key !== false) {
+			return $this->skipToKey($key);
+		} else {
+			$this->_position = -1;
+		}
+		return $this;
 	}
 
 
