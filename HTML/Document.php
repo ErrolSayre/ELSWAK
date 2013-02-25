@@ -375,6 +375,10 @@ class ELSWAK_HTML_Document
 		}
 		return $matches;
 	}
+
+
+
+//!Page Attributes
 	public function title() {
 		// determine if we have a reference to the title text node
 		if ($this->titleTextNode == null) {
@@ -495,12 +499,21 @@ class ELSWAK_HTML_Document
 
 
 
-//!— Display Elements
+//!— Generic Block Elements
 	public function createDiv($content = null, array $attributes = null) {
 		return $this->createElement('div', $content, $attributes);
 	}
-	public function createSpan($content = null, array $attributes = null) {
-		return $this->createElement('span', $content, $attributes);
+	public function createImg($src, $alt = null, array $attributes = null) {
+		if (!is_array($attributes))
+			$attributes = array();
+		if (empty($attributes['src']))
+			$attributes['src'] = $src;
+		if (empty($attributes['alt']))
+			$attributes['alt'] = $alt;
+		return $this->createElement('img', null, $attributes);
+	}
+	public function createImage($src, $alt = null, array $attributes = null) {
+		return $this->createImg($src, $alt, $attributes);
 	}
 
 
@@ -530,6 +543,9 @@ class ELSWAK_HTML_Document
 //!— Typographic blocks
 	public function createParagraph($content = null, array $attributes = null) {
 		return $this->createElement('p', $content, $attributes);
+	}
+	public function createSpan($content = null, array $attributes = null) {
+		return $this->createElement('span', $content, $attributes);
 	}
 	public function createBlockquote($content = null, array $attributes = null) {
 		return $this->createElement('blockquote', $content, $attributes);
@@ -565,18 +581,6 @@ class ELSWAK_HTML_Document
 	}
 	public function createAnchor($content = null, array $attributes = null) {
 		return $this->createElement('a', $content, $attribute);
-	}
-	public function createImg($src, $alt = null, array $attributes = null) {
-		if (!is_array($attributes))
-			$attributes = array();
-		if (empty($attributes['src']))
-			$attributes['src'] = $src;
-		if (empty($attributes['alt']))
-			$attributes['alt'] = $alt;
-		return $this->createElement('img', null, $attributes);
-	}
-	public function createImage($src, $alt = null, array $attributes = null) {
-		return $this->createImg($src, $alt, $attributes);
 	}
 
 
