@@ -478,6 +478,23 @@ class ELSWAK_HTML_Document
 
 
 
+//!— Header Elements
+	/**
+	 * Create a link element
+	 *
+	 * Unlike createLink(), which creates a tags, this method actually
+	 * creates "link" elements.
+	 *
+	 * @param mixed|null $content
+	 * @param array|null $attributes
+	 * @return DOMElement
+	 */
+	public function createLinkElement($content = null, array $attributes = null) {
+		return $this->createElement('link', $content, $attributes);
+	}
+
+
+
 //!— Display Elements
 	public function createDiv($content = null, array $attributes = null) {
 		return $this->createElement('div', $content, $attributes);
@@ -523,12 +540,31 @@ class ELSWAK_HTML_Document
 	public function createBreak(array $attributes = null) {
 		return $this->createElement('br', null, $attributes);
 	}
+
+
+
+//!— Navigational elements
+	/**
+	 * Create a link
+	 *
+	 * Although there is a canonical link element, most people consider a
+	 * (anchor) tags to be "links". To address this perception I use this
+	 * method for creating anchors with associated hrefs and have the
+	 * separate createLinkElement for creating actual link elements.
+	 *
+	 * @param mixed|null $content
+	 * @param array|null $attributes
+	 * @return DOMElement
+	 */
 	public function createLink($href, $content = null, array $attributes = null) {
 		if (!is_array($attributes))
 			$attributes = array();
 		if (empty($attributes['href']))
 			$attributes['href'] = $href;
-		return $this->createElement('a', $content, $attributes);
+		return $this->createAnchor($content, $attributes);
+	}
+	public function createAnchor($content = null, array $attributes = null) {
+		return $this->createElement('a', $content, $attribute);
 	}
 	public function createImg($src, $alt = null, array $attributes = null) {
 		if (!is_array($attributes))
@@ -1230,7 +1266,7 @@ class ELSWAK_HTML_Document
 			$attributes['rel'] = 'stylesheet';
 			if (empty($attributes['media']))
 				$attributes['media'] = $media;
-			$this->stylesheets[] = $this->headNode->appendChild($this->createElement('link', null, $attributes));
+			$this->stylesheets[] = $this->headNode->appendChild($this->createLinkElement(null, $attributes));
 		}
 		return $this;
 	}
