@@ -2,3 +2,4 @@ _CodeCoverage
 _Documentation
 _Vagrant
 _Testing/LoggerTest.log
+*.actual.txt
