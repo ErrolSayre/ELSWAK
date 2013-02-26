@@ -1,0 +1,12 @@
+HTTP/1.1 303 See Other
+X-Frame-Options: DENY
+Location: https://www.apple.com/imac/
+Gillibush: Ferriwinkle
+Jonny-Cab: To the Moon
+Content-Type: text/html; charset=utf-8
+ELSWAK-Status: Looking Good
+ELSWAK-Messages: The thingamajig didn’t work like a who’s-a-what’s-it|User not authenticated|User authentication form displayed.
+
+<h1>Welcome to Moe’s!</h1>
+http://www.apple.com<br />
+/imac/features/coolstuff<br />

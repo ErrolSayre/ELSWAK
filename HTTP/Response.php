@@ -9,6 +9,9 @@
 require dirname(dirname(__FILE__)).'/StandardConstants.php';
 
 class ELSWAK_HTTP_Response {
+
+
+
 	protected $serverUri;
 	protected $applicationPath;
 	protected $headers = array();
@@ -19,12 +22,12 @@ class ELSWAK_HTTP_Response {
 	protected $isRedirect = false;
 	protected $isModified = true;
 	protected $debugRedirects = false;
-	
-	
-	
+
+
+
 	public function __construct() {
 		// setup the server uri
-		$this->serverUri = ((isset($_SERVER['HTTPS']))? 'https://': 'http://').$_SERVER['HTTP_HOST'];
+		$this->serverUri = (array_key_exists('HTTPS', $_SERVER)? 'https://': 'http://').$_SERVER['HTTP_HOST'];
 		
 		// setup the application uri
 		$this->applicationPath = dirname($_SERVER['PHP_SELF']);
@@ -32,6 +35,9 @@ class ELSWAK_HTTP_Response {
 		// setup frame blocking by default, requiring the developer to change this behavior
 		$this->setFramePermission();
 	}
+
+
+
 	public function serverUri() {
 		return $this->serverUri;
 	}
@@ -106,7 +112,9 @@ class ELSWAK_HTTP_Response {
 		return implode($delimiter, $this->headers);
 	}
 	public function clearHeaders() {
-		$this->headers = array();
+		$this->headers = array(
+			$this->statusLine(),
+		);
 		return $this;
 	}
 	public function header($name) {
@@ -114,16 +122,60 @@ class ELSWAK_HTTP_Response {
 			return $this->headers[$name];
 		return false;
 	}
+	/**
+	 * Set a header
+	 *
+	 * Currently this class only supports one value per header (which is
+	 * problematic only for minor cases) so the $replace parameter is only
+	 * here to ultimately provide it to the PHP header method.
+	 *
+	 * In fact, I had never needed to send multiples of the same header
+	 * before and so hadn't noticed until writing specific unit tests
+	 * for this class. I will add support for these someday.
+	 *
+	 * @param string $name
+	 * @param mixed|null $value
+	 * @param boolean $replace
+	 */
 	public function setHeader($name, $value = null, $replace = true) {
-		if ($value !== null)
+		if ($value !== null) {
 			$this->headers[$name] = array(
 				'name' => str_replace(CRLF, LF, $name),
 				'value' => str_replace(CRLF, LF, $value),
 				'replace' => (bool) $replace
 			);
-		else
+		} else {
 			unset($this->headers[$name]);
+		}
 		return $this;
+	}
+	
+	
+	
+	/**
+	 * Return custom headers for this class
+	 *
+	 * Utilize custom headers to transmit items such as messages and statuses.
+	 *
+	 * @return array
+	 */
+	public function elswakCustomHeaders() {
+		$headers = array();
+		if (!empty($this->status)) {
+			$headers[] = array(
+				   'name' => 'ELSWAK-Status',
+				  'value' => $this->status,
+				'replace' => true,
+			);
+		}
+		if (count($this->messages) > 0) {
+			$headers[] = array(
+				   'name' => 'ELSWAK-Messages',
+				  'value' => $this->messages('|'),
+				'replace' => true,
+			);
+		}
+		return $headers;
 	}
 	
 	
@@ -170,6 +222,9 @@ class ELSWAK_HTTP_Response {
 	
 	
 // !HTTP Status Methods
+	public function statusLine() {
+		return 'HTTP/1.1 '.$this->statusCode.self::reasonPhraseForStatusCode($this->statusCode);
+	}
 	public function statusCode() {
 		return $this->statusCode;
 	}
@@ -192,7 +247,7 @@ class ELSWAK_HTTP_Response {
 		return $this->setStatusCode($code);
 	}
 	public function setContentType($type = 'text/html', $set = 'utf-8') {
-		if (!empty($set))
+		if ($set)
 			$this->setHeader('Content-Type', $type.'; charset='.$set, true);
 		else
 			$this->setHeader('Content-Type', $type, true);
@@ -219,6 +274,9 @@ class ELSWAK_HTTP_Response {
 			$this->setHeader('ETag', $this->header('ETag').'-gzip', true)
 				->setIsModified(false);
 	}
+
+
+
 	public function send() {
 		// verify that headers have not been sent
 		$this->canSendHeaders();
@@ -226,45 +284,101 @@ class ELSWAK_HTTP_Response {
 		// output the headers
 		$this->sendHeaders();
 		
-		// output the custom headers if
-		$this->sendCustomHeaders();
-		
 		// output the content if modified from the indicators sent by the client
 		if ($this->isModified) {
 			$this->sendContent();
 		}
 		return $this;
 	}
+
+
+
+	/**
+	 * Return debug output
+	 *
+	 * Collect the headers, and content and return them in a string as they
+	 * would have been sent to the user. Obviously this can't include any
+	 * headers set external to PHP or even this class but if this response
+	 * is the only thing producing output on a given request, the output of
+	 * this function should be identical to what the client receives.
+	 *
+	 * @return string
+	 */
+	public function debugOutput() {
+		$output = array();
+		
+		// process through the headers like the sendHeaders method
+		$output[] = $this->statusLine();
+		
+		// process the headers
+		foreach ($this->headers as $header) {
+			// unset the redirect if applicable
+			if ($this->debugRedirects && strtolower($header['name']) == 'location') {
+				// add a message about this if there isn't already one
+				$message = 'Redirect to '.$header['value'];
+				if (!in_array($message, $this->messages)) {
+					$this->addMessage($message);
+				}
+			} else {
+				$output[] = $header['name'].': '.$header['value'];
+			}
+		}
+		
+		// process the ELSWAK headers
+		foreach ($this->elswakCustomHeaders() as $header) {
+			$output[] = $header['name'].': '.$header['value'];
+		}
+
+		// include the content if modified from the indicators sent by the client
+		if ($this->isModified) {
+			return
+				implode(CRLF, $output).CRLF.
+				CRLF.
+				$this->content();
+		}
+		
+		// send the finished headers only
+		return
+			implode(CRLF, $output).CRLF.
+			CRLF;
+	}
+	
+	
+	
 	protected function canSendHeaders() {
 		// check to see if the headers have been sent
 		$headersSent = headers_sent($file, $line);
 		
 		// if the headers have been sent, throw and exception
-		if ($headersSent)
+		if ($headersSent) {
 			throw new Exception('Unable to send headers. Headers already sent in ' . $file . ' on line ' . $line);
+		}
 		return !$headersSent;
 	}
 	protected function sendHeaders() {
+		// collect the headers and output them one at a time
 		// send the status line
-		header('HTTP/1.1 '.$this->statusCode.self::reasonPhraseForStatusCode($this->statusCode));
+		header($this->statusLine());
 		
 		// process the headers
 		foreach ($this->headers as $header) {
 			// unset the redirect if applicable
-			if ($this->debugRedirects == true && strtolower($header['name']) == 'location') {
-				$this->addMessage('Redirect to '.$header['value']);
+			if ($this->debugRedirects && strtolower($header['name']) == 'location') {
+				// add a message about this if there isn't already one
+				$message = 'Redirect to '.$header['value'];
+				if (!in_array($message, $this->messages)) {
+					$this->addMessage($message);
+				}
 			} else {
 				header($header['name'].': '.$header['value'], $header['replace']);
 			}
 		}
-		return $this;
-	}
-	protected function sendCustomHeaders() {
-		// send custom headers created by this content type
-		if (!empty($this->status))
-			header('ELSWAK-Status: '.$this->status, true);
-		if (count($this->messages) > 0)
-			header('ELSWAK-Messages: '.$this->messages('|'), true);
+		
+		// process the ELSWAK headers
+		foreach ($this->elswakCustomHeaders() as $header) {
+			header($header['name'].': '.$header['value'], $header['replace']);
+		}
+		
 		return $this;
 	}
 	public function sendContent() {
