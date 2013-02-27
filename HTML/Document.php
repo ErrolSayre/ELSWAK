@@ -1352,10 +1352,4 @@ class ELSWAK_HTML_Document
 	public function __toString() {
 		return $this->cleanup()->save();
 	}
-	public function save() {
-		return parent::saveHTML();
-	}
-	public function saveHTMLFile() {
-		return $this->save();
-	}
 }
