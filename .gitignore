@@ -3,3 +3,4 @@ _Documentation
 _Vagrant
 _Testing/LoggerTest.log
 *.actual.txt
+*.actual.html

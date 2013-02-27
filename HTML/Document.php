@@ -580,7 +580,7 @@ class ELSWAK_HTML_Document
 		return $this->createAnchor($content, $attributes);
 	}
 	public function createAnchor($content = null, array $attributes = null) {
-		return $this->createElement('a', $content, $attribute);
+		return $this->createElement('a', $content, $attributes);
 	}
 
 
