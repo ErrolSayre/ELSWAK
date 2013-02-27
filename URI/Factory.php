@@ -60,8 +60,20 @@ class ELSWAK_URI_Factory {
 	public static function baseURLFromServerGlobalLikeArray(array $data) {
 		$url = new ELSWAK_HTTP_URL;
 		$url->scheme = array_key_exists('HTTPS', $data)? 'https': 'http';
-		$url->host = $data['SERVER_NAME'];
-		if ($data['SERVER_PORT'] != 80 && $data['SERVER_PORT'] != 443) {
+		
+		// try to determine the hostname
+		// take the first available value in order of the field list
+		foreach (self::acceptableHostFields() as $field) {
+			if (array_key_exists($field, $data)) {
+//TODO Add checks here to sanitize host name as provided via HTTP_HOST and sometimes SERVER_NAME
+				// ensure we don't use an empty value
+				if ($data[$field]) {
+					$url->host = $data[$field];
+					break;
+				}
+			}
+		}
+		if (array_key_exists('SERVER_PORT', $data) && $data['SERVER_PORT'] != 80 && $data['SERVER_PORT'] != 443) {
 			$url->port = $data['SERVER_PORT'];
 		}
 		return $url;
@@ -72,7 +84,9 @@ class ELSWAK_URI_Factory {
 	public static function applicationURLFromServerGlobalLikeArray(array $data) {
 		// take the base url and add the path to the current php script (assuming that the application uses "Pretty URLs" that omit the script name
 		$url = self::baseURLFromServerGlobalLikeArray($data);
-		$url->path = dirname($data['PHP_SELF']);
+		if (array_key_exists('PHP_SELF', $data)) {
+			$url->path = dirname($data['PHP_SELF']).'/';
+		}
 		return $url;
 	}
 	public static function urlFromServerGlobal() {
@@ -82,7 +96,15 @@ class ELSWAK_URI_Factory {
 		// take the base url and add the requst uri
 		$url = self::baseURLFromServerGlobalLikeArray($data);
 		// import the request uri components (this should just override the things that are set)
-		$url->_import(parse_url($data['REQUEST_URI']));
+		if (array_key_exists('REQUEST_URI', $data)) {
+			$url->_import(parse_url($data['REQUEST_URI']));
+		}
 		return $url;
+	}
+	public static function acceptableHostFields() {
+		return array(
+			'SERVER_NAME',
+			'HTTP_HOST',
+		);
 	}
 }
