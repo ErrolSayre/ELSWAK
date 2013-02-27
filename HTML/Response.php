@@ -4,7 +4,9 @@
 */
 class ELSWAK_HTML_Response
 	extends ELSWAK_HTTP_Response {
-	protected $sendHtml = false;
+
+
+
 	public function __construct(ELSWAK_HTML_Document $document = null) {
 		parent::__construct();
 		
@@ -21,13 +23,6 @@ class ELSWAK_HTML_Response
 		$this->body = $document;
 		return $this;
 	}
-	public function sendHtml($value = true) {
-		if ($value)
-			$this->sendHtml = true;
-		else
-			$this->sendHtml = false;
-		return $this;
-	}
 	public function messages($delimiter = null) {
 		return $this->body->messages($delimiter = null);
 	}
@@ -36,9 +31,7 @@ class ELSWAK_HTML_Response
 		return $this;
 	}
 	public function content() {
-		if ($this->sendHtml)
-			return $this->body->saveHTML();
-		return (string) $this->body;
+		return $this->body->saveHTML();
 	}
 	public function setContent($content = null, $key = null, $type = null) {
 		// pass the call on to the document object

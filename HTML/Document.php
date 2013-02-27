@@ -1350,6 +1350,6 @@ class ELSWAK_HTML_Document
 			$node->removeChild($node->firstChild);
 	}
 	public function __toString() {
-		return $this->cleanup()->save();
+		return $this->cleanup()->saveHTML();
 	}
 }
