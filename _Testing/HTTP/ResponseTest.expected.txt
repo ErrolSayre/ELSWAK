@@ -8,5 +8,5 @@ ELSWAK-Status: Looking Good
 ELSWAK-Messages: The thingamajig didn’t work like a who’s-a-what’s-it|User not authenticated|User authentication form displayed.
 
 <h1>Welcome to Moe’s!</h1>
-http://www.apple.com<br />
-/imac/features/coolstuff<br />
+Server URI: http://www.apple.com<br />
+Application Path: /ipad/features/<br />

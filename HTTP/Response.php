@@ -12,8 +12,15 @@ class ELSWAK_HTTP_Response {
 
 
 
-	protected $serverUri;
-	protected $applicationPath;
+	/**
+	 * Application Base URL
+	 *
+	 * Specify a URL for the application this response belongs to.
+	 *
+	 * @type ELSWAK_HTTP_URL
+	 */
+	protected $baseURL;
+	
 	protected $headers = array();
 	protected $status = '';
 	protected $messages = array();
@@ -25,12 +32,8 @@ class ELSWAK_HTTP_Response {
 
 
 
-	public function __construct() {
-		// setup the server uri
-		$this->serverUri = (array_key_exists('HTTPS', $_SERVER)? 'https://': 'http://').$_SERVER['HTTP_HOST'];
-		
-		// setup the application uri
-		$this->applicationPath = dirname($_SERVER['PHP_SELF']);
+	public function __construct($url = null) {
+		$this->setBaseURL($url);
 		
 		// setup frame blocking by default, requiring the developer to change this behavior
 		$this->setFramePermission();
@@ -38,17 +41,56 @@ class ELSWAK_HTTP_Response {
 
 
 
-	public function serverUri() {
-		return $this->serverUri;
+	/**
+	 * Set the baseURL
+	 *
+	 * This property is not nullable so do not allow it to be unset.
+	 *
+	 * @param ELSWAK_HTTP_URL|mixed A value to set or parse
+	 */
+	public function setBaseURL($value) {
+		if (!($value instanceof ELSWAK_HTTP_URL)) {
+			if ($value) {
+				$value = ELSWAK_URI_Factory::uriForString($value);
+			}
+			if (!($value instanceof ELSWAK_HTTP_URL)) {
+				$value = ELSWAK_URI_Factory::applicationURLFromServerGlobal();
+			}
+		}
+		if ($value instanceof ELSWAK_HTTP_URL) {
+			$this->baseURL = $value;
+		}
+		return $this;
+	}
+	/**
+	 * Provide baseURL while protecting it
+	 *
+	 * Clone the baseURL before handing it off to prevent unintended
+	 * mangling.
+	 *
+	 * @return ELSWAK_HTTP_URL|null
+	 */
+	public function baseURL() {
+		if ($this->baseURL instanceof ELSWAK_HTTP_URL) {
+			return clone $this->baseURL;
+		}
+		return null;
+	}
+
+
+
+	public function serverURI() {
+		return $this->baseURL->serverURI();
 	}
 	public function applicationPath() {
-		return $this->applicationPath;
+		return $this->baseURL->path();
 	}
 	public function overrideApplicationPath($path) {
-		$this->applicationPath = pathinfo($path, PATHINFO_DIRNAME);
+		$this->baseURL->path = pathinfo($path, PATHINFO_DIRNAME).'/';
+		return $this;
 	}
-	public function applicationUri() {
-		return $this->serverUri.$this->applicationPath;
+	public function applicationURI() {
+		return $this->baseURL->uri();
 	}
 	public function messages($delimiter = '') {
 		return implode($delimiter, $this->messages);

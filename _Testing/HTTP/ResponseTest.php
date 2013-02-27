@@ -13,10 +13,15 @@ class ELSWAK_HTTP_ResponseTest
 		$response = new ELSWAK_HTTP_Response;
 		$response->setRedirect('https://www.apple.com/imac/');
 		
+		$this->assertEquals('/imac/features/coolstuff/', $response->applicationPath());
+		
+		$response->overrideApplicationPath('/ipad/features/index.php');
+		$this->assertEquals('/ipad/features/', $response->applicationPath());
+		
 		// setup a bunch of garbage from the old test
 		$response->addContent('<h1>Welcome to Moe’s!</h1>'.LF);
-		$response->addContent($response->serverUri().BR.LF);
-		$response->addContent($response->applicationPath().BR.LF);
+		$response->addContent('Server URI: '.$response->serverUri().BR.LF);
+		$response->addContent('Application Path: '.$response->applicationPath().BR.LF);
 		$response->addMessage('The thingamajig didn’t work like a who’s-a-what’s-it');
 		$response->addMessage('User not authenticated');
 		$response->addMessage('User authentication form displayed.');
@@ -25,7 +30,11 @@ class ELSWAK_HTTP_ResponseTest
 		$response->setHeader('Jonny-Cab', 'To the Moon');
 		$response->setContentType();
 		
-		
+		// ensure the base url is tamper resistent
+		$response->baseURL()->path = '/appletv';
+		$this->assertEquals('/ipad/features/', $response->applicationPath());
+		$url = $response->baseURL()->setPath('/appletv');
+		$this->assertEquals('/appletv', $url->path());
 		
 		// write the response to a file
 		$path = pathinfo(__FILE__, PATHINFO_DIRNAME).'/ResponseTest.';
