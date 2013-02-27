@@ -54,7 +54,7 @@ class ELSWAK_URI_FactoryTest
 	public function testServerBasedFactories() {
 		global $_SERVER;
 		$uris = array(
-			'https://asfd.qwer.com:8443/path/to/application' => array(
+			'https://asfd.qwer.com:8443/path/to/application/' => array(
 				'SERVER_NAME' => 'asfd.qwer.com',
 				'HTTPS' => 'on',
 				'SERVER_PORT' => 8443,
