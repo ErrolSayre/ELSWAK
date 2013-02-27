@@ -14,10 +14,11 @@ class ELSWAK_Authoritative_URLTest
 		$this->assertEquals('ssh://localhost', $url->url());
 		$url->user = 'errol';
 		$this->assertEquals('ssh://errol@localhost', "$url");
+		$this->assertEquals('ssh://errol@localhost', $url->serverURI());
 		
 		// set a password
 		$url->password = '1234-Spaceballs';
-		$this->assertEquals('ssh://errol:1234-Spaceballs@localhost', $url->url);
+		$this->assertEquals('ssh://errol:1234-Spaceballs@localhost', (string) $url);
 		
 		// add a special character and see the encoded form
 		$url->password = 'sp@c3b@ll$';
@@ -27,6 +28,7 @@ class ELSWAK_Authoritative_URLTest
 		$url->scheme = 'https';
 		$url->path = '/Users/errol/Desktop';
 		$this->assertEquals('https://errol:sp%40c3b%40ll%24@localhost/Users/errol/Desktop', $url->url);
+		$this->assertEquals('https://errol:sp%40c3b%40ll%24@localhost', $url->serverUri);
 		// test relative paths... this should be "corrected" since the path must start with a /
 		$url->path = '~/Desktop';
 		$url->query = 'sort=name&descending=true';
@@ -49,12 +51,13 @@ class ELSWAK_Authoritative_URLTest
 		$url->host = 'localhost';
 		$url->port = 3306;
 		$this->assertEquals('mysql://pma:PresidentSkroob@localhost:3306', $url->url);
-		// set the port to something erroneous
+		// set the port to something erroneous (note, this is the letter o)
 		$url->port = '33O6';
 		$this->assertEquals('mysql://pma:PresidentSkroob@localhost:33', $url->url);
 		$url->port = '';
 		$url->path = '/tmp/mysql.sock';
 		$this->assertEquals('mysql://pma:PresidentSkroob@localhost/tmp/mysql.sock', $url->url);
+		$this->assertEquals('mysql://pma:PresidentSkroob@localhost', $url->serverURI);
 	}
 	
 	public function testTrailingSlash() {
@@ -64,5 +67,11 @@ class ELSWAK_Authoritative_URLTest
 			'path' => '/'
 		));
 		$this->assertEquals('http://apple.com/', $url->url);
+		
+		$url = new ELSWAK_Authoritative_URL(array(
+			'scheme' => 'http',
+			'host' => 'apple.com',
+		));
+		$this->assertEquals('http://apple.com', $url->url);
 	}
 }

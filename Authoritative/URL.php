@@ -166,4 +166,25 @@ class ELSWAK_Authoritative_URL
 		}
 		return $uri;
 	}
+
+
+
+	/**
+	 * Construct a server URI
+	 *
+	 * Construct the URI for the server, including all aspects of the
+	 * authority section.
+	 *
+	 * @return string
+	 */
+	public function serverURI() {
+		$uri = '';
+		if ($this->scheme) {
+			$uri = $this->scheme().':';
+		}
+		if ($this->hasAuthority()) {
+			$uri .= '//'.$this->authority();
+		}
+		return $uri;
+	}
 }
