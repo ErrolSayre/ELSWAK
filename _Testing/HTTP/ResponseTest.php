@@ -37,7 +37,7 @@ class ELSWAK_HTTP_ResponseTest
 		$this->assertEquals('/appletv', $url->path());
 		
 		// write the response to a file
-		$path = pathinfo(__FILE__, PATHINFO_DIRNAME).'/ResponseTest.';
+		$path = pathinfo(__FILE__, PATHINFO_DIRNAME).'/'.pathinfo(__FILE__, PATHINFO_FILENAME).'.';
 		file_put_contents($path.'actual.txt', $response->debugOutput());
 		
 		// compare the written response to the expected
