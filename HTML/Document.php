@@ -573,10 +573,15 @@ class ELSWAK_HTML_Document
 	 * @return DOMElement
 	 */
 	public function createLink($href, $content = null, array $attributes = null) {
-		if (!is_array($attributes))
+		if (!is_array($attributes)) {
 			$attributes = array();
-		if (empty($attributes['href']))
+		}
+		if (empty($attributes['href'])) {
 			$attributes['href'] = $href;
+		}
+		if (empty($content)) {
+			$content = $href;
+		}
 		return $this->createAnchor($content, $attributes);
 	}
 	public function createAnchor($content = null, array $attributes = null) {
