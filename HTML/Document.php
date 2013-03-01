@@ -553,6 +553,18 @@ class ELSWAK_HTML_Document
 	public function createSmall($content = null, array $attributes = null) {
 		return $this->createElement('small', $content, $attributes);
 	}
+	public function createStrong($content = null, array $attributes = null) {
+		return $this->createElement('strong', $content, $attributes);
+	}
+	public function createEmphasis($content = null, array $attributes = null) {
+		return $this->createElement('em', $content, $attributes);
+	}
+	public function createBold($content = null, array $attributes = null) {
+		return $this->createElement('b', $content, $attributes);
+	}
+	public function createItalic($content = null, array $attributes = null) {
+		return $this->createElement('i', $content, $attributes);
+	}
 	public function createBreak(array $attributes = null) {
 		return $this->createElement('br', null, $attributes);
 	}
