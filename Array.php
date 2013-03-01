@@ -374,11 +374,13 @@ class ELSWAK_Array
 	 * this method to ensure things such as validation and auto-key-
 	 * generation are done properly.
 	 *
-	 * For now this method serves as an inaccessible placeholder.
+	 * At this point it looks like array_splice is the best option.
 	 *
 	 * @return mixed|null
 	 */
-	private function unshift($value) {}
+	public function unshift($value) {
+		return $this->insert($value, 0);
+	}
 
 
 
