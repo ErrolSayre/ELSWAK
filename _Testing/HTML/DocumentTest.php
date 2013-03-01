@@ -77,9 +77,9 @@ class ELSWAK_HTML_DocumentTest
 		));
 		
 		$div = $document->createElement('div', null, array('class' => 'input'));
-		$div->appendChild($document->createTextInput('start', date('m/d/y')));
+		$div->appendChild($document->createTextInput('start', 'Feb 14, 2003'));
 		$div->appendChild($document->createTextNode(' to '));
-		$div->appendChild($document->createTextInput('start', date('m/d/y', time() + 256390)));
+		$div->appendChild($document->createTextInput('start', 'Feb 24, 2003'));
 		$fieldset->appendChild($document->createFormField('Period', $div));
 		
 		$fieldset = $form->appendChild($document->createFieldset('Some radios'));
