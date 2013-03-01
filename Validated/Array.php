@@ -61,10 +61,15 @@ class ELSWAK_Validated_Array
 	 * validation methods.
 	 *
 	 * @param mixed $value
-	 * @param integer $index
+	 * @param integer|false $index
 	 * @return ELSWAK_Array self
 	 */
-	public function insert($value, $index) {
+	public function insert($value, $index = false) {
+		// if the index is false, simply append the value
+		if ($index === false) {
+			return $this->add($value);
+		}
+		
 		// first validate the item (subclasses will override the method)
 		$value = $this->validateOrTransformItemForInclusion($value);
 		

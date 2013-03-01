@@ -334,11 +334,19 @@ class ELSWAK_Array
 	 * too important to me at this time but there may be a need for an
 	 * array that can avoid this...
 	 *
+	 * In order to support a specific use-case I'm utilizing the special
+	 * index of false to indicate an item should be inserted at the end.
+	 *
 	 * @param mixed $value
-	 * @param integer $index
+	 * @param integer|false $index
 	 * @return ELSWAK_Array self
 	 */
-	public function insert($value, $index) {
+	public function insert($value, $index = false) {
+		// if the index is false, simply append the value
+		if ($index === false) {
+			return $this->add($value);
+		}
+		
 		// splice the value in at the array index
 		// wrap the value in an array to ensure an array value remains that way
 		array_splice($this->store, $index, 0, array($value));

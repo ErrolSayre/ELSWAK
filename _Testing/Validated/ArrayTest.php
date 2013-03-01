@@ -31,6 +31,9 @@ class ELSWAK_Validated_ArrayTest
 		$this->assertEquals('too', $var->item(2));
 		$this->assertEquals('Three', $var->item(3));
 		$this->assertEquals('TWO', $var->item(4));
+		
+		$var->insert('last', false);
+		$this->assertEquals('last', $var->item(5));
 	}
 	
 	public function testValidation() {

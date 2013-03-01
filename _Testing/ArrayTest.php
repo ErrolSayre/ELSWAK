@@ -262,10 +262,13 @@ class ELSWAK_ArrayTest
 		$this->assertEquals('TWO', $var->item(1));
 		
 		$var->insert('too', 2);
+		$this->assertEquals(5, $var->count());
 		$this->assertEquals('TWO', $var->item(1));
 		$this->assertEquals('too', $var->item(2));
 		$this->assertEquals('two', $var->item(3));
 		
-		$this->assertEquals(5, $var->count());
+		$var->insert('six');
+		$this->assertEquals(6, $var->count());
+		$this->assertEquals('six', $var->last());
 	}
 }
