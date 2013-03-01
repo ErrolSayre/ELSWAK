@@ -311,16 +311,38 @@ class ELSWAK_Array
 
 
 	/**
-	 * Mirror JavaScript's item() method
+	 * Mirror the DOM's item() method
 	 *
-	 * This method allows you to access non-numeric arrays in a numeric
-	 * manner.
+	 * This method allows you to access non-numeric and mixed arrays in a
+	 * numeric manner.
 	 *
 	 * @param integer $index
 	 * @return mixed Item at $index
 	 */
 	public function item($index) {
 		return $this->valueForKey($this->keyForItem($index));
+	}
+
+
+
+	/**
+	 * Insert a value at index
+	 *
+	 * In order to most readily support this feature I'm using array_splice
+	 * to do the heavy lifting. Unfortunately array_splice resets ALL
+	 * numeric keys such that any skipped spaces are cleared. This isn't
+	 * too important to me at this time but there may be a need for an
+	 * array that can avoid this...
+	 *
+	 * @param mixed $value
+	 * @param integer $index
+	 * @return ELSWAK_Array self
+	 */
+	public function insert($value, $index) {
+		// splice the value in at the array index
+		// wrap the value in an array to ensure an array value remains that way
+		array_splice($this->store, $index, 0, array($value));
+		return $this;
 	}
 
 

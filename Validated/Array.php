@@ -55,6 +55,30 @@ class ELSWAK_Validated_Array
 
 
 	/**
+	 * Insert a value at index
+	 *
+	 * This method needs to be overriden to ensure it utilizes the
+	 * validation methods.
+	 *
+	 * @param mixed $value
+	 * @param integer $index
+	 * @return ELSWAK_Array self
+	 */
+	public function insert($value, $index) {
+		// first validate the item (subclasses will override the method)
+		$value = $this->validateOrTransformItemForInclusion($value);
+		
+		// since this method deals in purely numeric positions, no key validation is done
+		
+		// splice the value in at the array index
+		// wrap the value in an array to ensure an array value remains that way
+		array_splice($this->store, $index, 0, array($value));
+		return $this;
+	}
+
+
+
+	/**
 	 * Validate a key for setting
 	 *
 	 * Like validating an item for inclusion, this method is setup so that

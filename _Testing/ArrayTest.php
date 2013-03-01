@@ -245,5 +245,27 @@ class ELSWAK_ArrayTest
 		
 		$this->assertEquals('asdf', $var->shift());
 		$this->assertEquals('qwer', $var->first());
+		
+		$var->unshift('hjkl');
+		$this->assertEquals('hjkl', $var->first());
+		$this->assertEquals(2, $var->count());
+	}
+
+	public function testInsertion() {
+		$var = new ELSWAK_Array;
+		$var->add('one');
+		$var->add('two', 'two');
+		$var->add('three');
+		$this->assertEquals('two', $var->item(1));
+		
+		$var->insert('TWO', 1);
+		$this->assertEquals('TWO', $var->item(1));
+		
+		$var->insert('too', 2);
+		$this->assertEquals('TWO', $var->item(1));
+		$this->assertEquals('too', $var->item(2));
+		$this->assertEquals('two', $var->item(3));
+		
+		$this->assertEquals(5, $var->count());
 	}
 }

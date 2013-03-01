@@ -18,13 +18,19 @@ class ELSWAK_Validated_ArrayTest
 		
 		// add a new item without a position
 		$var->add('Two');
-		// PHP behavior (as of PHP 5.4.9 and earlier) is to set this value at index 2, ensure this class does the same
+		// PHP behavior (as of PHP 5.4.9 and earlier) is to set this value with key 2, ensure this class does the same
 		$this->assertTrue($var->hasValueForKey(2));
 		$this->assertEquals('Two', $var[2]);
 		
 		// ensure that the setter doesn't also append
 		$var[2] = 'TWO';
 		$this->assertEquals('TWO', $var[2]);
+		
+		// ensure that the insert method works
+		$var->insert('too', 2);
+		$this->assertEquals('too', $var->item(2));
+		$this->assertEquals('Three', $var->item(3));
+		$this->assertEquals('TWO', $var->item(4));
 	}
 	
 	public function testValidation() {
