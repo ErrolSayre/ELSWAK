@@ -356,6 +356,24 @@ class ELSWAK_Array
 
 
 	/**
+	 * Remove a value at index
+	 *
+	 * The insert and delete methods match add and remove with except that
+	 * these methods deal with relative position within the array store
+	 * rather than actual array keys.
+	 *
+	 * @param integer $index
+	 * @return ELSWAK_Array self
+	 */
+	public function delete($index) {
+		// remove the value in the array at the appropriate index
+		array_splice($this->store, $index, 1);
+		return $this;
+	}
+
+
+
+	/**
 	 * Access the first item
 	 *
 	 * @return mixed|null

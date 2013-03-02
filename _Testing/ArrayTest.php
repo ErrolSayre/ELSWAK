@@ -270,5 +270,9 @@ class ELSWAK_ArrayTest
 		$var->insert('six');
 		$this->assertEquals(6, $var->count());
 		$this->assertEquals('six', $var->last());
+		
+		$var->delete(4);
+		$this->assertEquals(5, $var->count());
+		$this->assertEquals('six', $var->last());
 	}
 }
