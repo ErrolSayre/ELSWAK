@@ -109,6 +109,17 @@ class ELSWAK_Array
 	public function export() {
 		return $this->store;
 	}
+	/**
+	 * Empty the store
+	 *
+	 * Use this method to reset the contents of the array to empty.
+	 *
+	 * @return ELSWAK_Array self
+	 */
+	public function clear() {
+		$this->store = array();
+		return $this;
+	}
 
 
 
@@ -653,6 +664,44 @@ class ELSWAK_Array
 	 */
 	public function parseItem($item, $returnValue = false, $allowSubstrings = true) {
 		return $this->parseItemFromKeysAndValues($item, $returnValue, $allowSubstrings);
+	}
+
+
+
+	/**
+	 * Compare this array to another
+	 *
+	 * Collect differences in a collection differences object.
+	 * @see ELSWAK_Collection_Differences
+	 *
+	 * @param ELSWAK_Array $compare
+	 * @return ELSWAK_Collection_Differences
+	 */
+	public function differences(ELSWAK_Array $compare) {
+		$diff = new ELSWAK_Collection_Differences;
+		
+		// look through the comparison object and the local store for matches
+		foreach ($this->store as $key => $item) {
+			// look for a match in the comparison object
+			if ($compare->valueForKey($key) == $item) {
+				$diff->same->setValueForKey($item, $key);
+			} else {
+				// look for the value as it may have moved
+				$cKey = $compare->keyForValue($item);
+				if ($cKey === false) {
+					// the value has been removed
+					$diff->removed->setValueForKey($item, $key);
+				} else {
+					// the value has been moved
+					$diff->moved->setValueForKey($item, $key);
+				}
+			}
+		}
+		// now look for items in the comparison that don't exist locally
+		$diff->added->setStore(array_diff($compare->store, $this->store));
+		
+		// return the differences
+		return $diff;
 	}
 
 

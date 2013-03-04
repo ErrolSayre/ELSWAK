@@ -62,6 +62,12 @@ class ELSWAK_ArrayTest
 		$this->assertEquals('Dracula', $data->offsetGet('monster'));
 	}
 	
+	public function testReset() {
+		$data = new ELSWAK_Array(array('asdf', 'qwer', 'zxcv'));
+		$this->assertEquals(3, $data->count());
+		$this->assertEquals(0, $data->clear()->count());
+	}
+	
 	
 	
 //!Invalid Keys
@@ -274,5 +280,40 @@ class ELSWAK_ArrayTest
 		$var->delete(4);
 		$this->assertEquals(5, $var->count());
 		$this->assertEquals('six', $var->last());
+	}
+	
+	public function testDifferences() {
+		$var1 = new ELSWAK_Array;
+		$var2 = new ELSWAK_Array;
+		
+		$var1->add('asdf');
+		$var2->add('asdf');
+		$diff = $var1->differences($var2);
+		$this->assertFalse($diff->hasDifferences);
+		
+		// add an item to the second (should show 1 addition in the diff)
+		$var2->set('TWO', 'two');
+		$diff = $var1->differences($var2);
+		$this->assertTrue($diff->hasDifferences);
+		$this->assertEquals(1, $diff->added->count());
+		
+		// compare the first to the second (should show 1 removal in the diff)
+		$diff = $var2->differences($var1);
+		$this->assertTrue($diff->hasDifferences);
+		$this->assertEquals(1, $diff->removed->count());
+		
+		// add the item to the first
+		$var1->set('TWO', 'two');
+		$diff = $var1->differences($var2);
+		$this->assertFalse($diff->hasDifferences);
+		
+		// add the same items out of order to each other (should show 2 moves in the diff)
+		$var1->add('qwer');
+		$var1->add('zxcv');
+		$var2->add('zxcv');
+		$var2->add('qwer');
+		$diff = $var1->differences($var2);
+		$this->assertTrue($diff->hasDifferences);
+		$this->assertEquals(2, $diff->moved->count());
 	}
 }
