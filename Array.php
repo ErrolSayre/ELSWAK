@@ -330,6 +330,7 @@ class ELSWAK_Array
 
 
 
+//!Item Accessors
 	/**
 	 * Mirror the DOM's item() method
 	 *
@@ -341,6 +342,28 @@ class ELSWAK_Array
 	 */
 	public function item($index) {
 		return $this->valueForKey($this->keyForItem($index));
+	}
+
+
+
+	/**
+	 * Access the first item
+	 *
+	 * @return mixed|null
+	 */
+	public function first() {
+		return $this->valueForKey($this->firstKey());
+	}
+
+
+
+	/**
+	 * Access the last item
+	 *
+	 * @return mixed|null
+	 */
+	public function last() {
+		return $this->valueForKey($this->lastKey());
 	}
 
 
@@ -393,15 +416,7 @@ class ELSWAK_Array
 
 
 
-	/**
-	 * Access the first item
-	 *
-	 * @return mixed|null
-	 */
-	public function first() {
-		return $this->valueForKey($this->firstKey());
-	}
-
+//!Queue & Stack methods
 	/**
 	 * Mirror PHP's array_shift
 	 *
@@ -410,6 +425,8 @@ class ELSWAK_Array
 	public function shift() {
 		return $this->removeValueForKey($this->firstKey());
 	}
+
+
 
 	/**
 	 * Mirror PHP's array_unshift
@@ -430,16 +447,6 @@ class ELSWAK_Array
 
 
 
-
-	/**
-	 * Access the last item
-	 *
-	 * @return mixed|null
-	 */
-	public function last() {
-		return $this->valueForKey($this->lastKey());
-	}
-
 	/**
 	 * Mirror PHP's array_pop
 	 *
@@ -448,6 +455,8 @@ class ELSWAK_Array
 	public function pop() {
 		return $this->removeValueForKey($this->lastKey());
 	}
+
+
 
 	/**
 	 * Mirror PHP's array_push
@@ -463,7 +472,7 @@ class ELSWAK_Array
 
 
 
-//!Representation methods
+//!Representation
 	public function formattedList($delimiter = ', ', $prefix = '', $suffix = '') {
 		if ($this->hasItems()) {
 			return $prefix.implode($delimiter, $this->store).$suffix;
@@ -479,7 +488,7 @@ class ELSWAK_Array
 
 
 
-//!Sorting methods
+//!Sorting
 	public function sort($reverse = false) {
 		return $this->sortByValue($reverse);
 	}
@@ -508,7 +517,7 @@ class ELSWAK_Array
 
 
 
-//!Magic Accessor methods
+//!Magic Accessors
 	public function __get($key) {
 		return $this->valueForKey($key);
 	}
@@ -657,6 +666,7 @@ class ELSWAK_Array
 
 
 
+//!Item Parsing
 	/**
 	 * Validate an item within the store.
 	 * @param mixed $item
@@ -677,6 +687,7 @@ class ELSWAK_Array
 
 
 
+//!Array Comparison
 	/**
 	 * Compare this array to another
 	 *
