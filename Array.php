@@ -34,6 +34,15 @@ class ELSWAK_Array_InvalidItem_Exception extends ELSWAK_Array_Exception {}
 
 
 
+/**
+ * Exception for invalid comparison
+ *
+ * @package ELSWAK\Collections
+ */
+class ELSWAK_Array_InvalidComparison_Exception extends ELSWAK_Array_Exception {}
+
+
+
 //!Stub Constants
 if (!defined('JSON_PRETTY_PRINT')) {
 	define('JSON_PRETTY_PRINT', 0);
@@ -59,7 +68,7 @@ if (!interface_exists('JsonSerializable')) {
  * @package ELSWAK\Collections
  */
 class ELSWAK_Array
-	implements JsonSerializable, ArrayAccess, Iterator {
+	implements JsonSerializable, ArrayAccess, Iterator, ELSWAK_Differentiable {
 
 	/**
 	 * Protected array used to store the contents.
@@ -674,34 +683,41 @@ class ELSWAK_Array
 	 * Collect differences in a collection differences object.
 	 * @see ELSWAK_Collection_Differences
 	 *
-	 * @param ELSWAK_Array $compare
+	 * Since this method is expected to be subclassed, the comparison
+	 * object must be validated within the method.
+	 *
+	 * @param mixed $compare
 	 * @return ELSWAK_Collection_Differences
 	 */
-	public function differences(ELSWAK_Array $compare) {
-		$diff = new ELSWAK_Collection_Differences;
-		
-		// look through the comparison object and the local store for matches
-		foreach ($this->store as $key => $item) {
-			// look for a match in the comparison object
-			if ($compare->valueForKey($key) == $item) {
-				$diff->same->setValueForKey($item, $key);
-			} else {
-				// look for the value as it may have moved
-				$cKey = $compare->keyForValue($item);
-				if ($cKey === false) {
-					// the value has been removed
-					$diff->removed->setValueForKey($item, $key);
+	public function differences($compare) {
+		// first validate the comparison object is of the same type as this variable
+		if ($compare instanceof $this) {
+			$diff = new ELSWAK_Collection_Differences;
+			
+			// look through the comparison object and the local store for matches
+			foreach ($this->store as $key => $item) {
+				// look for a match in the comparison object
+				if ($compare->valueForKey($key) == $item) {
+					$diff->same->setValueForKey($item, $key);
 				} else {
-					// the value has been moved
-					$diff->moved->setValueForKey($item, $key);
+					// look for the value as it may have moved
+					$cKey = $compare->keyForValue($item);
+					if ($cKey === false) {
+						// the value has been removed
+						$diff->removed->setValueForKey($item, $key);
+					} else {
+						// the value has been moved
+						$diff->moved->setValueForKey($cKey, $key);
+					}
 				}
 			}
+			// now look for items in the comparison that don't exist locally
+			$diff->added->setStore(array_diff($compare->store, $this->store));
+			
+			// return the differences
+			return $diff;
 		}
-		// now look for items in the comparison that don't exist locally
-		$diff->added->setStore(array_diff($compare->store, $this->store));
-		
-		// return the differences
-		return $diff;
+		throw new ELSWAK_Array_InvalidComparison_Exception('Unable to compare objects. Comparison must be made against like types.');
 	}
 
 

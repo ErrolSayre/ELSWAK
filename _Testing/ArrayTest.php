@@ -315,5 +315,19 @@ class ELSWAK_ArrayTest
 		$diff = $var1->differences($var2);
 		$this->assertTrue($diff->hasDifferences);
 		$this->assertEquals(2, $diff->moved->count());
+		$this->assertEquals($diff->moved[1], 2);
+		$this->assertEquals($diff->moved[2], 1);
+	}
+	/**
+	 * @expectedException ELSWAK_Array_InvalidComparison_Exception
+	 */
+	public function testInvalidDifferences() {
+		$var1 = new ELSWAK_Array;
+		$var2 = new ELSWAK_Validated_Array;
+		
+		// var1 should be able to compare to var2 but not vice versa
+		$this->assertInstanceOf('ELSWAK_Collection_Differences', $var1->differences($var2));
+		
+		$var2->differences($var1);
 	}
 }
