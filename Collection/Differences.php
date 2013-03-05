@@ -57,12 +57,21 @@ class ELSWAK_Collection_Differences {
 	/**
 	 * Items with different keys but otherwise identical.
 	 *
+	 * This listing is intended to be a collection of keys from the
+	 * comparison collection indexed by the key from the target collection.
+	 *
+	 * In other words "item at [key] moved to key [value]".
+	 *
 	 * @type ELSWAK_Array
 	 */
 	protected $moved;
 
 	/**
 	 * Items in the same position but have changed properties.
+	 *
+	 * This listing is intended to collect the items from the comparison
+	 * object. I.e. changes that should be applied to the target object to
+	 * bring it into alignment.
 	 *
 	 * @type ELSWAK_Array
 	 */
@@ -71,12 +80,17 @@ class ELSWAK_Collection_Differences {
 	/**
 	 * Items that are not in the target collection but are in the compared.
 	 *
+	 * Please note that the keys of this array will be the corresponding
+	 * key from the item in the comparison collection.
+	 *
 	 * @type ELSWAK_Array
 	 */
 	protected $added;
 
 	/**
 	 * Items that are in the target collection but not in the compared.
+	 *
+	 * Keys and values in this list come from the target collection.
 	 *
 	 * @type ELSWAK_Array
 	 */
