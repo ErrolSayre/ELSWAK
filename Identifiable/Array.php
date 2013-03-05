@@ -131,11 +131,11 @@ class ELSWAK_Identifiable_Array
 						$itemDiff = $item->differences($compareItem);
 						if ($diff->hasDifferences) {
 							// keep the changed copy for this diff
-							$diff->changed[$key] = $compareItem;
+							$diff->changed[$compareKey] = $compareItem;
 						}
 					// utilize the PHP built-in comparison (which looks at every property)
 					} elseif ($item != $compareItem) {
-						$diff->changed[$key] = $compareItem;
+						$diff->changed[$compareKey] = $compareItem;
 					}
 				} else {
 					// the item does not exist in the comparison object

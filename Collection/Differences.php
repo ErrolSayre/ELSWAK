@@ -73,6 +73,9 @@ class ELSWAK_Collection_Differences {
 	 * object. I.e. changes that should be applied to the target object to
 	 * bring it into alignment.
 	 *
+	 * Please note that the keys of this array will be the corresponding
+	 * key from the item in the comparison collection.
+	 *
 	 * @type ELSWAK_Array
 	 */
 	protected $changed;
