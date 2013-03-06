@@ -100,15 +100,29 @@ class ELSWAK_ObjectTest
 		$this->assertTrue($var2->_methodExists('emptymethod'));
 		$this->assertFalse($var2->_methodExists('happyMethod'));
 	}
+	public function testComparison() {
+		$person1 = new ELSWAK_ObjectTest_Person;
+		$person2 = new ELSWAK_ObjectTest_Person;
+		
+		$this->assertTrue($person1->isEqualTo($person2));
+		
+		$person1->first = 'Jane';
+		$person2->first = 'John';
+		$this->assertTrue($person1->isLessThan($person2));
+		
+		$person1->last = 'Smith';
+		$person2->last = 'Doe';
+		$this->assertTrue($person1->isGreaterThan($person2));
+	}
 }
 
 class ELSWAK_ObjectTest_Person
 	extends ELSWAK_Object {
 	
-	protected $first;
 	protected $last;
-	protected $ssn;
+	protected $first;
 	protected $age;
+	protected $ssn;
 	
 	private $_viewCount;
 	

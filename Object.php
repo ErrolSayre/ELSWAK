@@ -5,6 +5,9 @@
  * @author Errol Sayre
  */
 
+
+
+//!Related Exceptions
 /**
  * Generic exception for ELSWAK Objects.
  *
@@ -30,11 +33,17 @@ class ELSWAK_Object_ProtectedProperty_Exception extends ELSWAK_Object_Exception 
  */
 class ELSWAK_Object_ProtectedMethod_Exception extends ELSWAK_Object_Exception {}
 
+
+
+//!Functionality Stubs
 // Place a stub for backward compatibility with PHP < 5.4.0
 if (!interface_exists('JsonSerializable')) {
 	require_once 'JsonSerializeableInterface.php';
 }
 
+
+
+//!Class Definition
 /**
  * Basic building block for objects with automatic accessors.
  * 
@@ -46,7 +55,49 @@ if (!interface_exists('JsonSerializable')) {
  */
 abstract class ELSWAK_Object
 	implements JsonSerializable, ArrayAccess {
-	
+
+
+
+//!Class constants
+//!— Comparisons
+	/**
+	 * Left and right equal
+	 * @type integer
+	 */
+	const COMPARISON_EQUAL = 0;
+
+	/**
+	 * Left operand smaller/lesser/earlier
+	 *
+	 * I define these seemingly duplicate constants to allow the developer
+	 * to pick values that make the most sense to him while fitting the
+	 * algorithm of the comparison.
+	 *
+	 * @type integer
+	 */
+	const COMPARISON_LEFT_LESSER = -1;
+
+	/**
+	 * Left operand larger/greater/later
+	 * @type integer
+	 */
+	const COMPARISON_LEFT_GREATER = 1;
+
+	/**
+	 * Right operand smaller/lesser/earlier
+	 * @type integer
+	 */
+	const COMPARISON_RIGHT_LESSER = 1;
+
+	/**
+	 * Right operand larger/greater/later
+	 * @type integer
+	 */
+	const COMPARISON_RIGHT_GREATER = -1;
+
+
+
+//!Static properties
 	/**
 	 * Memoized getter collection
 	 *
@@ -74,9 +125,10 @@ abstract class ELSWAK_Object
 	 * Collect all of the discovered methods segregated by class such that the result is only stored (and determined) once per class and is accessible to all instances.
 	 */
 	private static $_methods = array();
-	
-	
-	
+
+
+
+//!Instance methods
 	/**
 	 * Default the constructor to include property import.
 	 *
@@ -138,6 +190,74 @@ abstract class ELSWAK_Object
 	 */
 	public function __toString() {
 		return json_encode($this);
+	}
+
+
+
+//!Object Comparison methods
+	/**
+	 * Compare two objects
+	 *
+	 * Since this is a generic method that is intended to be overriden by
+	 * subclasses, for now we'll rely upon PHP’s built-in comparison.
+	 *
+	 * @param mixed $that
+	 * @return integer
+	 */
+	public function compare($that) {
+		if ($this == $that) {
+			return self::COMPARISON_EQUAL;
+		} elseif ($this < $that) {
+			return self::COMPARISON_LEFT_LESSER;
+		}
+		return self::COMPARISON_LEFT_GREATER;
+	}
+
+	/**
+	 * Short-cut for comparison
+	 *
+	 * Each of these short-cut methods is designed to operate within the
+	 * context of the results of the compare method. This means that
+	 * subclasses can override one method and still have these three
+	 * shortcuts as long as they maintain the same convention i.e:
+	 * - this less than that yields -1
+	 * - this equal to that yields 0
+	 * - this greater than that yields 1
+	 *
+	 * @param mixed $that
+	 * @return boolean
+	 */
+	public function isEqualTo($that) {
+		if ($this->compare($that) == self::COMPARISON_EQUAL) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Short-cut for comparison
+	 *
+	 * @param mixed $that
+	 * @return boolean
+	 */
+	public function isLessThan($that) {
+		if ($this->compare($that) == self::COMPARISON_LEFT_LESSER) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Short-cut for comparison
+	 *
+	 * @param mixed $that
+	 * @return boolean
+	 */
+	public function isGreaterThan($that) {
+		if ($this->compare($that) == self::COMPARISON_LEFT_GREATER) {
+			return true;
+		}
+		return false;
 	}
 
 
@@ -402,6 +522,7 @@ abstract class ELSWAK_Object
 
 
 
+//!Related classes
 /**
  * Provide an external vantage point for determining the visibility of methods.
  *
