@@ -122,7 +122,7 @@ class ELSWAK_Contact_Collection
 	 * @return mixed
 	 */
 	public function bestForUse($use) {
-		// first look for a value with the key
+		// look for a value with the key
 		if ($this->hasValueForKey($use)) {
 			return $this->valueForKey($use);
 		}

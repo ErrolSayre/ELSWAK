@@ -45,7 +45,7 @@ class ELSWAK_Phone_Number
 		$this->localSuffix	= '';
 		$this->extension	= '';
 		
-		// first replace letters with their number counter parts
+		// replace letters with their number counter parts
 		$number = $this->translateLettersToNumbers($number);
 		
 		// determine if the number is a 10 digit number

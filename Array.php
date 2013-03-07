@@ -701,7 +701,7 @@ class ELSWAK_Array
 	 * @return ELSWAK_Collection_Differences
 	 */
 	public function differences($compare) {
-		// first validate the comparison object is of the same type as this variable
+		// validate the comparison object is of the same type as this variable
 		if ($compare instanceof $this) {
 			$diff = new ELSWAK_Collection_Differences;
 			

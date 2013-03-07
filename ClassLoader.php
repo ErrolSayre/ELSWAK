@@ -106,7 +106,7 @@ class ELSWAK_ClassLoader {
 		return false;
 	}
 	public function locateClassFile($class) {
-		// first check the cache
+		// check the cache
 		$file = self::cachedFileForClass($class);
 		if ($file) {
 			return $file;

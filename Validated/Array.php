@@ -23,13 +23,13 @@ class ELSWAK_Validated_Array
 	 * @return ELSWAK_Array reference to this instance
 	 */
 	public function add($value, $key = null) {
-		// first validate the item (subclasses will override the method)
+		// validate the item (subclasses will override the method)
 		$value = $this->validateOrTransformItemForInclusion($value);
 		
-		// now validate the key (subclasses will override the method)
+		// validate the key (subclasses will override the method)
 		$key = $this->validateOrTransformKeyForSetting($key, true);
 		
-		// now set the value for the key
+		// set the value for the key
 		return $this->setValueForKey($value, $key);
 	}
 
@@ -41,10 +41,10 @@ class ELSWAK_Validated_Array
 	 * @return ELSWAK_Array self
 	 */
 	public function setValueForKey($value, $key) {
-		// first validate the item (subclasses will override the method)
+		// validate the item (subclasses will override the method)
 		$value = $this->validateOrTransformItemForInclusion($value);
 		
-		// now validate the key (subclasses will override the method)
+		// validate the key (subclasses will override the method)
 		$key = $this->validateOrTransformKeyForSetting($key, false);
 		
 		// actually set the value
@@ -70,7 +70,7 @@ class ELSWAK_Validated_Array
 			return $this->add($value);
 		}
 		
-		// first validate the item (subclasses will override the method)
+		// validate the item (subclasses will override the method)
 		$value = $this->validateOrTransformItemForInclusion($value);
 		
 		// since this method deals in purely numeric positions, no key validation is done
