@@ -75,6 +75,9 @@ class ELSWAK_ObjectTest
 	public function testJson(ELSWAK_ObjectTest_Person $var) {
 		$json = json_encode($var);
 		$this->assertEquals($json, json_encode($var->_export));
+		
+		$var = new ELSWAK_ObjectTest_Person(array('first' => 'James', 'last' => 'Dean'));
+		$this->assertEquals('{"last":"Dean","first":"James"}', json_encode($var));
 	}
 	/**
 	 * @depends testConstructorWithImport

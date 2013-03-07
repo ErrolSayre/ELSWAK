@@ -654,7 +654,7 @@ class ELSWAK_Array
 
 
 
-//!JsonSerializable methods
+//!JSONSerializable methods
 	/**
 	 * Provide the JSON encoder with an easy to handle array.
 	 *

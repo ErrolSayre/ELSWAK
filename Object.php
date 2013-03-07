@@ -167,13 +167,20 @@ abstract class ELSWAK_Object
 		$export = array();
 		$keys = array_keys(get_object_vars($this));
 		foreach ($keys as $property) {
-			try {
-				$export[$property] = $this->__get($property);
-			} catch (Exception $e) {}
+			if ($this->{$property} instanceof ELSWAK_Object) {
+				$export[$property] = $this->{$property}->_export();
+			} else {
+				try {
+					$export[$property] = $this->__get($property);
+				} catch (Exception $e) {}
+			}
 		}
 		return $export;
 	}
-	
+
+
+
+//!JSONSerializable methods
 	/**
 	 * Provide the JSON encoder with an easy to handle array.
 	 *
