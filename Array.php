@@ -116,7 +116,17 @@ class ELSWAK_Array
 	 * @return array
 	 */
 	public function export() {
-		return $this->store;
+		$data = array();
+		foreach ($this->store as $key => $value) {
+			if ($value instanceof ELSWAK_Object) {
+				$data[$key] = $value->_export();
+			} elseif ($value instanceof ELSWAK_Array) {
+				$data[$key] = $value->export();
+			} else {
+				$data[$key] = $value;
+			}
+		}
+		return $data;
 	}
 	/**
 	 * Empty the store
