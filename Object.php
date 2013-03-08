@@ -481,7 +481,21 @@ abstract class ELSWAK_Object
 	}
 	
 //!Magic Method assistance methods
-	
+	/**
+	 * Provide a gentle getter
+	 *
+	 * Allow the caller to ask for a real or virtual property without
+	 * complaining.
+	 *
+	 * @param string $property
+	 * @return mixed|null
+	 */
+	public function get($property) {
+		try {
+			return $this->__get($property);
+		} catch (ELSWAK_Object_Exception $e) {}
+		return null;
+	}
 	/**
 	 * Register a located method.
 	 *
