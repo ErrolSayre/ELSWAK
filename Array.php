@@ -252,8 +252,21 @@ class ELSWAK_Array
 
 
 
+	/**
+	 * Return the number of items in the array
+	 *
+	 * @return integer
+	 */
 	public function count() {
 		return count($this->store);
+	}
+	/**
+	 * Alias count
+	 *
+	 * @return integer
+	 */
+	public function length() {
+		return $this->count();
 	}
 	public function hasItems() {
 		return count($this->store) > 0;
