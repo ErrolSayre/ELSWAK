@@ -885,18 +885,20 @@ class ELSWAK_Array
 		}
 		
 		// look for the value in the labels
-		$item = strtolower($item);
-		foreach ($items as $key => $value) {
-			// compare the item as a substring to the value
-			$compare = strtolower($value);
-			if (
-				(
-					$allowSubstrings &&
-					strpos($compare, $item) !== false
-				) ||
-				$compare == $item
-			) {
-				return $returnValue? $value: $key;
+		if ($item) {
+			$item = strtolower($item);
+			foreach ($items as $key => $value) {
+				// compare the item as a substring to the value
+				$compare = strtolower($value);
+				if (
+					(
+						$allowSubstrings &&
+						strpos($compare, $item) !== false
+					) ||
+					$compare == $item
+				) {
+					return $returnValue? $value: $key;
+				}
 			}
 		}
 		return null;
