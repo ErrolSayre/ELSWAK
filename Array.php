@@ -439,6 +439,127 @@ class ELSWAK_Array
 
 
 
+	/**
+	 * Move a value from one position to another
+	 *
+	 * In order to support moving an item along with it's key, I'm
+	 * utilizing an array replacement mechanism which preserves all
+	 * non-integer keys. This means numeric string values such as ('2')
+	 * will not be preserved but non-integer numeric string values such as
+	 * '1.1' will be preserved. The integer determiniation is made by
+	 * comparing typecast values of the same type —meaning I compare the
+	 * string value of the key to the string cast integer value of the key.
+	 *
+	 * This is accomplished by creating a new array, pulling in all the
+	 * keys and values up until the $to position, placing the value to be
+	 * removed here, and then migrating values from the old store ignoring
+	 * the value at $from.
+	 *
+	 * I could do this with array_splice, but rather than deal with the
+	 * various splice points it's quicker and cleaner to me to do this
+	 * iteratively.
+	 *
+	 * @param integer $from
+	 * @param integer $to
+	 * @return ELSWAK_Array self
+	 */
+	public function move($from, $to) {
+		// only do this work if necessary
+		$count = $this->count();
+		if (
+			$from != $to &&
+			$from >= 0 &&
+			$to   >= 0 &&
+			$from <  $count &&
+			$to   <  $count
+		) {
+			// create the new store
+			$store = array();
+			// iterate over the current array by key order
+			$keys = $this->keys();
+			$index = 0;
+			// determine how to add the moved item based on its direction of travel
+			$prepend = ($from > $to);
+			while ($index < $count) {
+				if ($index != $from) {
+					if ($prepend && $index == $to) {
+						// add the item to be moved, before the item currently at this position
+						$key = $keys[$from];
+						if ((string) ((int) $key) !== (string) $key) {
+							// preserve this non-integer key
+							$store[$key] = $this->store[$key];
+						} else {
+							// assign a new numeric key to this value
+							$store[] = $this->store[$key];
+						}
+					}
+					// copy the value at this position
+					$key = $keys[$index];
+					if ((string) ((int) $key) !== (string) $key) {
+						// preserve this non-integer key
+						$store[$key] = $this->store[$key];
+					} else {
+						// assign a new numeric key to this value
+						$store[] = $this->store[$key];
+					}
+					
+					// since the item is moving down the list, add it after the current item
+					if (!$prepend && $index == $to) {
+						$key = $keys[$from];
+						if ((string) ((int) $key) !== (string) $key) {
+							// preserve this non-integer key
+							$store[$key] = $this->store[$key];
+						} else {
+							// assign a new numeric key to this value
+							$store[] = $this->store[$key];
+						}
+					}
+				}
+				++$index;
+			}
+			// overwrite the store
+			$this->store = $store;
+		}
+		return $this;
+	}
+	/**
+	 * Move the item up in the list
+	 *
+	 * For the purposes of this class "up" is considered closer to the "top
+	 * of the list" with the understanding that the list would naturally be
+	 * presented in ascending order from top to bottom on a page.
+	 *
+	 * @param integer $index
+	 * @return ELSWAK_Array self
+	 */
+	public function moveUp($index) {
+		// only perform the move if reasonable to do so
+		if ($index > 0 && $index < $this->count()) {
+			$this->move($index, $index - 1);
+		}
+		return $this;
+	}
+	/**
+	 * Move the item down in the list
+	 *
+	 * For the purposes of this class "down" is considered closer to the
+	 * "bottom of the list" with the understanding that the list would
+	 * naturally be presented in ascending order from top to bottom on a
+	 * page.
+	 *
+	 * @param integer $index
+	 * @return ELSWAK_Array self
+	 */
+	public function moveDown($index) {
+		// only perform the move if reasonable to do so
+		if ($index >= 0 && $index < $this->count() - 1) {
+			$this->move($index, $index + 1);
+		}
+		return $this;
+	}
+
+
+
 //!Queue & Stack methods
 	/**
 	 * Mirror PHP's array_shift

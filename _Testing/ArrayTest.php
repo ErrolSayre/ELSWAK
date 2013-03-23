@@ -223,6 +223,25 @@ class ELSWAK_ArrayTest
 		);
 	}
 	
+	public function testExport() {
+		$var = new ELSWAK_Array;
+		$var[0] = new ELSWAK_Array;
+		$var[0][0] = new ELSWAK_File('/var/opt/special.txt');
+		
+		$expected = array(
+			array(
+				array(
+					'path' => '/var/opt/special.txt',
+					'name' => 'special.txt',
+					'extension' => 'txt',
+					'type' => 'text/plain',
+				)
+			)
+		);
+		
+		$this->assertEquals($expected, $var->export());
+	}
+	
 	public function testItemSearch() {
 		$var = new ELSWAK_Array(array(
 			'020' => 'Spring Semester',
@@ -280,6 +299,50 @@ class ELSWAK_ArrayTest
 		$var->delete(4);
 		$this->assertEquals(5, $var->count());
 		$this->assertEquals('six', $var->last());
+	}
+	
+	public function testMove() {
+		$var = new ELSWAK_Array(array(
+			'one' => 1,
+			'two' => 2,
+			'three' => 3,
+			4,
+			5,
+		));
+		$this->assertEquals(1, $var->item(0));
+		$var->move(2, 0);
+		$this->assertEquals(5, $var->length());
+		$this->assertEquals(3, $var->item(0));
+		// ensure the key was properly retained at the new position
+		$this->assertEquals(3, $var['three']);
+		$this->assertEquals(1, $var->item(1));
+		$this->assertEquals(2, $var->item(2));
+		
+		$var->move(3, 1);
+		// assert that the moved value with a numeric key has a reset key
+		$this->assertEquals(4, $var[0]);
+		
+		// move the last item "up"
+		$var->moveUp(4);
+		$this->assertEquals(5, $var->item(3));
+		$this->assertEquals('two', $var->keyForItem(4));
+		
+		// move the first item down
+		$var->moveDown(0);
+		$this->assertEquals(4, $var->item(0));
+		
+		// move the last item down (nothing should happen
+		$expected = $var->export();
+		$var->moveDown(4);
+		$this->assertEquals($expected, $var->export());
+
+		// move the first item to the last in the most efficient manner possible
+		$expected = $var->first();
+		for ($i = 0; $i < $var->count(); ++$i) {
+			$var->moveDown($i);
+		}
+		// assert the former first item is now last
+		$this->assertEquals($expected, $var->last());
 	}
 	
 	public function testDifferences() {
