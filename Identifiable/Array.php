@@ -114,7 +114,7 @@ class ELSWAK_Identifiable_Array
 	 * @return ELSWAK_Collection_Differences
 	 */
 	public function differences($compare) {
-		// validate the comparison object is of the same type as this variable
+		// validate the comparison object is of the same type as this variable but not the same instance
 		if ($this !== $compare && $compare instanceof $this) {
 			$diff = new ELSWAK_Collection_Differences;
 			
@@ -138,13 +138,19 @@ class ELSWAK_Identifiable_Array
 					if ($item instanceof ELSWAK_Differentiable && $compareItem instanceof ELSWAK_Differentiable) {
 						// since the objects implement the ELSWAK_Differentiable interface, we can utilize the diff method
 						$itemDiff = $item->differences($compareItem);
-						if ($diff->hasDifferences) {
+						if ($itemDiff->hasDifferences) {
 							// keep the changed copy for this diff
 							$diff->changed[$compareKey] = $compareItem;
+						} elseif ($key == $compareKey) {
+							// keep the local item since it hasn't moved
+							$diff->same[$key] = $item;
 						}
 					// utilize the PHP built-in comparison (which looks at every property)
 					} elseif ($item != $compareItem) {
 						$diff->changed[$compareKey] = $compareItem;
+					} elseif ($key == $compareKey) {
+						// keep the local item since it hasn't moved
+						$diff->same[$key] = $item;
 					}
 				} else {
 					// the item does not exist in the comparison object
@@ -161,6 +167,6 @@ class ELSWAK_Identifiable_Array
 			
 			return $diff;
 		}
-		throw new ELSWAK_Array_InvalidComparison_Exception('Unable to compare objects. Comparison must be made against different objects of like types.');
+		throw new ELSWAK_Array_InvalidComparison_Exception('Unable to compare objects. Comparison must be made against distinct instances of like objects.');
 	}
 }

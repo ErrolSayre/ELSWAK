@@ -53,9 +53,44 @@ class ELSWAK_Identifiable_ArrayTest
 		$this->assertEquals(1, $diff->added->count());
 		$this->assertEquals(28, $diff->added['fourth']->id);
 		$this->assertEquals(1, $diff->removed->count());
+	}
+	/**
+	 * Test the case where an identifiable array contains further
+	 * identifiable arrays.
+	 */
+	public function testNestedComparison() {
+		$var1 = new ELSWAK_Identifiable_Array;
+		$var1->add(new ELSWAK_Identifiable_Array_DummyList);
+		$var1->item(0)->setIdentifier('List 0');
+		$var1->item(0)->add(new ELSWAK_Identifiable_Array_Dummy(array('id' => 25, 'name' => 'Twenty fifth')));
+
+		$var1->add(new ELSWAK_Identifiable_Array_DummyList);
+		$var1->item(1)->setIdentifier('List 1');
+		$var1->item(1)->add(new ELSWAK_Identifiable_Array_Dummy(array('id' => 26, 'name' => 'Twenty sixth')));
+
+		$var1->add(new ELSWAK_Identifiable_Array_DummyList);
+		$var1->item(2)->setIdentifier('List 2');
+		$var1->item(2)->add(new ELSWAK_Identifiable_Array_Dummy(array('id' => 27, 'name' => 'Twenty seventh')));
+
+		$var2 = new ELSWAK_Identifiable_Array;
+		$var2->add(new ELSWAK_Identifiable_Array_DummyList);
+		$var2->item(0)->setIdentifier('List 0');
+		$var2->item(0)->add(new ELSWAK_Identifiable_Array_Dummy(array('id' => 25, 'name' => 'Twenty fifth')));
+
+		$var2->add(new ELSWAK_Identifiable_Array_DummyList);
+		$var2->item(1)->setIdentifier('List 2');
+		$var2->item(1)->add(new ELSWAK_Identifiable_Array_Dummy(array('id' => 27, 'name' => 'Twenty Seventh')));
+
+		$var2->add(new ELSWAK_Identifiable_Array_DummyList);
+		$var2->item(2)->setIdentifier('List 3');
+		$var2->item(2)->add(new ELSWAK_Identifiable_Array_Dummy(array('id' => 28, 'name' => 'Twenty eighth')));
 		
-		// add another check for coverage
-		$var2->keyForIdentifier(26);
+		$diff = $var1->differences($var2);
+		$this->assertEquals(1, $diff->same->count());
+		$this->assertEquals(1, $diff->moved->count());
+		$this->assertEquals(1, $diff->changed->count());
+		$this->assertEquals(1, $diff->added->count());
+		$this->assertEquals(1, $diff->removed->count());
 	}
 	
 	/**
@@ -88,5 +123,18 @@ class ELSWAK_Identifiable_Array_Dummy
 
 	public function identifier() {
 		return $this->id;
+	}
+}
+class ELSWAK_Identifiable_Array_DummyList
+	extends ELSWAK_Identifiable_Array
+	implements ELSWAK_Identifiable {
+	
+	protected $identifier;
+
+	public function setIdentifier($value) {
+		$this->identifier = $value;
+	}
+	public function identifier() {
+		return $this->identifier;
 	}
 }
