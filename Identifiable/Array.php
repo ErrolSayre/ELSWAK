@@ -85,6 +85,15 @@ class ELSWAK_Identifiable_Array
 		}
 		return false;
 	}
+	/**
+	 * Locate an item's index by its identifier
+	 *
+	 * @param mixed $value
+	 * @return integer
+	 */
+	public function positionForIdentifier($value) {
+		return $this->positionForKey($this->keyForIdentifier($value));
+	}
 
 
 

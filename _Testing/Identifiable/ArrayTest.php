@@ -2,6 +2,16 @@
 class ELSWAK_Identifiable_ArrayTest
 	extends PHPUnit_Framework_TestCase {
 
+	public function testArray() {
+		$var = new ELSWAK_Identifiable_Array;
+		$var->add(new ELSWAK_Identifiable_Array_Dummy(array('id' => 25, 'name' => 'Twenty fifth')));
+		$var->set('second', new ELSWAK_Identifiable_Array_Dummy(array('id' => 26, 'name' => 'Twenty sixth')));
+		$var->add(new ELSWAK_Identifiable_Array_Dummy(array('id' => 27, 'name' => 'Twenty seventh')));
+
+		$this->assertEquals(1, $var->positionForIdentifier(26));
+		$this->assertEquals('second', $var->keyForIdentifier(26));
+		$this->assertEquals(false, $var->positionForIdentifier(28));
+	}
 	public function testComparison() {
 		$var1 = new ELSWAK_Identifiable_Array;
 		$var1->add(new ELSWAK_Identifiable_Array_Dummy(array('id' => 25, 'name' => 'Twenty fifth')));
