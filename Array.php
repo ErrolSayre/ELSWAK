@@ -286,22 +286,29 @@ class ELSWAK_Array
 	/**
 	 * Return key for a value
 	 *
+	 * The array_search call needs to be strict for arrays that contain
+	 * mixed numeric and string values as otherwise searching for 0 will
+	 * match the first string value.
+	 *
 	 * @param mixed $value
 	 * @return integer|false index
 	 */
 	public function keyForValue($value) {
-		return array_search($value, $this->store);
+		return array_search($value, $this->store, true);
 	}
 	
 	/**
 	 * Return position/item index for a value
 	 *
+	 * The array_search call needs to be strict for arrays that contain
+	 * mixed numeric and string values as otherwise searching for 0 will
+	 * match the first string value.
+	 *
 	 * @param mixed $value
 	 * @return integer|false index
 	 */
 	public function positionForValue($value) {
-		$key = array_search($value, $this->store);
-		if ($key !== false) {
+		if (($key = array_search($value, $this->store, true)) !== false) {
 			return $this->positionForKey($key);
 		}
 		return false;
@@ -310,11 +317,18 @@ class ELSWAK_Array
 	/**
 	 * Return position/item index for a key
 	 *
+	 * This method searches the array keys to determine its position which
+	 * in turn corresponds to the "item index" within this collection.
+	 *
+	 * The array_search call needs to be strict for arrays that contain
+	 * mixed integer and string keys as otherwise the string key value will
+	 * map to 0 and match the first item.
+	 *
 	 * @param mixed $key
 	 * @return integer|false index
 	 */
 	public function positionForKey($key) {
-		return array_search($key, $this->keys());
+		return array_search($key, $this->keys(), true);
 	}
 
 	/**

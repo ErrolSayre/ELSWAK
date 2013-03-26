@@ -242,6 +242,18 @@ class ELSWAK_ArrayTest
 		$this->assertEquals($expected, $var->export());
 	}
 	
+	public function testPosition() {
+		$var = new ELSWAK_Array;
+		$var->add('one');
+		$var->set('two', 'TWO');
+		$var->add('three');
+		$var->set('four', 0);
+		
+		$this->assertEquals(1, $var->positionForKey('two'));
+		$this->assertEquals(1, $var->positionForValue('TWO'));
+		$this->assertEquals(2, $var->positionForValue('three'));
+		$this->assertEquals(3, $var->positionForValue(0));
+	}
 	public function testItemSearch() {
 		$var = new ELSWAK_Array(array(
 			'020' => 'Spring Semester',
