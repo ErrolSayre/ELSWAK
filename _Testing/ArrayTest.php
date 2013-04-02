@@ -311,6 +311,10 @@ class ELSWAK_ArrayTest
 		$var->delete(4);
 		$this->assertEquals(5, $var->count());
 		$this->assertEquals('six', $var->last());
+		
+		$var->insert('First', 0);
+		$this->assertEquals(6, $var->count());
+		$this->assertEquals('First', $var->first());
 	}
 	
 	public function testMove() {
