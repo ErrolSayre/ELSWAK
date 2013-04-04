@@ -29,6 +29,8 @@ class ELSWAK_BooleanTest
 		$this->assertEquals('yes', ''.$var);
 		$var->active = 'nope';
 		$this->assertEquals('no', "$var");
+		$this->assertEquals('TRUE', ELSWAK_Boolean::booleanAsLabel(true));
+		$this->assertEquals('False', ELSWAK_Boolean::booleanAsLabel('qwer', 'True', 'False'));
 	}
 }
 class ELSWAK_BooleanTest_Dummy
