@@ -135,7 +135,7 @@ class ELSWAK_Boolean {
 	 * @param string $falseLabel
 	 * @return string
 	 */
-	public static function booleanAsLabel($value, $trueLabel = 'TRUE', $falseLabel = 'FALSE') {
+	public static function booleanAsString($value, $trueLabel = 'TRUE', $falseLabel = 'FALSE') {
 		// ensure the value has been "booleanized"
 		if (self::valueAsBoolean($value)) {
 			return $trueLabel;
