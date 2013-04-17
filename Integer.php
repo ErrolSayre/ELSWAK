@@ -49,7 +49,7 @@ class ELSWAK_Integer {
 	 * @return integer
 	 */
 	public static function integerForValue($value) {
-		return intval($value);
+		return (integer) $value;
 	}
 	/**
 	 * Alias method for alternative naming convention
