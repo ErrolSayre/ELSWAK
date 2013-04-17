@@ -29,8 +29,7 @@ class ELSWAK_Validated_Array
 		// validate the key (subclasses will override the method)
 		$key = $this->validateOrTransformKeyForSetting($key, true);
 		
-		// set the value for the key
-		return $this->setValueForKey($value, $key);
+		return $this->setValidatedValueForValidatedKey($value, $key);
 	}
 
 	/**
@@ -47,7 +46,24 @@ class ELSWAK_Validated_Array
 		// validate the key (subclasses will override the method)
 		$key = $this->validateOrTransformKeyForSetting($key, false);
 		
-		// actually set the value
+		return $this->setValidatedValueForValidatedKey($value, $key);
+	}
+
+
+
+	/**
+	 * Private setter
+	 *
+	 * Set a key/value pair after they have been properlly validated.
+	 *
+	 * This method mostly isolates this process out from the validation
+	 * process to enable more easily overriding final checks on the value.
+	 *
+	 * @param mixed $value
+	 * @param mixed $key
+	 * @return ELSWAK_Array self
+	 */
+	protected function setValidatedValueForValidatedKey($value, $key) {
 		$this->store[$key] = $value;
 		return $this;
 	}
@@ -74,12 +90,27 @@ class ELSWAK_Validated_Array
 		$value = $this->validateOrTransformItemForInclusion($value);
 		
 		// since this method deals in purely numeric positions, no key validation is done
-		
+		return $this->insertValidatedValueAtPosition($value, $index);
+	}
+
+
+
+	/**
+	 * Splice the value
+	 *
+	 * This protected method extracts the actual splicing process from the
+	 * insert method while preventing bypass.
+	 *
+	 * @param mixed $value
+	 * @param integer|false $index
+	 * @return ELSWAK_Array self
+	 */
+	protected function insertValidatedValueAtPosition($value, $index) {
 		// splice the value in at the array index
 		// wrap the value in an array to ensure an array value remains that way
 		array_splice($this->store, $index, 0, array($value));
 		return $this;
-	}
+	}	 
 
 
 
