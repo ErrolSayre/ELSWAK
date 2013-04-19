@@ -223,7 +223,10 @@ class ELSWAK_Array
 		return $this->hasValueForKey($key);
 	}
 	public function hasValueForKey($key) {
-		return array_key_exists($key, $this->store);
+		if ($key) {
+			return array_key_exists($key, $this->store);
+		}
+		return false;
 	}
 	public function remove($key) {
 		return $this->removeValueForKey($key);
