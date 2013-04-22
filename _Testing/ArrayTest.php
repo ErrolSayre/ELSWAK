@@ -11,22 +11,58 @@ class ELSWAK_ArrayTest
 	/**
 	 * @group keys
 	 */
-	public function testInvalidAndOtherKeys() {
+	public function testConvertedKeys() {
 		$var = new ELSWAK_Array;
 		$keys = array(
 			null,
-			true,
-			false,
 			'',
 			0,
-			0.0,
-			new stdClass,
-			array(),
 			'0100',
 		);
 		foreach ($keys as $key) {
+			var_dump($key);
 			$this->assertFalse($var->hasValueForKey($key));
 		}
+	}
+	/**
+	 * @group keys
+     * @expectedException PHPUnit_Framework_Error_Warning
+	 */
+	public function testInvalidKeyTrue() {
+		$var = new ELSWAK_Array;
+		$this->assertFalse($var->hasValueForKey(true));
+	}
+	/**
+	 * @group keys
+     * @expectedException PHPUnit_Framework_Error_Warning
+	 */
+	public function testInvalidKeyFalse() {
+		$var = new ELSWAK_Array;
+		$this->assertFalse($var->hasValueForKey(false));
+	}
+	/**
+	 * @group keys
+     * @expectedException PHPUnit_Framework_Error_Warning
+	 */
+	public function testInvalidKeyDouble() {
+		$var = new ELSWAK_Array;
+		$this->assertFalse($var->hasValueForKey(2.25));
+	}
+	/**
+	 * @group keys
+     * @expectedException PHPUnit_Framework_Error_Warning
+	 */
+	public function testInvalidKeyObject() {
+		$var = new ELSWAK_Array;
+		$this->assertFalse($var->hasValueForKey(new stdClass));
+	}
+	/**
+	 * @group keys
+     * @expectedException PHPUnit_Framework_Error_Warning
+	 */
+	public function testInvalidKeyArray() {
+		$var = new ELSWAK_Array;
+		$this->assertFalse($var->hasValueForKey(array('123')));
 	}
 	
 	public function testImport() {
