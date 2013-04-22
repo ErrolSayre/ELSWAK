@@ -11,7 +11,7 @@ class ELSWAK_ArrayTest
 	/**
 	 * @group keys
 	 */
-	public function testInvalidKeys() {
+	public function testInvalidAndOtherKeys() {
 		$var = new ELSWAK_Array;
 		$keys = array(
 			null,
@@ -22,6 +22,7 @@ class ELSWAK_ArrayTest
 			0.0,
 			new stdClass,
 			array(),
+			'0100',
 		);
 		foreach ($keys as $key) {
 			$this->assertFalse($var->hasValueForKey($key));
@@ -285,6 +286,9 @@ class ELSWAK_ArrayTest
 		$this->assertNull($var->parseItem(200));
 	}
 	
+	/**
+	 * @group pushpops
+	 */
 	public function testPushPops() {
 		$var = new ELSWAK_Array;
 		$this->assertEmpty($var->item(1));
