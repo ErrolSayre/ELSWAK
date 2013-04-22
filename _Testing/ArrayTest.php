@@ -8,6 +8,26 @@ class ELSWAK_ArrayTest
 		return $var;
 	}
 	
+	/**
+	 * @group keys
+	 */
+	public function testInvalidKeys() {
+		$var = new ELSWAK_Array;
+		$keys = array(
+			null,
+			true,
+			false,
+			'',
+			0,
+			0.0,
+			new stdClass,
+			array(),
+		);
+		foreach ($keys as $key) {
+			$this->assertFalse($var->hasValueForKey($key));
+		}
+	}
+	
 	public function testImport() {
 		$var = new ELSWAK_Array(array('name' => 'Bertram'));
 		$this->assertEquals('Bertram', $var->valueForKey('name'));

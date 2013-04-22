@@ -222,11 +222,28 @@ class ELSWAK_Array
 	public function has($key) {
 		return $this->hasValueForKey($key);
 	}
+	/**
+	 * Determine if a key is set
+	 *
+	 * This method mirrors (and utilizes) the array_key_exists function. In
+	 * order to replicate the functionality of that method while removing
+	 * warnings from the system, we'll utilize a few quick checks to avoid
+	 * passing inappropriate parameters.
+	 */
 	public function hasValueForKey($key) {
-		if ($key) {
-			return array_key_exists($key, $this->store);
+		if (is_bool($key) || is_numeric($key)) {
+			$key = (integer) $key;
 		}
-		return false;
+		elseif (is_object($key)) {
+			if (method_exists($key, '__toString')) {
+				$key = (string) $key;
+			} else {
+				return false;
+			}
+		} elseif (is_array($key)) {
+			return false;
+		}
+		return array_key_exists($key, $this->store);
 	}
 	public function remove($key) {
 		return $this->removeValueForKey($key);
