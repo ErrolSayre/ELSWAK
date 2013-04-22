@@ -20,7 +20,6 @@ class ELSWAK_ArrayTest
 			'0100',
 		);
 		foreach ($keys as $key) {
-			var_dump($key);
 			$this->assertFalse($var->hasValueForKey($key));
 		}
 	}
