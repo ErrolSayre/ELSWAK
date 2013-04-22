@@ -824,7 +824,7 @@ class ELSWAK_Array
 
 	/**
 	 * Get a property via array notation.
-	 * @return mixed
+	 * @return mixed|null
 	 */
 	public function offsetGet($offset) {
 		return $this->valueForKey($offset);
