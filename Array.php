@@ -92,6 +92,28 @@ class ELSWAK_Array
 	 * @type string
 	 */
 
+
+
+//!Instance metadata
+	/**
+	 * Provide a collection of metadata
+	 *
+	 * This property provides a method for external entities to specify
+	 * metadata for a collection such as marking the collection as complete
+	 * or incomplete, or storing the timestamp it was populated.
+	 *
+	 * Currently the collection does no work to determine any of this
+	 * metadata, however I may at a later date implement some automatic
+	 * items. Despite this, it is trivial for a subclass to modify this to
+	 * do so now. One possible item is a "clean/dirty" state, another would
+	 * be a modification timestamp.
+	 *
+	 * @type array
+	 */
+	 protected $metadata = array();
+
+
+
 	/**
 	 * Construct a new array object
 	 * @param array $data the array to wrap
@@ -901,6 +923,39 @@ class ELSWAK_Array
 			return $diff;
 		}
 		throw new ELSWAK_Array_InvalidComparison_Exception('Unable to compare objects. Comparison must be made against like types.');
+	}
+
+
+
+//!Metadata
+	public function metadata() {
+		return $this->metadata;
+	}
+	/**
+	 * Provide a combined shortcut accessor
+	 *
+	 * This method can both get and set values depending upon the supplied
+	 * parameters. Since a non-existent key will return a null value, it is
+	 * relatively safe to utilize this as the flag to indicate behaving as
+	 * a getter. This does has the side-effect that if someone wanted the
+	 * null value to actually be set within the internal storage, they
+	 * would need to utilize the setMetadataForKey method.
+	 */
+	public function md($key, $value = null) {
+		if ($value !== null) {
+			return $this->setMetadataForKey($value, $key);
+		}
+		return $this->metadataForKey($key);
+	}
+	public function metadataForKey($key) {
+		if (array_key_exists($key, $this->metadata())) {
+			return $this->metadata[$key];
+		}
+		return null;
+	}
+	public function setMetadataForKey($value, $key) {
+		$this->metadata[$key] = $value;
+		return $this;
 	}
 
 

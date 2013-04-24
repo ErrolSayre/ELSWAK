@@ -9,6 +9,22 @@ class ELSWAK_ArrayTest
 	}
 	
 	/**
+	 * @group metadata
+	 */
+	public function testMetadata() {
+		$var = new ELSWAK_Array;
+		$tests = array(
+			'empty' => null,
+			 'true' => true,
+			'false' => false,
+		);
+		foreach ($tests as $key => $value) {
+			$var->md($key, $value);
+			$this->assertEquals($value, $var->md($key));
+		}
+	}
+	
+	/**
 	 * @group keys
 	 */
 	public function testConvertedKeys() {
