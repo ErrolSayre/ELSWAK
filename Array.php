@@ -70,21 +70,26 @@ if (!interface_exists('JsonSerializable')) {
 class ELSWAK_Array
 	implements JsonSerializable, ArrayAccess, Iterator, ELSWAK_Differentiable {
 
+
+
+//!Class memos
 	/**
 	 * Protected array used to store the contents.
-	 * @var array
+	 * @type array
 	 */
 	protected $store;
+
+
 
 //!Private Properties
 	/**
 	 * Position marker for use with iteration.
-	 * @var int
+	 * @type int
 	 */
 	private $_position;
 	/**
 	 * Prefix used for creating unique keys
-	 * @var string
+	 * @type string
 	 */
 
 	/**
