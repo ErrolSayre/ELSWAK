@@ -25,12 +25,26 @@ class ELSWAK_Logger
 	protected $messages;
 	protected $typeDisplaySettings;
 	protected $flushImmediately;
+	protected $includeStats;
+	protected $dateCreated;
+	protected $startTime;
 	
-	public function __construct($displayErrors = false, $displayMessages = false, $flushImmediately = true) {
+	public function __construct($displayErrors = false, $displayMessages = false, $flushImmediately = true, $includeStats = true) {
+		// set some statistics properties
+		$this->startTime = microtime(true);
+		$this->dateCreated = new DateTime;
+		
+		// set the normal properties
 		$this->messages = new ELSWAK_Array;
 		$this->setMessageTypeDisplay('Message', $displayMessages);
 		$this->setMessageTypeDisplay('Error', $displayErrors);
 		$this->setFlushImmediately($flushImmediately);
+		$this->setIncludeStats($includeStats);
+		
+		if ($this->includeStats) {
+			// add a message about starting
+			$this->addMessageOfType('Logger starting at '.$this->dateCreated('h:i:s a l, F j, Y').'.', 'Message');
+		}
 	}
 
 
@@ -120,6 +134,13 @@ class ELSWAK_Logger
 	 * @return ELSWAK_Logger self
 	 */
 	public function flush() {
+		if ($this->includeStats) {
+			// add a message about the flush
+			$time = microtime(true) - $this->startTime;
+			$now = new DateTime;
+			$this->addMessageOfType('Flushing at '.$now->format('h:i:s a').' — '.round($time, 2).'s from start.', 'Message');
+		}
+		
 		$messages = $this->messages->store();
 		foreach ($messages as $key => $message) {
 			// determine if this type of message should be shown
@@ -146,6 +167,10 @@ class ELSWAK_Logger
 	}
 	public function setFlushImmediately($value = true) {
 		$this->flushImmediately = ELSWAK_Boolean::valueAsBoolean($value);
+		return $this;
+	}
+	public function setIncludeStats($value = true) {
+		$this->includeStats = ELSWAK_Boolean::valueAsBoolean($value);
 		return $this;
 	}
 

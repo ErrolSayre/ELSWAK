@@ -13,7 +13,7 @@ class ELSWAK_LoggerTest
 		}
 		//error_log('Temporarily redirecting errors to '.$log);
 		ini_set('error_log', $log);
-		$logger = new ELSWAK_Logger(true);
+		$logger = new ELSWAK_Logger(true, false, true, false);
 		$logger->message('A message.');
 		
 		// assert that there is one message
