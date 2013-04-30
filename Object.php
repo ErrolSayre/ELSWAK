@@ -54,7 +54,7 @@ if (!interface_exists('JsonSerializable')) {
  * @package ELSWAK
  */
 abstract class ELSWAK_Object
-	implements JsonSerializable, ArrayAccess {
+	implements JsonSerializable, ArrayAccess, ELSWAK_Gettable {
 
 
 
@@ -313,9 +313,27 @@ abstract class ELSWAK_Object
 		return null;
 	}
 
-	
-	
-	
+
+
+//!Gettable — Instance methods
+	/**
+	 * Provide a gentle getter
+	 *
+	 * Allow the caller to ask for a real or virtual property without
+	 * complaining.
+	 *
+	 * @param string $property
+	 * @return mixed|null
+	 */
+	public function get($property) {
+		try {
+			return $this->__get($property);
+		} catch (ELSWAK_Object_Exception $e) {}
+		return null;
+	}
+
+
+
 //!Magic Method Default Getter/Setter methods
 	/**
 	 * Utilize the __set "magic" method to provide all properties a default setter.
@@ -480,21 +498,6 @@ abstract class ELSWAK_Object
 	}
 	
 //!Magic Method assistance methods
-	/**
-	 * Provide a gentle getter
-	 *
-	 * Allow the caller to ask for a real or virtual property without
-	 * complaining.
-	 *
-	 * @param string $property
-	 * @return mixed|null
-	 */
-	public function get($property) {
-		try {
-			return $this->__get($property);
-		} catch (ELSWAK_Object_Exception $e) {}
-		return null;
-	}
 	/**
 	 * Register a located method.
 	 *

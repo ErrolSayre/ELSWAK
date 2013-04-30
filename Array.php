@@ -68,7 +68,7 @@ if (!interface_exists('JsonSerializable')) {
  * @package ELSWAK\Collections
  */
 class ELSWAK_Array
-	implements JsonSerializable, ArrayAccess, Iterator, ELSWAK_Differentiable {
+	implements JsonSerializable, ArrayAccess, Iterator, ELSWAK_Differentiable, ELSWAK_Gettable {
 
 
 
