@@ -170,9 +170,8 @@ abstract class ELSWAK_Object
 			if ($this->{$property} instanceof ELSWAK_Object) {
 				$export[$property] = $this->{$property}->_export();
 			} else {
-				try {
-					$export[$property] = $this->__get($property);
-				} catch (Exception $e) {}
+				// avoid the use of getters to prevent lazy-inits, which can cause infinite recursion
+				$export[$property] = $this->$property;
 			}
 		}
 		return $export;
