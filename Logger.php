@@ -43,7 +43,7 @@ class ELSWAK_Logger
 		
 		if ($this->includeStats) {
 			// add a message about starting
-			$this->addMessageOfType('Logger starting at '.$this->dateCreated('h:i:s a l, F j, Y').'.', 'Message');
+			$this->addMessageOfType('Logger starting at '.$this->dateCreated->format('h:i:s a l, F j, Y').'.', 'Message');
 		}
 	}
 
