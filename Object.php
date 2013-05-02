@@ -188,6 +188,9 @@ abstract class ELSWAK_Object
 	public function jsonSerialize() {
 		return $this->_export();
 	}
+	public function toJSON() {
+		return json_encode($this->jsonSerialize());
+	}
 	
 	/**
 	 * Default to JSON representation like Objective-C's describe method.
