@@ -56,6 +56,9 @@ class ELSWAK_HTTP_Response {
 			if (!($value instanceof ELSWAK_HTTP_URL)) {
 				$value = ELSWAK_URI_Factory::applicationURLFromServerGlobal();
 			}
+			if (!($value instanceof ELSWAK_HTTP_URL)) {
+				$value = new ELSWAK_HTTP_URL;
+			}
 		}
 		if ($value instanceof ELSWAK_HTTP_URL) {
 			$this->baseURL = $value;
@@ -68,13 +71,10 @@ class ELSWAK_HTTP_Response {
 	 * Clone the baseURL before handing it off to prevent unintended
 	 * mangling.
 	 *
-	 * @return ELSWAK_HTTP_URL|null
+	 * @return ELSWAK_HTTP_URL
 	 */
 	public function baseURL() {
-		if ($this->baseURL instanceof ELSWAK_HTTP_URL) {
-			return clone $this->baseURL;
-		}
-		return null;
+		return clone $this->baseURL;
 	}
 
 
