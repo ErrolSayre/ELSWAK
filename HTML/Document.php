@@ -115,7 +115,7 @@ class ELSWAK_HTML_Document
 	public function addContent($content, $key = null, $type = null) {
 		// append content to the body or set/overwrite the value of a given key if provided
 		if ($key !== null)
-			return $this->setContentForKey($key, $content, $type);
+			return $this->setContentForKey($content, $key, $type);
 		else
 			$this->contentNode->appendChild($this->importContent($content, $key, $type));
 		return $this;
@@ -127,7 +127,7 @@ class ELSWAK_HTML_Document
 		// prepend content to the body
 		$this->contentNode->insertBefore($this->importContent($content, null, $type), $this->contentNode->firstChild);
 	}
-	public function setContentForKey($key, $content, $type = null) {
+	public function setContentForKey($content, $key, $type = null) {
 		// overwrite content matching the given key
 		$element = $this->locateElementById($key);
 		if ($element instanceof DOMElement)

@@ -43,9 +43,9 @@ class ELSWAK_HTML_Response
 		$this->body->addContent($content, $key, $type);
 		return $this;
 	}
-	public function setContentForKey($key, $content, $type = null) {
+	public function setContentForKey($content, $key, $type = null) {
 		// pass the call on to the document object
-		$this->body->setContentForKey($key, $content, $type);
+		$this->body->setContentForKey($content, $key, $type);
 		return $this;
 	}
 	public function sendCustomHeaders() {
