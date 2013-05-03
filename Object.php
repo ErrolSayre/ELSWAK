@@ -170,8 +170,22 @@ abstract class ELSWAK_Object
 			if ($this->{$property} instanceof ELSWAK_Object) {
 				$export[$property] = $this->{$property}->_export();
 			} else {
-				// avoid the use of getters to prevent lazy-inits, which can cause infinite recursion
-				$export[$property] = $this->$property;
+				// avoid the use of lazy-inits, which can cause infinite recursion
+				$initial = $this->{$property};
+				try {
+					$value = $this->__get($property);
+					// determine if the value is an object and was initially null
+					if (is_object($value) && !$initial) {
+						// this is most likely a lazy-init, omit it from the export and restore the initial value
+						$this->{$property} = $initial;
+					}
+					else {
+						// include the value
+						$export[$property] = $value;
+					}
+				} catch (Exception $e) {
+					// the property should not be included in the export
+				}
 			}
 		}
 		return $export;

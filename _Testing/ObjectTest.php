@@ -75,9 +75,16 @@ class ELSWAK_ObjectTest
 	public function testJson(ELSWAK_ObjectTest_Person $var) {
 		$json = json_encode($var);
 		$this->assertEquals($json, json_encode($var->_export));
-		
+
+		// age and ssn are protected and should not be exported
+		// mother is a lazy-init property and should not be exported until actually used
 		$var = new ELSWAK_ObjectTest_Person(array('first' => 'James', 'last' => 'Dean'));
-		$this->assertEquals('{"last":"Dean","first":"James","age":null,"ssn":null}', json_encode($var));
+		$this->assertEquals('{"last":"Dean","first":"James"}', json_encode($var));
+		
+		// now set the mother's name and check the export again
+		$var->mother->first = 'Judy';
+		$var->mother->last  = 'Dench';
+		$this->assertEquals('{"last":"Dean","first":"James","mother":{"last":"Dench","first":"Judy"}}', json_encode($var));
 	}
 	/**
 	 * @depends testConstructorWithImport
@@ -126,6 +133,7 @@ class ELSWAK_ObjectTest_Person
 	protected $first;
 	protected $age;
 	protected $ssn;
+	protected $mother;
 	
 	private $_viewCount;
 	
@@ -144,6 +152,20 @@ class ELSWAK_ObjectTest_Person
 	}
 	protected function age() {
 		return null;
+	}
+
+
+
+	public function setMother(ELSWAK_ObjectTest_Person $person) {
+		$this->mother = $person;
+		return $this;
+	}
+	// lazy init the mother
+	public function mother() {
+		if (!$this->mother) {
+			$this->setMother(new ELSWAK_ObjectTest_Person);
+		}
+		return $this->mother;
 	}
 	
 	public function getDescription() {
