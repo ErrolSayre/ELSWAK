@@ -673,6 +673,12 @@ class ELSWAK_Array
 		}
 		return '';
 	}
+	public function join($conjunction = false, $useOxfordComma = true, $separator = ',') {
+		return ELSWAK_Array_Utilities::joinWithOptions($this->store, $conjunction, $useOxfordComma, $separator);
+	}
+	public function joinToEnglishListing($conjunction = 'and', $useOxfordComma = true, $separator = ',') {
+		return ELSWAK_Array_Utilities::joinWithOptions($this->store, $conjunction, $useOxfordComma, $separator);
+	}
 	public function __toString() {
 		return json_encode($this->store, JSON_PRETTY_PRINT);
 	}
