@@ -6,6 +6,8 @@
 	
 	This class is inspired by Zend Framework's loader, and Anthony Bush's autoloader. I needed to write one that works with either due to the fact that my code follows the Zend Framework naming convention.
 */
+require_once 'StandardConstants.php';
+
 class ELSWAK_ClassLoader {
 	protected $classPaths = array();
 	protected $cacheFilePath = '';
