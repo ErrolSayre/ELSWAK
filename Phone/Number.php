@@ -22,21 +22,6 @@ class ELSWAK_Phone_Number
 	public function __construct($number = null) {
 		$this->setNumber($number);
 	}
-	public function number() {
-		$number = '';
-		if ($this->countryCode != '')
-			$number = $this->countryCode.' ';
-		if ($this->areaCode != '')
-			$number .= '('.$this->areaCode.') ';
-		if ($this->localPrefix != '')
-			$number .= $this->localPrefix.'-';
-		if ($this->localSuffix != '')
-			$number .= $this->localSuffix;
-		if ($this->extension != '')
-			$number .= ' '.$this->extension;
-		
-		return $number;
-	}
 	public function setNumber($number) {
 		// reset the number blank
 		$this->countryCode	= '';
@@ -82,6 +67,39 @@ class ELSWAK_Phone_Number
 		}
 		return $this;
 	}
+	public function number() {
+		$number = '';
+		if ($this->countryCode)
+			$number = $this->countryCode.' ';
+		if ($this->areaCode)
+			$number .= '('.$this->areaCode.') ';
+		if ($this->localPrefix)
+			$number .= $this->localPrefix.'-';
+		if ($this->localSuffix)
+			$number .= $this->localSuffix;
+		if ($this->extension)
+			$number .= ' '.$this->extension;
+		
+		return $number;
+	}
+	public function url() {
+		$string = '';
+		if ($this->countryCode)
+			$number = $this->countryCode;
+		if ($this->areaCode)
+			$number .= $this->areaCode;
+		if ($this->localPrefix)
+			$number .= $this->localPrefix;
+		if ($this->localSuffix)
+			$number .= $this->localSuffix;
+		if ($this->extension)
+			$number .= ';postd=pp'.$this->extension;
+		
+		return $number;
+	}
+
+
+
 	public static function translateLettersToNumbers($phoneNumber) {
 		return preg_replace('/[AaBbCc]/', 2, preg_replace('/[DdEeFf]/', 3, preg_replace('/[GgHhIi]/', 4, preg_replace('/[JjKkLl]/', 5, preg_replace('/[MmNnOo]/', 6, preg_replace('/[PpQqRrSs]/', 7, preg_replace('/[TtUuVv]/', 8, preg_replace('/[WwXxYyZz]/', 9, preg_replace('/\s/', '', $phoneNumber)))))))));
 	}
