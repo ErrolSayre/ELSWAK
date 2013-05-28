@@ -170,11 +170,14 @@ class ELSWAK_Postal_Address
 	public function cityStateZipLine() {
 		if ( $this->city && $this->state && $this->postal ) {
 			return $this->city.', '.$this->state.' '.$this->postal;
-		} else if ( $this->city && $this->postal ) {
+		}
+		elseif ( $this->city && $this->postal ) {
 			return $this->city.' '.$this->postal;
-		} else if ( $this->city && $this->state ) {
+		}
+		elseif ( $this->city && $this->state ) {
 			return $this->city.', '.$this->state;
-		} else if ( $this->city ) {
+		}
+		elseif ( $this->city ) {
 			return $this->city;
 		}
 		return '';
