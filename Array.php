@@ -741,6 +741,22 @@ class ELSWAK_Array
 	public function key() {
 		return $this->keyForItem($this->_position);
 	}
+
+
+
+	/**
+	 * Move the internal pointer to the next item
+	 *
+	 * The Iterator documentation specifies that any return value is
+	 * ignored. Accordingly, we'll return $this in order to allow chaining
+	 * e.g.
+	 *     $var->next()->next();
+	 *
+	 * There are also situations where one would want to get the next item
+	 * so this class provides several variations of these methods.
+	 *
+	 * @return self
+	 */
 	public function next() {
 		++$this->_position;
 		return $this;
@@ -754,6 +770,17 @@ class ELSWAK_Array
 
 //!Iterator-like methods
 	/**
+	 * Move to and get next item
+	 *
+	 * Extending the Iterator interface, this shortcut moves to the next
+	 * item and returns it directly.
+	 *
+	 * @return mixed
+	 */
+	public function nextItem() {
+		return $this->next()->current();
+	}
+	/**
 	 * Move backward
 	 *
 	 * This isn't an iterator method, but it fits here nicely
@@ -763,6 +790,14 @@ class ELSWAK_Array
 	public function previous() {
 		--$this->_position;
 		return $this;
+	}
+	/**
+	 * Move to and get previous item
+	 *
+	 * @return mixed
+	 */
+	public function previousItem() {
+		return $this->previous()->current();
 	}
 	/**
 	 * Skip to a position

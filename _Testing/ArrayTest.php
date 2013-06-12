@@ -193,6 +193,9 @@ class ELSWAK_ArrayTest
 			->add('three')
 			->add('four');
 		
+		$this->assertEquals('three', $var->next()->nextItem());
+		$this->assertEquals('two', $var->previousItem());
+		
 		$item = $var
 			->rewind()
 			->next()
