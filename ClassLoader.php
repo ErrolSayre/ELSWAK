@@ -87,9 +87,25 @@ class ELSWAK_ClassLoader {
 			$this->newFiles = $hasNewFiles;
 		}
 	}
+
+
+
+	/**
+	 * Add a path to search for classes
+	 *
+	 * Ensure paths are unique to prevent duplicate calls to the
+	 * file-system.
+	 *
+	 * @param string $path
+	 * @return ELSWAK_ClassLoader self
+	 */
 	public function addClassPath($path) {
+		// trim any trailing slash
+		$path = rtrim($path, '/');
 		if (is_dir($path)) {
-			$this->classPaths[] = rtrim($path, '/');
+			if (!in_array($path, $this->classPaths)) {
+				$this->classPaths[] = $path;
+			}
 		}
 		return $this;
 	}

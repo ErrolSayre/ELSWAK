@@ -63,12 +63,21 @@ class ELSWAK_ClassLoaderTest
 	}
 	
 	public function testConstructorWithArrayOfPaths() {
+		// duplicate a path to test that the loader is keeping only unique items
 		$paths = array(
 			dirname(__FILE__),
-			dirname(dirname(__FILE__))
+			dirname(dirname(__FILE__)),
+			dirname(__FILE__),
 		);
 
 		$var = new ELSWAK_ClassLoader(null, $paths, false, false);
+		
+		// assert that the duplicate is removed
+		$this->assertNotEquals($paths, $var->classPaths());
+		$this->assertEquals(2, count($var->classPaths()));
+		
+		// remove the duplicate and test again
+		array_pop($paths);
 		$this->assertEquals($paths, $var->classPaths());
 	}
 	
