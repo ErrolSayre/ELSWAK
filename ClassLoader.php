@@ -1,20 +1,44 @@
 <?php
-/*
-	ELSWAK Class Loader
-	
-	This class provides a file-system cached class autoloader.
-	
-	This class is inspired by Zend Framework's loader, and Anthony Bush's autoloader. I needed to write one that works with either due to the fact that my code follows the Zend Framework naming convention.
-*/
+/**
+ * ELSWAK Class Loader
+ *
+ * This class provides a file-system cached class autoloader.
+ *
+ * This class is inspired by Zend Framework's loader, and Anthony Bush's
+ * autoloader. I needed to write one that works with either due to the
+ * fact that my code follows the Zend Framework naming convention.
+ */
+
+//!Required Files
 require_once 'StandardConstants.php';
 
 class ELSWAK_ClassLoader {
+
+
+
+	/**
+	 * Paths to search for class files
+	 *
+	 * Although, ideally this property would be a Value Set to ensure
+	 * uniqueness, doing so would require undo hard-coded require
+	 * statements to ensure all the require classes were present.
+	 * Accordingly, this class makes use of an array and uniqueness checks
+	 * within the addClassPath method.
+	 *
+	 * @type array
+	 */
 	protected $classPaths = array();
+
 	protected $cacheFilePath = '';
+
 	protected $classFileIndex = array();
+
 	protected $newFiles = false;
-	
+
+
+
 	public function __construct($cachePath = null, $classPaths = null, $includeIncludePaths = false, $autoRegister = true) {
+		// setup the class paths
 		if (is_array($classPaths)) {
 			foreach ($classPaths as $path) {
 				$this->addClassPath($path);
