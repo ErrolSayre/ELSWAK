@@ -139,7 +139,7 @@ class ELSWAK_ClassLoader {
 	public function loadClass($class) {
 		// ensure we don't attempt to load the same class again (if called manually)
 		if (!class_exists($class, false)) {
-			$file = self::locateClassFile($class);
+			$file = $this->locateClassFile($class);
 			if ($file && file_exists($file)) {
 				include $file;
 				return true;
@@ -149,7 +149,7 @@ class ELSWAK_ClassLoader {
 	}
 	public function locateClassFile($class) {
 		// check the cache
-		$file = self::cachedFileForClass($class);
+		$file = $this->cachedFileForClass($class);
 		if ($file) {
 			return $file;
 		} else {
