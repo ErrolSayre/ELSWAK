@@ -679,8 +679,8 @@ class ELSWAK_Array
 	public function joinToEnglishListing($conjunction = 'and', $useOxfordComma = true, $separator = ',') {
 		return ELSWAK_Array_Utilities::joinWithOptions($this->store, $conjunction, $useOxfordComma, $separator);
 	}
-	public function httpQueryString($prefix = '', $separator = '&', $encoding = PHP_QUERY_RFC1738) {
-		return http_build_query($this->store, $prefix, $separator, $encoding);
+	public function httpQueryString($prefix = '', $separator = '&') {
+		return http_build_query($this->store, $prefix, $separator);
 	}
 	public function __toString() {
 		return json_encode($this->store, JSON_PRETTY_PRINT);
