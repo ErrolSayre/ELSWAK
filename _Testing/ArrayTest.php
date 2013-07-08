@@ -234,6 +234,7 @@ class ELSWAK_ArrayTest
 	public function testToString(ELSWAK_Array $var) {
 		$this->assertEquals(json_encode($var, JSON_PRETTY_PRINT), $var);
 		$this->assertEquals('Bertram, Some content that doesn’t have a key', $var->formattedList());
+		$this->assertEquals('name=Bertram&0=Some+content+that+doesn%E2%80%99t+have+a+key', $var->httpQueryString());
 		$var = new ELSWAK_Array;
 		$this->assertEmpty($var->formattedList());
 	}
