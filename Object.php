@@ -169,7 +169,11 @@ abstract class ELSWAK_Object
 		foreach ($keys as $property) {
 			if ($this->{$property} instanceof ELSWAK_Object) {
 				$export[$property] = $this->{$property}->_export();
-			} else {
+			}
+			elseif ($this->{$property} instanceof ELSWAK_Array) {
+				$export[$property] = $this->{$property}->export();
+			}
+			else {
 				// avoid the use of lazy-inits, which can cause infinite recursion
 				$initial = $this->{$property};
 				try {
@@ -183,7 +187,8 @@ abstract class ELSWAK_Object
 						// include the value
 						$export[$property] = $value;
 					}
-				} catch (Exception $e) {
+				}
+				catch (Exception $e) {
 					// the property should not be included in the export
 				}
 			}
