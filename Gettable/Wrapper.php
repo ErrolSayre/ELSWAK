@@ -1,9 +1,17 @@
 <?php
+//!Functionality Stubs
+// Place a stub for backward compatibility with PHP < 5.4.0
+if (!interface_exists('JsonSerializable')) {
+	require_once 'JsonSerializeableInterface.php';
+}
+
+
+
 /**
  * Wrap a value in a gettable object
  */
 class ELSWAK_Gettable_Wrapper
-	implements ELSWAK_Gettable {
+	implements ELSWAK_Gettable, JsonSerializable {
 
 	protected $value;
 	
@@ -23,6 +31,21 @@ class ELSWAK_Gettable_Wrapper
 	}
 	public function get($property = null) {
 		return $this->value;
+	}
+
+
+
+//!JSONSerializable methods
+	/**
+	 * Provide the JSON encoder with an easy to handle array.
+	 *
+	 * @return array
+	 */
+	public function jsonSerialize() {
+		return $this->value;
+	}
+	public function toJSON() {
+		return json_encode($this->jsonSerialize());
 	}
 	public function __toString() {
 		return $this->value;
