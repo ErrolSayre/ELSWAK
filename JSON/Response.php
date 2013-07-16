@@ -33,48 +33,54 @@ class ELSWAK_JSON_Response
 
 
 
+	/**
+	 * Filter content
+	 *
+	 * Whereas before this method ensured that the locally stored
+	 * representation was pre-encoded JSON strings, we now want to keep
+	 * references opting to do the JSON encoding when sending the content.
+	 * To ensure backward compatibility, we'll inverse this method to now
+	 * make sure items are decoded if possible.
+	 */
 	protected function filterContentByType($content, $type) {
 		// determine if the content is a string
 		if (is_string($content) && strtolower($type) == 'json') {
 			// determine if the content is valid JSON
-			if (json_decode($content, true) !== null) {
-				return $content;
+			if (($value = json_decode($content, true)) !== null) {
+				return $value;
 			}
 		}
-		// since the content is not an acceptable JSON string, encode it
-		return json_encode($content, $this->jsonEncodeOptions);
+		// since the content is not an acceptable JSON string, encode it at output
+		return $content;
 	}
 	public function content() {
-		// construct the json representation of this response
-		$json = '';
-		$json .= '"status":"'.$this->status.'",';
-		if (count($this->messages))
-			$json .= '"messages":'.json_encode($this->messages, $this->jsonEncodeOptions).',';
-		else
-			$json .= '"messages":null,';
+		$content = array(
+			  'status' => $this->status,
+			'messages' => null,
+			    'body' => null,
+		);
+		
+		if (count($this->messages)) {
+			$content['messages'] = $this->messages;
+		}
+		
 		if (count($this->body)) {
-			$body = '';
+			$body    = array();
 			$unnamed = array();
+			
 			foreach ($this->body as $key => $value) {
 				if (is_integer($key)) {
 					$unnamed[] = $value;
 				} else {
-					$body .= '"'.$key.'":'.$value.',';
+					$body[$key] = $value;
 				}
 			}
-			if (count($unnamed) > 0) {
-				$body .= '"unnamed":[';
-				foreach ($unnamed as $value) {
-					$body .= $value.',';
-				}
-				$body .= '],';
+			if (count($unnamed)) {
+				$body['unnamed'] = $unnamed;
 			}
-			$json .= '"body":{'.substr($body, 0, -1).'}';
-		} else {
-			$json .= '"body":null';
+			$content['body'] = $body;
 		}
-		// return the finished json
-		return '{'.$json.'}';
+		return json_encode($content, $this->jsonEncodeOptions);
 	}
 	public function sendCustomHeaders() {
 		// override this method since the custom headers are included in the JSON response
