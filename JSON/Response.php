@@ -16,7 +16,9 @@ class ELSWAK_JSON_Response
 	public function __construct(array $content = null, $prettyJson = false) {
 		$this->setContentType('application/json');
 		$this->setStatus('OK');
-		$this->setBody($content);
+		if ($content) {
+			$this->setBody($content);
+		}
 		$this->setPrettyJSON($prettyJson);
 	}
 
