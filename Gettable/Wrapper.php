@@ -44,9 +44,6 @@ class ELSWAK_Gettable_Wrapper
 	public function jsonSerialize() {
 		return $this->value;
 	}
-	public function toJSON() {
-		return json_encode($this->jsonSerialize());
-	}
 	public function __toString() {
 		return $this->value;
 	}
