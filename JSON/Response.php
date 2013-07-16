@@ -14,7 +14,7 @@ class ELSWAK_JSON_Response
 
 
 	public function __construct($prettyJson = false) {
-		$this->setContentType('text/javascript');
+		$this->setContentType('application/json');
 		$this->setStatus('OK');
 		$this->setPrettyJSON($prettyJson);
 	}
