@@ -107,9 +107,9 @@ class ELSWAK_HTTP_Response {
 		$this->status = str_replace(CRLF, LF, $status);
 		return $this;
 	}
-	public function content($delimiter = '') {
+	public function content() {
 		// string together the various bits of content
-		return implode($delimiter, $this->body);
+		return implode('', $this->body);
 	}
 	public function setContent($content = null, $key = null, $type = null) {
 		// overwrite all existing content and replace with the supplied content
