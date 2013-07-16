@@ -92,6 +92,15 @@ class ELSWAK_HTTP_Response {
 	public function applicationURI() {
 		return $this->baseURL->uri();
 	}
+
+
+
+	public function setMessages(array $messages) {
+		foreach ($messages as $message) {
+			$this->addMessage($message);
+		}
+		return $this;
+	}
 	public function messages($delimiter = '') {
 		return implode($delimiter, $this->messages);
 	}
