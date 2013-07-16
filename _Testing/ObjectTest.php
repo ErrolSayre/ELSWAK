@@ -68,9 +68,6 @@ class ELSWAK_ObjectTest
 		$array = $var->_export();
 		$this->assertGreaterThan(0, $array);
 		$this->assertEquals($array['first'], $var->first);
-		$var->relatives->add(new ELSWAK_ObjectTest_Person(array('first' => 'Sonny', 'last' => 'McCoy')));
-		$data = $var->_export();
-		$this->assertEquals('Sonny', $data['relatives'][0]['first']);
 	}
 	/**
 	 * @depends testConstructorWithImport
@@ -137,7 +134,6 @@ class ELSWAK_ObjectTest_Person
 	protected $age;
 	protected $ssn;
 	protected $mother;
-	protected $relatives;
 	
 	private $_viewCount;
 	
@@ -170,18 +166,6 @@ class ELSWAK_ObjectTest_Person
 			$this->setMother(new ELSWAK_ObjectTest_Person);
 		}
 		return $this->mother;
-	}
-
-
-
-	public function setRelatives(ELSWAK_Array $list) {
-		$this->relatives = $list;
-	}
-	public function relatives() {
-		if (!$this->relatives) {
-			$this->relatives = new ELSWAK_Array;
-		}
-		return $this->relatives;
 	}
 	
 	public function getDescription() {
