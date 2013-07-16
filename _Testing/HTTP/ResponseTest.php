@@ -23,7 +23,7 @@ class ELSWAK_HTTP_ResponseTest
 		$response->addContent('Server URI: '.$response->serverUri().BR.LF);
 		$response->addContent('Application Path: '.$response->applicationPath().BR.LF);
 		$response->addMessage('The thingamajig didn’t work like a who’s-a-what’s-it');
-		$response->addMessage('User not authenticated');
+		$response->addMessage('# User not authenticated'.LF.'You’ll have to login.');
 		$response->addMessage('User authentication form displayed.');
 		$response->setStatus('Looking Good');
 		$response->setHeader('Gillibush', 'Ferriwinkle');

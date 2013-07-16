@@ -228,7 +228,7 @@ class ELSWAK_HTTP_Response {
 		if (count($this->messages) > 0) {
 			$headers[] = array(
 				   'name' => 'ELSWAK-Messages',
-				  'value' => $this->messages('|'),
+				  'value' => str_replace(LF, '\n', $this->messages('|')),
 				'replace' => true,
 			);
 		}

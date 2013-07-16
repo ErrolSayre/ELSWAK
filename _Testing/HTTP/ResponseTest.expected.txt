@@ -5,7 +5,7 @@ Gillibush: Ferriwinkle
 Jonny-Cab: To the Moon
 Content-Type: text/html; charset=utf-8
 ELSWAK-Status: Looking Good
-ELSWAK-Messages: The thingamajig didn’t work like a who’s-a-what’s-it|User not authenticated|User authentication form displayed.
+ELSWAK-Messages: The thingamajig didn’t work like a who’s-a-what’s-it|# User not authenticated\nYou’ll have to login.|User authentication form displayed.
 
 <h1>Welcome to Moe’s!</h1>
 Server URI: http://www.apple.com<br />
