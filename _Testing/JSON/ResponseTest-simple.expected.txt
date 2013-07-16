@@ -1,0 +1,5 @@
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+ELSWAK-Status: OK
+
+{"status":"OK","messages":null,"body":{"firstName":"first","lastName":"last","json string 1":"{\"firstName\":\"person\",\"lastName\":\"1\"}","json literal 1":{"firstName":"person","lastName":"2"},"myself":{"first":"Errol","last":"Sayre"},"unnamed":["item 1","item 2",]}}
