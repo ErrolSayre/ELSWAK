@@ -2,6 +2,13 @@
 class ELSWAK_JSON_ResponseTest
 	extends PHPUnit_Framework_TestCase {
 	
+	public function testOverrides() {
+		$response = new ELSWAK_JSON_Response;
+		$this->assertEmpty($response->body());
+		$data = array('mark' => true);
+		$response->setBody($data);
+		$this->assertEquals($data, $response->body());
+	}
 	public function testSimpleResponse() {
 		$response = new ELSWAK_JSON_Response;
 		

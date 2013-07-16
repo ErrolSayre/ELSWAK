@@ -13,10 +13,27 @@ class ELSWAK_JSON_Response
 
 
 
-	public function __construct($prettyJson = false) {
+	public function __construct(array $content = null, $prettyJson = false) {
 		$this->setContentType('application/json');
 		$this->setStatus('OK');
+		$this->setBody($content);
 		$this->setPrettyJSON($prettyJson);
+	}
+
+
+
+	/**
+	 * Set the body
+	 *
+	 * Override the parent, allowing the body property to be set to an
+	 * array.
+	 */
+	public function setBody(array $body) {
+		$this->body = $body;
+		return $this;
+	}
+	public function body() {
+		return $this->body;
 	}
 
 
