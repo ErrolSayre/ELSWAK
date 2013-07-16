@@ -170,6 +170,9 @@ abstract class ELSWAK_Object
 			if ($this->{$property} instanceof ELSWAK_Object) {
 				$export[$property] = $this->{$property}->_export();
 			}
+			elseif ($this->{$property} instanceof ELSWAK_Array) {
+				$export[$property] = $this->{$property}->export();
+			}
 			else {
 				// avoid the use of lazy-inits, which can cause infinite recursion
 				$initial = $this->{$property};
@@ -182,16 +185,7 @@ abstract class ELSWAK_Object
 					}
 					else {
 						// include the value
-						// determine the appropriate type
-						if ($value instanceof ELSWAK_Array) {
-							$export[$property] = $value->export();
-						}
-						elseif ($value instanceof ELSWAK_Object) {
-							$export[$property] = $value->_export();
-						}
-						else {
-							$export[$property] = $value;
-						}
+						$export[$property] = $value;
 					}
 				}
 				catch (Exception $e) {
