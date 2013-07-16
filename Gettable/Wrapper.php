@@ -21,7 +21,7 @@ class ELSWAK_Gettable_Wrapper
 		}
 		$this->value = (string) $value;
 	}
-	public function get($property) {
+	public function get($property = null) {
 		return $this->value;
 	}
 	public function __toString() {
