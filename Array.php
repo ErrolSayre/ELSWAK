@@ -803,6 +803,15 @@ class ELSWAK_Array
 		return $this->previous()->current();
 	}
 	/**
+	 * Move to the end and get the last item
+	 *
+	 * @return mixed
+	 */
+	public function lastItem() {
+		$this->_position = count($this->store) - 1;
+		return $this->current();
+	}
+	/**
 	 * Skip to a position
 	 *
 	 * Search the array for the key and set the internal position
