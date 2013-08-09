@@ -735,6 +735,17 @@ class ELSWAK_Array
 		$this->_position = 0;
 		return $this;
 	}
+	/**
+	 * Skip to the last item
+	 *
+	 * This isn't an iterator method but it fits here.
+	 *
+	 * @return self
+	 */
+	public function fastForward() {
+		$this->_position = count($this->store) - 1;
+		return $this;
+	}
 	public function current() {
 		if (($key = $this->key()) !== null) {
 			return $this->store[$key];
@@ -808,8 +819,7 @@ class ELSWAK_Array
 	 * @return mixed
 	 */
 	public function lastItem() {
-		$this->_position = count($this->store) - 1;
-		return $this->current();
+		return $this->fastForward()->current();
 	}
 	/**
 	 * Skip to a position
