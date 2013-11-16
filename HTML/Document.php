@@ -45,7 +45,7 @@ class ELSWAK_HTML_Document
 	protected $titleTextNode;
 	protected $elementIdIndex;
 
-	public function __construct($templateFile = null) {
+	public function __construct($templateFile = null, $useXml = false) {
 		// create the DOMDocument
 		parent::__construct();
 
@@ -54,8 +54,14 @@ class ELSWAK_HTML_Document
 
 		// load our template file
 		if (($templateFile !== null) && is_file($templateFile)) {
-			$this->loadHTMLFile($templateFile);
-		} else {
+			if ($useXml) {
+				$this->load($templateFile);
+			}
+			else {
+				$this->loadHTMLFile($templateFile);
+			}
+		}
+		else {
 			// set up the default xhtml content
 			// determine the installation path
 			$this->loadHTMLFile(dirname(__FILE__).'/Document/Template.html');
