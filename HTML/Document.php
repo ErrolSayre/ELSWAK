@@ -524,6 +524,31 @@ class ELSWAK_HTML_Document
 
 
 
+//!- HTML 5 Block Elements
+	public function createMain($content = null, array $attributes = null) {
+		return $this->createElement('main', $content, $attributes);
+	}
+	public function createAside($content = null, array $attributes = null) {
+		return $this->createElement('aside', $content, $attributes);
+	}
+	public function createArticle($content = null, array $attributes = null) {
+		return $this->createElement('article', $content, $attributes);
+	}
+	public function createSection($content = null, array $attributes = null) {
+		return $this->createElement('section', $content, $attributes);
+	}
+	public function createHeader($content = null, array $attributes = null) {
+		return $this->createElement('header', $content, $attributes);
+	}
+	public function createFooter($content = null, array $attributes = null) {
+		return $this->createElement('footer', $content, $attributes);
+	}
+	public function createNav($content = null, array $attributes = null) {
+		return $this->createElement('nav', $content, $attributes);
+	}
+
+
+
 //!— Headers
 	public function createH1($content = null, array $attributes = null) {
 		return $this->createElement('h1', $content, $attributes);
