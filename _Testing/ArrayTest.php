@@ -488,4 +488,24 @@ class ELSWAK_ArrayTest
 		
 		$var2->differences($var1);
 	}
+
+
+
+	/**
+	 * I've run into situations where unserialization will not restore the store
+	 * property and leaves it null...
+	 */
+	public function testSerialization() {
+		$var1 = new ELSWAK_Array;
+		$var1 = unserialize(serialize($var1));
+		$this->assertNotNull($var1->store());
+		$this->assertEquals(0, count($var1->store()));
+		$this->assertTrue(is_array($var1->store()));
+
+		$var1->add('asdf');
+		$var1 = unserialize(serialize($var1));
+		$this->assertNotNull($var1->store());
+		$this->assertEquals(1, count($var1->store()));
+		$this->assertTrue(is_array($var1->store()));
+	}
 }
