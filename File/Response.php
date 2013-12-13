@@ -56,8 +56,8 @@ class ELSWAK_File_Response
 		
 		return $this->setDownload();
 	}
-	public function addContent($content) {
-		return $this->setFile($content);
+	public function addContent($content, $key = null, $type = null) {
+		return $this->setFile($content, $key, $type);
 	}
 	public function addMessage($message) {
 		return $this;
