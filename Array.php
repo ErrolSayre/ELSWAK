@@ -307,6 +307,9 @@ class ELSWAK_Array
 	public function hasItems() {
 		return count($this->store) > 0;
 	}
+	public function isEmpty() {
+		return count($this->store) == 0;
+	}
 
 
 
