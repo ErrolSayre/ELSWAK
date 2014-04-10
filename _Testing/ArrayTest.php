@@ -139,6 +139,18 @@ class ELSWAK_ArrayTest
 		$this->assertEquals(3, $data->count());
 		$this->assertEquals(0, $data->clear()->count());
 	}
+
+
+
+//!Testing for contents
+	public function testHasValue() {
+		$data = new ELSWAK_Array( [ 'asdf', 'qwer', 'zxcv' ] );
+		
+		$this->assertTrue( $data->hasValue( 'qwer' ) );
+		$this->assertEquals( 2, $data->keyForValue( 'zxcv' ) );
+		$this->assertEquals( 1, $data->positionForValue( 'qwer' ) );
+		$this->assertFalse( $data->hasValue( 'QWER' ) );
+	}
 	
 	
 	

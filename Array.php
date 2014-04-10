@@ -335,6 +335,29 @@ class ELSWAK_Array
 	public function keyForValue($value) {
 		return array_search($value, $this->store, true);
 	}
+
+	/**
+	 * Return presence of value within array
+	 *
+	 * @param mixed $value
+	 * @return boolean
+	 */
+	public function hasValue($value) {
+		if ( array_search( $value, $this->store ) !== false ) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Alias the hasValue method
+	 *
+	 * @param mixed $value
+	 * @return boolean
+	 */
+	public function contains($value) {
+		return $this->hasValue($value);
+	}
 	
 	/**
 	 * Return position/item index for a value
