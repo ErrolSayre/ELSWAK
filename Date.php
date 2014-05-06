@@ -31,7 +31,7 @@ class ELSWAK_Date
 	 *
 	 * This format covers a common use-case I've encountered.
 	 */
-	const FULLTIME = 'g:i:s a';
+	const FULLTIME = 'g:i:s a T';
 
 
 
