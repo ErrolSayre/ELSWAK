@@ -15,7 +15,10 @@ class ELSWAK_HTTP_Response {
 	/**
 	 * Application Base URL
 	 *
-	 * Specify a URL for the application this response belongs to.
+	 * Specify a URL for the application this response belongs to. Essentially this assumes your
+	 * application will utilize some pretty urls or other form of URL construction from a common base.
+	 * This provides you with a means to readily construct URLs relative to that point within your
+	 * application, though you may well have another means for maintaining such a prefix.
 	 *
 	 * @type ELSWAK_HTTP_URL
 	 */
