@@ -11,9 +11,18 @@ class ELSWAK_HTTP_ResponseTest
 		
 		// create the response
 		$response = new ELSWAK_HTTP_Response;
-		$response->setRedirect('https://www.apple.com/imac/');
+		$this->assertEquals( '/imac/features/coolstuff/', $response->applicationPath() );
 		
-		$this->assertEquals('/imac/features/coolstuff/', $response->applicationPath());
+		// set the canonical url
+		$url = 'http://www.apple.com/imac/features/coolstuff/';
+		$response->setCanonicalURL( $url );
+		$response->setRedirect();
+		$this->assertEquals( $url, (string) $response->canonicalURL() );
+		$this->assertEquals( $url, $response->redirectURL() );
+		
+		$url = 'https://www.apple.com/imac/';
+		$response->setRedirect( $url );
+		$this->assertEquals( $url, $response->redirectURL() );
 		
 		$response->overrideApplicationPath('/ipad/features/index.php');
 		$this->assertEquals('/ipad/features/', $response->applicationPath());

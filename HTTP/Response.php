@@ -24,6 +24,17 @@ class ELSWAK_HTTP_Response {
 	 */
 	protected $baseURL;
 	
+	/**
+	 * Canonical URL
+	 *
+	 * Specify a URL which represents this specific response's “canonical” URL. The URL provided here
+	 * should be the location at which the resource this response represents is located at. This could
+	 * be the same as the current request or different.
+	 *
+	 * @type ELSWAK_HTTP_URL
+	 */
+	protected $canonicalURL;
+	
 	protected $headers = array();
 	protected $status = '';
 	protected $messages = array();
@@ -35,8 +46,9 @@ class ELSWAK_HTTP_Response {
 
 
 
-	public function __construct($url = null) {
-		$this->setBaseURL($url);
+	public function __construct( $baseURL = null, $canonicalURL = null ) {
+		$this->setBaseURL( $baseURL );
+		$this->setCanonicalURL( $canonicalURL );
 		
 		// setup frame blocking by default, requiring the developer to change this behavior
 		$this->setFramePermission();
@@ -52,20 +64,27 @@ class ELSWAK_HTTP_Response {
 	 * @param ELSWAK_HTTP_URL|mixed A value to set or parse
 	 */
 	public function setBaseURL($value) {
-		if (!($value instanceof ELSWAK_HTTP_URL)) {
-			if ($value) {
+		// determine if the value is a URL object
+		if ( !( $value instanceof ELSWAK_HTTP_URL ) ) {
+			// if not, try to parse it
+			if ( $value ) {
 				$value = ELSWAK_URI_Factory::uriForString($value);
 			}
-			if (!($value instanceof ELSWAK_HTTP_URL)) {
+			
+			// if parsing failed, try to derive the current request
+			if ( !( $value instanceof ELSWAK_HTTP_URL ) ) {
 				$value = ELSWAK_URI_Factory::applicationURLFromServerGlobal();
 			}
-			if (!($value instanceof ELSWAK_HTTP_URL)) {
+			
+			// if unable to derive the request, use an empty object
+			if ( !( $value instanceof ELSWAK_HTTP_URL ) ) {
 				$value = new ELSWAK_HTTP_URL;
 			}
 		}
-		if ($value instanceof ELSWAK_HTTP_URL) {
-			$this->baseURL = $value;
-		}
+		
+		// at this point the value is guaranteed to be of the correct type
+		$this->baseURL = $value;
+		
 		return $this;
 	}
 	/**
@@ -94,6 +113,54 @@ class ELSWAK_HTTP_Response {
 	}
 	public function applicationURI() {
 		return $this->baseURL->uri();
+	}
+
+
+
+
+
+
+	/**
+	 * Set the canonical URL
+	 *
+	 * Like the base URL, this property is not to be null. Accordingly, it will default to the current
+	 * request URL.
+	 *
+	 * @param ELSWAK_HTTP_URL|mixed A value to set or parse
+	 */
+	public function setCanonicalURL( $value ) {
+		// determine if the value is a URL object
+		if ( !( $value instanceof ELSWAK_HTTP_URL ) ) {
+			// if not, try to parse it
+			if ( $value ) {
+				$value = ELSWAK_URI_Factory::uriForString($value);
+			}
+			
+			// if parsing failed, try to derive the current request
+			if ( !( $value instanceof ELSWAK_HTTP_URL ) ) {
+				$value = ELSWAK_URI_Factory::urlFromServerGlobal();
+			}
+			
+			// if unable to derive the request, use an empty object
+			if ( !( $value instanceof ELSWAK_HTTP_URL ) ) {
+				$value = new ELSWAK_HTTP_URL;
+			}
+		}
+		
+		// at this point the value is guaranteed to be of the correct type
+		$this->canonicalURL = $value;
+		
+		return $this;
+	}
+	/**
+	 * Provide canonical URL while protecting it
+	 *
+	 * Clone the URL object before handing it off to prevent unintended mangling.
+	 *
+	 * @return ELSWAK_HTTP_URL
+	 */
+	public function canonicalURL() {
+		return clone $this->canonicalURL;
 	}
 
 
@@ -245,7 +312,24 @@ class ELSWAK_HTTP_Response {
 	public function isRedirect() {
 		return $this->isRedirect;
 	}
-	public function setRedirect($url, $code = 303) {
+	/**
+	 * Set this response to redirect
+	 *
+	 * If no URL is provided, it is assumed that the browser should redirect to the canonical URL for
+	 * this response's resource.
+	 *
+	 * TODO: Update this method to ensure the URL provided maps to an absolute URL (the technical
+	 * requirement of the Location header) by means of the baseURL. This will provide explicit support
+	 * for providing server and path relative URLs from the application.
+	 *
+	 * @param string|null $url
+	 * @param integer $code
+	 * @return ELSWAK_HTTP_Response self
+	 */
+	public function setRedirect($url = null, $code = 303) {
+		if ( !$url ) {
+			$url = (string) $this->canonicalURL;
+		}
 		// set the location header using the given url
 		$this->setHeader('Location', $url, true)
 			->setStatusCode($code);
@@ -260,6 +344,13 @@ class ELSWAK_HTTP_Response {
 			$this->debugRedirects = true;
 		}
 		return $this;
+	}
+	public function redirectURL() {
+		$location = $this->header( 'Location' );
+		if ( is_array( $location ) ) {
+			return $location['value'];
+		}
+		return null;
 	}
 	
 	
