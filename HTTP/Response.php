@@ -175,8 +175,9 @@ class ELSWAK_HTTP_Response {
 		return $this;
 	}
 	public function header($name) {
-		if (isset($this->headers[$name]))
+		if ( array_key_exists( $name, $this->headers ) ) {
 			return $this->headers[$name];
+		}
 		return false;
 	}
 	/**
