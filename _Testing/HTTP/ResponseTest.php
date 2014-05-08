@@ -51,5 +51,26 @@ class ELSWAK_HTTP_ResponseTest
 		
 		// compare the written response to the expected
 		$this->assertFileEquals($path.'expected.txt', $path.'actual.txt');
+		
+		return $response;
+	}
+	
+	/**
+	 * @depends testResponse
+	 */
+	public function testRenderFactory( ELSWAK_HTTP_Response $response ) {
+		// use the factory to "render" this response down
+		$rendered = ELSWAK_HTTP_Response::renderedResponseFromResponse( $response );
+		
+		// utilize the content count to assure items are different
+		$this->assertNotEquals( $response->contentCount(), $rendered->contentCount() );
+		$this->assertEquals( 1, $rendered->contentCount() );
+		
+		// write the rendered response to the file system to compare again
+		$path = pathinfo(__FILE__, PATHINFO_DIRNAME).'/'.pathinfo(__FILE__, PATHINFO_FILENAME).'.';
+		file_put_contents($path.'actual.txt', $rendered->debugOutput());
+		
+		// compare the written response to the expected
+		$this->assertFileEquals($path.'expected.txt', $path.'actual.txt');
 	}
 }

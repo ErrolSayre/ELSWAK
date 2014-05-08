@@ -186,10 +186,6 @@ class ELSWAK_HTTP_Response {
 		$this->status = str_replace(CRLF, LF, $status);
 		return $this;
 	}
-	public function content() {
-		// string together the various bits of content
-		return implode('', $this->body);
-	}
 	public function setContent($content = null, $key = null, $type = null) {
 		// overwrite all existing content and replace with the supplied content
 		$this->body = array();
@@ -220,6 +216,16 @@ class ELSWAK_HTTP_Response {
 	protected function filterContentByType($content, $type) {
 		return $content;
 	}
+	public function content() {
+		// string together the various bits of content
+		return implode('', $this->body);
+	}
+	public function contentCount() {
+		return count( $this->body );
+	}
+	
+	
+	
 	public function setFramePermission($type = null) {
 		$type = strtolower($type);
 		if ($type == 'allowed') {
@@ -587,5 +593,48 @@ class ELSWAK_HTTP_Response {
 			504 => 'Gateway Time-out',
 			505 => 'HTTP Version not supported',
 		);
+	}
+
+
+
+//!Factory methods
+	/**
+	 * Import a response into a new record
+	 *
+	 * Primarily I'm building this to facilitate translating "generator" responses into static
+	 * responses to aid in caching. For example a subclass that creates a PDF document (sending
+	 * appropriate headers, and rendering content on-output) can be translated into a new response that
+	 * contains the genrated PDF and the relevant headers.
+	 *
+	 * @param ELSWAK_HTTP_Response $old
+	 * @return ELSWAK_HTTP_Response
+	 */
+	public static function renderedResponseFromResponse( ELSWAK_HTTP_Response $old ) {
+		// create a new response
+		$new = new ELSWAK_HTTP_Response;
+		
+		// import the various "static" properties
+		$properties = array(
+			'headers',
+			'status',
+			'messages',
+			'statusCode',
+			'isRedirect',
+			'isModified',
+			'debugRedirects',
+		);
+		foreach ( $properties as $property ) {
+			$new->$property = $old->$property;
+		}
+		
+		// import the clonable properties
+		$new->baseURL = clone $old->baseURL;
+		$new->canonicalURL = clone $old->canonicalURL;
+		
+		// import the rendered content
+		$new->setContent( $old->content() );
+		
+		// return the new response
+		return $new;
 	}
 }
