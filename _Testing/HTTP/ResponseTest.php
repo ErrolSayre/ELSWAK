@@ -60,7 +60,7 @@ class ELSWAK_HTTP_ResponseTest
 	 */
 	public function testRenderFactory( ELSWAK_HTTP_Response $response ) {
 		// use the factory to "render" this response down
-		$rendered = ELSWAK_HTTP_Response::renderedResponseFromResponse( $response );
+		$rendered = $response->renderedResponse();
 		
 		// utilize the content count to assure items are different
 		$this->assertNotEquals( $response->contentCount(), $rendered->contentCount() );

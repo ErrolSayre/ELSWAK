@@ -56,6 +56,13 @@ class ELSWAK_HTTP_Response {
 
 
 
+	public function renderedResponse() {
+		// return a rendered copy of this response
+		return $this->renderedResponseFromResponse( $this );
+	}
+
+
+
 	/**
 	 * Set the baseURL
 	 *
