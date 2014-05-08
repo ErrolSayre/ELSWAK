@@ -35,6 +35,12 @@ class ELSWAK_HTTP_URL
 		}
 		throw new ELSWAK_HTTP_URL_InvalidScheme_Exception;
 	}
+	public function isSecure() {
+		if ( $this->scheme == 'https' ) {
+			return true;
+		}
+		return false;
+	}
 	
 	/**
 	 * Override to support server relative URLs
