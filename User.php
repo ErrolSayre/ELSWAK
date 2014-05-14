@@ -34,7 +34,7 @@ class ELSWAK_User
 		}
 	}
 	
-/* !Property Accessors */
+//!Property Accessors
 	public function setAccount($value) {
 		$this->account = strval($value);
 		return $this;
@@ -43,7 +43,7 @@ class ELSWAK_User
 		$this->displayName = strval($value);
 		return $this;
 	}
-/* !Password Methods */
+//!Password Methods
 	public function setPasswordHash($value) {
 		$this->passwordHash = strval($value);
 		return $this;
@@ -52,9 +52,10 @@ class ELSWAK_User
 		$this->passwordHash = $this->generatePasswordHash($password);
 		return $this;
 	}
-/*
-	Hash the password with a random salt; peppering with the user account name.
-*/
+
+	/**
+	 * Hash the password with a random salt; peppering with the user account name.
+	 */
 	protected function generatePasswordHash($password) {
 		// utilize the blowfish encryption guaranteed to be present in PHP 5.3 and later
 		return $this->validateHash($this->generateHashForPepperedString($this->pepperPassword($password)));
@@ -97,12 +98,15 @@ class ELSWAK_User
 	
 	
 	
-/* !Static Methods */
+//!Static Methods
+	/**
+	 * Return a valid key factor for Blowfish.
+	 *
+	 * Override this method in subclass to provide an alternate 2 digit integer from 04 to 31. The
+	 * recommended value should execute quickly enough for the system to be responsive but slow enough
+	 * to keep brute-force attack to unreasonable times.
+	 */
 	public static function keyFactor() {
-/*
-	Return a valid key factor for Blowfish.
-	Override this method in subclass to provide an alternate 2 digit integer from 04 to 31. The recommended value should execute quickly enough for the system to be responsive but slow enough to keep brute-force attack to unreasonable times.
-*/
 		return '09';
 	}
 	public static function saltAlphabet() {
