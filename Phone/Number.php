@@ -83,9 +83,9 @@ class ELSWAK_Phone_Number
 		return $number;
 	}
 	public function url() {
-		$string = 'tel:';
+		$number = 'tel:';
 		if ($this->countryCode)
-			$number = $this->countryCode;
+			$number .= $this->countryCode;
 		if ($this->areaCode)
 			$number .= $this->areaCode;
 		if ($this->localPrefix)
