@@ -365,11 +365,11 @@ class ELSWAK_Postal_Address
 			// determine if this line matches a likely city/state/zip line
 			$matches = array();
 			if (preg_match("/([a-zA-Z]+)\s*\,\s*([a-zA-Z]+)\s+([0-9-]+)/", $line, $matches) > 0) {
-				$address->setCity($matches[1]);
-				$address->setState($matches[2]);
-				$address->setPostal($matches[3]);
+				$address->setCity(   trim( $matches[1], ' ,' ) );
+				$address->setState(  trim( $matches[2], ' ,' ) );
+				$address->setPostal( trim( $matches[3], ' ,' ) );
 			} else {
-				$address->addLine($line);
+				$address->addLine( trim( $line, ' ,' ) );
 			}
 		}
 		return $address;
@@ -390,6 +390,7 @@ class ELSWAK_Postal_Address
 					$states->parseItem($piece, false, false) != null
 				) {
 					$address->state = $piece;
+					
 					// the last piece (should have been added to lines...) is likely the city
 					$address->city = array_pop($lines);
 					
@@ -405,7 +406,7 @@ class ELSWAK_Postal_Address
 				) {
 					$address->postal = $piece;
 				} else {
-					$lines[] = $piece;
+					$lines[] = trim( $piece, ' ,');
 				}
 			}
 		}

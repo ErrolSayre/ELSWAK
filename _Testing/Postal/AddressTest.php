@@ -28,6 +28,12 @@ class ELSWAK_Postal_AddressTest
 		$this->assertEquals(38677, $address->zipCode);
 		$this->assertEquals(3, count($address->address('array')));
 		
+		$address = $address->parseAddress( 'Kincannon 606, University, MS 38677 ' );
+		$this->assertInstanceOf( 'ELSWAK_Postal_Address', $address );
+		$this->assertEquals( 'Kincannon 606', $address->line1 );
+		$this->assertEquals( 'University', $address->city );
+		$this->assertEquals( 38677, $address->postal );
+		
 		$text = 'Office of Information Technology 100 Powers Hall University Mississippi 38677-1848';
 		$address = $address->parseAddress($text);
 		$this->assertEquals('University, Mississippi 38677-1848', $address->cityStateZipLine);
