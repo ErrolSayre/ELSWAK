@@ -85,7 +85,7 @@ class ELSWAK_URI_Componentizer {
 
 		// remove any leading or trailing boundary tokens when dealing with URL components
 		if ( strpos( $formatting, 'url' ) !== false ) {
-			$final = trim( $final, implode( '', $tokenBoundaries ) . implode( '', $tokenReplacements ) );
+			$final = trim( $final, implode( '', $tokenBoundaries ) );
 		}
 
 		// issue any final replacements
