@@ -88,6 +88,9 @@ class ELSWAK_URI_Componentizer {
 			$final = trim( $final, implode( '', $tokenBoundaries ) );
 		}
 
+		// trim any further whitespace
+		$final = trim( $final );
+
 		// issue any final replacements
 		if ( $caseSensitiveReplacements ) {
 			$final = str_replace( array_keys( $finalReplacements ), array_values( $finalReplacements ), $final );
