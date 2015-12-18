@@ -32,50 +32,66 @@ class ELSWAK_URI_Componentizer {
 	 * @param array $tokenBoundaries strings that can be replaced with a space to become a token value
 	 * @param array $preTokenReplacements key/value pairs where keys should be replaced by value
 	 * @param array $tokenReplacements key/value pairs where keys should be replaced by value
-	 * @param array $componentReplacements key/value pairs where keys should be replaced by value
+	 * @param array $finalReplacements key/value pairs where keys should be replaced by value
+	 * @param string $formatting indicator for formatting to be applied to tokens before implosion
 	 * @return string URI component
 	 */
-	public static function parseWithOptions( $value, array $tokenBoundaries, array $preTokenReplacements, array $tokenReplacements, array $componentReplacements ) {
-		
-		// first process the input string, replacing any values from the preTokenReplacements
-		$value = str_replace( array_keys( $preTokenReplacements ), array_values( $preTokenReplacements ), $value );
-		
-		// normalize case and break into tokens
-		$tokens = explode( ' ', str_replace( $tokenBoundaries, ' ', strtolower( $value ) ) );
-		
+	public static function parseWithOptions( $value, array $tokenBoundaries, array $tokenReplacements, array $finalReplacements, $formatting = 'url, lowercase', $caseSensitiveReplacements = false ) {
+
+		// first tokenize the string
+		$tokenizer = new ELSWAK_Tokenizer( $tokenBoundaries );
+		$tokens = $tokenizer->tokenizeString( $value );
+
 		// setup the storage for final URI component sub-components
 		$subComponents = array();
 		foreach ( $tokens as $token ) {
+
 			// determine if there is a specific replacement for this token
 			if ( array_key_exists( $token, $tokenReplacements ) ) {
 				$token = $tokenReplacements[ $token ];
 			}
-			
+			elseif ( !$caseSensitiveReplacements ) {
+
+				// parse through the keys, looking for one that matches case-insensitively
+				foreach ( $tokenReplacements as $key => $replacement ) {
+					if ( strcasecmp( $token, $key ) == 0 ) {
+						$token = $replacement;
+					}
+				}
+			}
+
 			// only include tokens that are non-empty
 			if ( $token ) {
-				$subComponents[] = urlencode( $token );
+
+				// switch on the appropriate formatting
+				if ( strpos( $formatting, 'upper' ) !== false ) {
+					$token = strtoupper( $token );
+				}
+				if ( strpos( $formatting, 'lower' ) !== false ) {
+					$token = strtolower( $token );
+				}
+				if ( strpos( $formatting, 'capitalize' ) !== false ) {
+					$token = ucfirst( $token );
+				}
+				if ( strpos( $formatting, 'url' ) !== false ) {
+					$token = urlencode( $token );
+				}
+				$subComponents[] = $token;
 			}
 		}
-		
-		// reassemble the sub-components
-		$final = implode('-', $subComponents);
-		
-		// look for final replacements
-		if ( array_key_exists( $final, $componentReplacements ) ) {
-			return $componentReplacements[ $final ];
-		}
-		return $final;
-	}
 
-	/**
-	 * Invent a URI component out of the value using a Componentizable class
-	 *
-	 * @param mixed $value
-	 * @param ELSWAK_URI_Componentizable $source
-	 * @return string URI component
-	 */
-	public static function parseWithOptionsFromObject( $value, ELSWAK_URI_Componentizable $source ) {
-		return self::parseURIWithOptions( $value, $source->uriTokenBoundaries(), $source->uriPreTokenReplacements(), $source->uriTokenReplacements(), $source->uriComponentReplacements() );
+		// reassemble the sub-components
+		$final = implode( '', $subComponents );
+
+		// issue any final replacements
+		if ( $caseSensitiveReplacements ) {
+			$final = str_replace( array_keys( $finalReplacements ), array_values( $finalReplacements ), $final );
+		}
+		else {
+			$final = str_ireplace( array_keys( $finalReplacements ), array_values( $finalReplacements ), $final );
+		}
+
+		return $final;
 	}
 
 	/**
@@ -88,9 +104,45 @@ class ELSWAK_URI_Componentizer {
 		return self::parseWithOptions(
 			$value,
 			self::uriTokenBoundaries(),
-			self::uriPreTokenReplacements(),
 			self::uriTokenReplacements(),
-			self::uriComponentReplacements()
+			self::uriFinalReplacements()
+		);
+	}
+
+	/**
+	 * Invent a label for this component (e.g. breadcrumb trail) out of the value
+	 *
+	 * Akin to the component, there are times when a shortened form of a value would be useful for
+	 * labeling links (such as navigation items). Following the same sort of rules, remove various
+	 * components and normalize capitalization.
+	 *
+	 * @param mixed $value
+	 * @param array $tokenBoundaries strings that can be replaced with a space to become a token value
+	 * @param array $preTokenReplacements key/value pairs where keys should be replaced by value
+	 * @param array $tokenReplacements key/value pairs where keys should be replaced by value
+	 * @param array $finalReplacements key/value pairs where keys should be replaced by value
+	 * @param integer $formatting bitwise indicator for formatting to be applied to tokens before implosion
+	 * @return string URI label
+	 */
+	public static function parseURILabelWithOptions( $value, array $tokenBoundaries, array $tokenReplacements, array $finalReplacements, $formatting = null, $caseSensitiveReplacements = false ) {
+
+		return self::parseWithOptions( $value, $tokenBoundaries, $tokenReplacements, $finalReplacements, $formatting, $caseSensitiveReplacements );
+	}
+
+	/**
+	 * Alias the label parsing method
+	 *
+	 * @param mixed value
+	 * @return string URI label
+	 */
+	public static function parseURILabel( $value ) {
+
+		// utilize the defaults from the aliased method
+		return self::parseURILabelWithOptions(
+			$value,
+			self::labelTokenBoundaries(),
+			self::labelTokenReplacements(),
+			self::labelFinalReplacements()
 		);
 	}
 
@@ -108,57 +160,73 @@ class ELSWAK_URI_Componentizer {
 			'/',
 			'.',
 			',',
+			'&',
 		);
 	}
 
-
-
 	/**
-	 * Return a list of strings to remove/replace before tokenizing
-	 *
-	 * Unlike the previous methods, I'm starting this one out with a purely replacement based
-	 * approach allowing “removables” to be indicated by a null value. Generally, however, these
-	 * strings will need to be replaced with a character that gurantees a token break so the value
-	 * should be a space.
-	 *
-	 * @return array
-	 */
-	public static function uriPreTokenReplacements() {
-		return array(
-			',' => ' ',
-			'&' => ' ',
-			"'" => ' ',
-			'.' => ' ',
-			'/' => ' ',
-		);
-	}
-
-
-
-	/**
-	 * Return a list of token replacements
-	 *
-	 * To indicate the token should be totally removed, provide a null value for it's replacement.
-	 *
-	 * @return array
-	 */
-	public static function uriTokenReplacements() {
-		return array(
-			'-' => null,
-		);
-	}
-
-
-
-	/**
-	 * Provide a list of component replacements
+	 * Provide a list of strings that can be used to break the value into tokens
 	 *
 	 * This method is setup to be overridden by subsclassed items.
 	 *
 	 * @return array
 	 */
-	public static function uriComponentReplacements() {
+	public static function labelTokenBoundaries() {
+		return ELSWAK_Tokenizer::standardTokenBoundaries();
+	}
+
+
+
+	/**
+	 * Return a list of strings to remove/replace as tokens
+	 *
+	 * @return array
+	 */
+	public static function uriTokenReplacements() {
+		return array(
+			' ' => '-',
+			',' => '',
+			'&' => '-',
+			"'" => '',
+			'.' => '',
+			'/' => '-',
+		);
+	}
+
+
+
+	/**
+	 * Return a list of strings to remove/replace as tokens
+	 *
+	 * @return array
+	 */
+	public static function labelTokenReplacements() {
 		return array(
 		);
+	}
+
+
+
+	/**
+	 * Return a list of string replacements to perform on the reassembled string
+	 *
+	 * @return array
+	 */
+	public static function uriFinalReplacements() {
+		return array(
+			'---' => '-',
+			'--' => '-',
+		);
+	}
+
+
+
+	/**
+	 * Return a list of string replacements to perform on the reassembled string
+	 *
+	 * @return array
+	 */
+	public static function labelFinalReplacements() {
+		return array();
 	}
 }
