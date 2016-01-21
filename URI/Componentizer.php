@@ -36,7 +36,7 @@ class ELSWAK_URI_Componentizer {
 	 * @param string $formatting indicator for formatting to be applied to tokens before implosion
 	 * @return string URI component
 	 */
-	public static function parseWithOptions( $value, array $tokenBoundaries, array $tokenReplacements, array $finalReplacements, $formatting = 'url, lowercase', $caseSensitiveReplacements = false ) {
+	public static function parseWithOptions( $value, array $tokenBoundaries, array $tokenReplacements, array $finalReplacements, $formatting = 'url lowercase', $caseSensitiveReplacements = false ) {
 
 		// first tokenize the string
 		$tokenizer = new ELSWAK_Tokenizer( $tokenBoundaries );
