@@ -27,6 +27,7 @@ class ELSWAK_URI_FactoryTest
 			             'Fancy Pants/ The Other one' => 'fancy-pants-the-other-one',
 			             'Fancy Pants /The Other one' => 'fancy-pants-the-other-one',
 			'SARAH ISOM CTR FOR WOMEN&GENDER STUDIES' => 'sarah-isom-ctr-for-women-gender-studies',
+			 'SARAH ISOM CENTER FOR WOMEN\'S STUDIES' => 'sarah-isom-center-for-womens-studies',
 			 'HEALTH, EXERCISE SCI & RECREATION MGMT' => 'health-exercise-sci-recreation-mgmt',
 			 'MANAGEMENT INFO SYSTEMS/PROD OPER MGMT' => 'management-info-systems-prod-oper-mgmt',
 			                                   'Fall' => 'fall',
@@ -75,6 +76,7 @@ class ELSWAK_URI_FactoryTest
 			             'Fancy Pants/ The Other one' => 'Fancy Pants/ The Other one',
 			             'Fancy Pants /The Other one' => 'Fancy Pants /The Other one',
 			'SARAH ISOM CTR FOR WOMEN&GENDER STUDIES' => 'SARAH ISOM CTR FOR WOMEN&GENDER STUDIES',
+			 'SARAH ISOM CENTER FOR WOMEN\'S STUDIES' => 'SARAH ISOM CENTER FOR WOMEN\'S STUDIES',
 			 'HEALTH, EXERCISE SCI & RECREATION MGMT' => 'HEALTH, EXERCISE SCI & RECREATION MGMT',
 			 'MANAGEMENT INFO SYSTEMS/PROD OPER MGMT' => 'MANAGEMENT INFO SYSTEMS/PROD OPER MGMT',
 		);

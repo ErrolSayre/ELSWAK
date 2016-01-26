@@ -169,6 +169,7 @@ class ELSWAK_URI_Componentizer {
 			'.',
 			',',
 			'&',
+			"'",
 		);
 	}
 
