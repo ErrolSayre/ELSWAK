@@ -205,7 +205,7 @@ abstract class ELSWAK_Object
 		return $this->_export();
 	}
 	public function toJSON() {
-		return json_encode($this->jsonSerialize());
+		return json_encode( $this->jsonSerialize() );
 	}
 	
 	/**
