@@ -711,8 +711,14 @@ class ELSWAK_Array
 	public function __toString() {
 		return json_encode($this->store, JSON_PRETTY_PRINT);
 	}
-	public function toJSON() {
-		return json_encode($this->store, JSON_FORCE_OBJECT);
+	public function toJSON( $pretty = false ) {
+		
+		$options = null;
+		if ( $pretty ) {
+			$options = JSON_PRETTY_PRINT;
+		}
+		
+		return json_encode( $this->store, $options );
 	}
 
 
