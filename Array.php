@@ -321,7 +321,7 @@ class ELSWAK_Array
 	public function keys() {
 		return array_keys($this->store);
 	}
-	
+
 	/**
 	 * Return key for a value
 	 *
@@ -358,7 +358,7 @@ class ELSWAK_Array
 	public function contains($value) {
 		return $this->hasValue($value);
 	}
-	
+
 	/**
 	 * Return position/item index for a value
 	 *
@@ -488,7 +488,7 @@ class ELSWAK_Array
 		if ($index === false) {
 			return $this->add($value);
 		}
-		
+
 		// splice the value in at the array index
 		// wrap the value in an array to ensure an array value remains that way
 		array_splice($this->store, $index, 0, array($value));
@@ -578,7 +578,7 @@ class ELSWAK_Array
 						// assign a new numeric key to this value
 						$store[] = $this->store[$key];
 					}
-					
+
 					// since the item is moving down the list, add it after the current item
 					if (!$prepend && $index == $to) {
 						$key = $keys[$from];
@@ -718,8 +718,8 @@ class ELSWAK_Array
 
 
 //!Sorting
-	public function sort($reverse = false) {
-		return $this->sortByValue($reverse);
+	public function sort( $reverse = false ) {
+		return $this->sortByValue( $reverse);
 	}
 	public function sortByValue($reverse = false, $flags = null) {
 		if ($flags === null) {
@@ -769,17 +769,17 @@ class ELSWAK_Array
 	 * @return self
 	 */
 	public function fastForward() {
-		$this->_position = count($this->store) - 1;
+		$this->_position = count( $this->store ) - 1;
 		return $this;
 	}
 	public function current() {
-		if (($key = $this->key()) !== null) {
-			return $this->store[$key];
+		if ( ( $key = $this->key() ) !== null ) {
+			return $this->store[ $key ];
 		}
 		return false;
 	}
 	public function key() {
-		return $this->keyForItem($this->_position);
+		return $this->keyForItem( $this->_position );
 	}
 
 
@@ -987,7 +987,7 @@ class ELSWAK_Array
 		// validate the comparison object is of the same type as this variable
 		if ($compare instanceof $this) {
 			$diff = new ELSWAK_Collection_Differences;
-			
+
 			// look through the comparison object and the local store for matches
 			foreach ($this->store as $key => $item) {
 				// look for a match in the comparison object
@@ -1007,7 +1007,7 @@ class ELSWAK_Array
 			}
 			// now look for items in the comparison that don't exist locally
 			$diff->added->setStore(array_diff($compare->store, $this->store));
-			
+
 			// return the differences
 			return $diff;
 		}
@@ -1055,7 +1055,7 @@ class ELSWAK_Array
 		if (array_key_exists($item, $items)) {
 			return $returnValue? $items[$item]: $item;
 		}
-		
+
 		// look for the value in the labels
 		if ($item) {
 			$item = strtolower($item);
