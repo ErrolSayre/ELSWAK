@@ -744,14 +744,39 @@ class ELSWAK_Array
 	public function sort( $reverse = false ) {
 		return $this->sortByValue( $reverse);
 	}
-	public function sortByValue($reverse = false, $flags = null) {
-		if ($flags === null) {
+	
+	/**
+	 * Sort the array by its contents.
+	 *
+	 * Please note that previously this method always used the asort and arsort methods, however this
+	 * has proven dubious for non-associative arrays. PHP doesn't directly indicate that an array is
+	 * or isn't associative so for a long time this class has assumed associative and therefore
+	 * incorrectly handled non-associative array indexes.
+	 *
+	 * To address this issue, we not utilize a quick check to determine if the array is associative
+	 * by examinging the makeup of the keys.
+	 */
+	public function sortByValue( $reverse = false, $flags = null ) {
+		if ( $flags === null ) {
 			$flags = SORT_NATURAL | SORT_FLAG_CASE;
 		}
-		if ($reverse) {
-			arsort($this->store, $flags);
-		} else {
-			asort($this->store, $flags);
+		
+		// determine if this array is associative or not
+		if ( $this->isAssociative() ) {
+			if ( $reverse ) {
+				arsort( $this->store, $flags );
+			}
+			else {
+				asort( $this->store, $flags );
+			}
+		}
+		else {
+			if ( $reverse ) {
+				rsort( $this->store, $flags );
+			}
+			else {
+				sort( $this->store, $flags );
+			}
 		}
 		return $this;
 	}
