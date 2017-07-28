@@ -311,6 +311,23 @@ class ELSWAK_Array
 		return count($this->store) == 0;
 	}
 
+	/**
+	 * Determine if the array is associative
+	 *
+	 * This method lifts a creative solution from the internet. In a non-associative array, the keys
+	 * (0, 1, 2, ... n) will themselves have keys of (0, 1, 2, ... n) whereas an associative array
+	 * would not.
+	 *
+	 * @return boolean
+	 */
+	public function isAssociative() {
+		
+		// compare the keys of this array to their keys
+		$keys = array_keys( $this->store );
+
+		return array_keys( $keys ) !== $keys;
+	}
+
 
 
 	/**
