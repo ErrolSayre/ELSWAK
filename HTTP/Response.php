@@ -402,7 +402,7 @@ class ELSWAK_HTTP_Response {
 		}
 		
 		// determine if this code corresponds to a redirect
-		if (($code <= 300) && ($code >= 307))
+		if ( $code >= 300 && $code <= 308 )
 			$this->isRedirect = true;
 		else
 			$this->isRedirect = false;

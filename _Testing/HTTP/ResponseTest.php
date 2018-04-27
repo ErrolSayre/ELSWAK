@@ -7,6 +7,10 @@ class ELSWAK_HTTP_ResponseTest
 		
 		$response->setStatusCode( '200' );
 		$this->assertEquals( 200, $response->statusCode() );
+		$this->assertFalse( $response->isRedirect() );
+		
+		$response->setStatusCode( 302 );
+		$this->assertTrue( $response->isRedirect() );
 	}
 	public function testResponse() {
 		// mock out the $_SEVER global
