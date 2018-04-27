@@ -2,9 +2,6 @@
 class ELSWAK_HTTP_WorkspaceTest
 	extends PHPUnit\Framework\TestCase {
 	
-	public function testConstructor() {
-		$var = new ELSWAK_HTTP_Workspace;
-	}
 	public function testHeaders() {
 		$var = new ELSWAK_HTTP_Workspace;
 		$var->addHeader('Location', 'https://www.apple.com');

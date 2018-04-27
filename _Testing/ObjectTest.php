@@ -2,9 +2,6 @@
 class ELSWAK_ObjectTest
 	extends PHPUnit\Framework\TestCase {
 	
-	public function testConstructor() {
-		$var = new ELSWAK_ObjectTest_Person;
-	}
 	public function testConstructorWithImport() {
 		$var = new ELSWAK_ObjectTest_Person(array(
 			'first' => 'Errol',
