@@ -87,7 +87,7 @@ class ELSWAK_ObjectTest
 	 * @depends testConstructorWithImport
 	 */
 	public function testStringMethods(ELSWAK_ObjectTest_Person $var) {
-		$var2 = new ELSWAK_ObjectTest_Person($var);
+		$var2 = new ELSWAK_ObjectTest_Person( $var );
 		$this->assertEquals($var, "$var2");
 	}
 	/**
@@ -153,14 +153,14 @@ class ELSWAK_ObjectTest_Person
 
 
 
-	public function setMother(ELSWAK_ObjectTest_Person $person) {
+	public function setMother( ELSWAK_ObjectTest_Person $person = null ) {
 		$this->mother = $person;
 		return $this;
 	}
 	// lazy init the mother
 	public function mother() {
-		if (!$this->mother) {
-			$this->setMother(new ELSWAK_ObjectTest_Person);
+		if ( !isset($this->mother) ) {
+			$this->setMother( new ELSWAK_ObjectTest_Person );
 		}
 		return $this->mother;
 	}
