@@ -27,4 +27,18 @@ class ELSWAK_JSON_ResponseTest
 		// compare the written response to the expected
 		$this->assertFileEquals($path.'expected.txt', $path.'actual.txt');
 	}
+	
+	/**
+     * @expectedException ELSWAK_JSON_ResponseException
+     */
+	public function testEncodingFailure() {
+		
+		$response = new ELSWAK_JSON_Response;
+		
+		$recursor = new stdClass;
+		$recursor->self = $recursor;
+		
+		$response->addContent( $recursor );
+		$response->debugOutput();
+	}
 }

@@ -6,6 +6,14 @@ if (!defined('JSON_PRETTY_PRINT')) {
 
 
 
+//!Related Exception Classes
+/**
+ * @package ELSWAK\HTTP
+ */
+class ELSWAK_JSON_ResponseException extends ELSWAK_Exception {}
+
+
+
 class ELSWAK_JSON_Response
 	extends ELSWAK_HTTP_Response {
 	
@@ -99,7 +107,12 @@ class ELSWAK_JSON_Response
 			}
 			$content['body'] = $body;
 		}
-		return json_encode($content, $this->jsonEncodeOptions);
+		// try to encode the various contents to send on
+		$data = json_encode( $content, $this->jsonEncodeOptions );
+		if ( $data === false ) {
+			throw new ELSWAK_JSON_ResponseException( 'Unable to encode content as JSON. ' . json_last_error_msg( ) );
+		}
+		return $data;
 	}
 	public function sendCustomHeaders() {
 		// override this method since the custom headers are included in the JSON response
