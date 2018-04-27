@@ -394,15 +394,19 @@ class ELSWAK_HTTP_Response {
 		return $this->statusCode;
 	}
 	public function setStatusCode($code) {
-		if (!is_int($code) || ($code < 100) || ($code > 599))
+		if (   $code != (int) $code
+			|| $code < 100
+			|| $code > 599
+		) {
 			throw new Exception('Invalid HTTP response code.');
+		}
 		
 		// determine if this code corresponds to a redirect
 		if (($code <= 300) && ($code >= 307))
 			$this->isRedirect = true;
 		else
 			$this->isRedirect = false;
-		$this->statusCode = $code;
+		$this->statusCode = (int) $code;
 		return $this;
 	}
 	public function responseCode() {

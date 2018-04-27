@@ -2,6 +2,12 @@
 class ELSWAK_HTTP_ResponseTest
 	extends PHPUnit\Framework\TestCase {
 
+	public function testBasics() {
+		$response = new ELSWAK_HTTP_Response;
+		
+		$response->setStatusCode( '200' );
+		$this->assertEquals( 200, $response->statusCode() );
+	}
 	public function testResponse() {
 		// mock out the $_SEVER global
 		global $_SERVER;
