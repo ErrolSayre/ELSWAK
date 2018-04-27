@@ -1,6 +1,6 @@
 <?php
 class ELSWAK_URI_FactoryTest
-	extends PHPUnit_Framework_TestCase {
+	extends PHPUnit\Framework\TestCase {
 	
 	public function testURLParsing() {
 		// test strings that should and shouldn't work...

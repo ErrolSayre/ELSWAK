@@ -1,6 +1,6 @@
 <?php
 class ELSWAK_Postal_AddressTest
-	extends PHPUnit_Framework_TestCase {
+	extends PHPUnit\Framework\TestCase {
 
 	public function testAddress() {
 		$address = new ELSWAK_Postal_Address;

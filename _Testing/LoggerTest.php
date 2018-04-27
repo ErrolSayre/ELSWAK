@@ -1,6 +1,6 @@
 <?php
 class ELSWAK_LoggerTest
-	extends PHPUnit_Framework_TestCase {
+	extends PHPUnit\Framework\TestCase {
 
 	
 	public function testLogger() {

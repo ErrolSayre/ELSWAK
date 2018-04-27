@@ -1,6 +1,6 @@
 <?php
 class ELSWAK_Contact_CollectionTest
-	extends PHPUnit_Framework_TestCase {
+	extends PHPUnit\Framework\TestCase {
 
 	public function testCollection() {
 		$list = new ELSWAK_Contact_Collection;

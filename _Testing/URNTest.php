@@ -1,6 +1,6 @@
 <?php
 class ELSWAK_URNTest
-	extends PHPUnit_Framework_TestCase {
+	extends PHPUnit\Framework\TestCase {
 	
 	public function testConstructor() {
 		$urn = new ELSWAK_URN;

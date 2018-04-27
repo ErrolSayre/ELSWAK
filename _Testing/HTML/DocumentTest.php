@@ -1,6 +1,6 @@
 <?php
 class ELSWAK_HTML_DocumentTest
-	extends PHPUnit_Framework_TestCase {
+	extends PHPUnit\Framework\TestCase {
 
 	public function testDocument() {
 		// this test is adapted from the previous test

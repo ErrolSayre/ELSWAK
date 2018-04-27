@@ -1,6 +1,6 @@
 <?php
 class ELSWAK_HTTP_WorkspaceTest
-	extends PHPUnit_Framework_TestCase {
+	extends PHPUnit\Framework\TestCase {
 	
 	public function testConstructor() {
 		$var = new ELSWAK_HTTP_Workspace;

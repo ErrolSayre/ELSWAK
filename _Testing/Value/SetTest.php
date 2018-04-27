@@ -1,6 +1,6 @@
 <?php
 class ELSWAK_Value_SetTest
-	extends PHPUnit_Framework_TestCase {
+	extends PHPUnit\Framework\TestCase {
 
 	public function testSet() {
 		$var = new ELSWAK_Value_Set;

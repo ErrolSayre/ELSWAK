@@ -1,6 +1,6 @@
 <?php
 class ELSWAK_FileTest
-	extends PHPUnit_Framework_TestCase {
+	extends PHPUnit\Framework\TestCase {
 	
 	public function testFile() {
 		// create a file for this file

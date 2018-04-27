@@ -1,6 +1,7 @@
 <?php
+
 class ELSWAK_ArrayTest
-	extends PHPUnit_Framework_TestCase {
+	extends PHPUnit\Framework\TestCase {
 
 	public function testConstructor() {
 		$var = new ELSWAK_Array;
@@ -41,7 +42,7 @@ class ELSWAK_ArrayTest
 	}
 	/**
 	 * @group keys
-     * @expectedException PHPUnit_Framework_Error_Warning
+     * @expectedException PHPUnit\Framework\Error\Warning
 	 */
 	public function testInvalidKeyTrue() {
 		$var = new ELSWAK_Array;
@@ -49,7 +50,7 @@ class ELSWAK_ArrayTest
 	}
 	/**
 	 * @group keys
-     * @expectedException PHPUnit_Framework_Error_Warning
+     * @expectedException PHPUnit\Framework\Error\Warning
 	 */
 	public function testInvalidKeyFalse() {
 		$var = new ELSWAK_Array;
@@ -57,7 +58,7 @@ class ELSWAK_ArrayTest
 	}
 	/**
 	 * @group keys
-     * @expectedException PHPUnit_Framework_Error_Warning
+     * @expectedException PHPUnit\Framework\Error\Warning
 	 */
 	public function testInvalidKeyDouble() {
 		$var = new ELSWAK_Array;
@@ -65,7 +66,7 @@ class ELSWAK_ArrayTest
 	}
 	/**
 	 * @group keys
-     * @expectedException PHPUnit_Framework_Error_Warning
+     * @expectedException PHPUnit\Framework\Error\Warning
 	 */
 	public function testInvalidKeyObject() {
 		$var = new ELSWAK_Array;
@@ -73,7 +74,7 @@ class ELSWAK_ArrayTest
 	}
 	/**
 	 * @group keys
-     * @expectedException PHPUnit_Framework_Error_Warning
+     * @expectedException PHPUnit\Framework\Error\Warning
 	 */
 	public function testInvalidKeyArray() {
 		$var = new ELSWAK_Array;

@@ -1,6 +1,6 @@
 <?php
 class ELSWAK_NullBooleanTest
-	extends PHPUnit_Framework_TestCase {
+	extends PHPUnit\Framework\TestCase {
 
 	public function testValuesAndLabels() {
 		$var = new ELSWAK_NullBoolean;

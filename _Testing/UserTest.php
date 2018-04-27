@@ -6,7 +6,7 @@ class BadUser extends ELSWAK_User {
 }
 
 class ELSWAK_UserTest
-	extends PHPUnit_Framework_TestCase {
+	extends PHPUnit\Framework\TestCase {
 	
 	public function testConstructor() {
 		$user = new ELSWAK_User('tester', null, 'Test E. Tester');

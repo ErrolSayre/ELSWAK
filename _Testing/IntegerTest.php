@@ -1,6 +1,6 @@
 <?php
 class ELSWAK_IntegerTest
-	extends PHPUnit_Framework_TestCase {
+	extends PHPUnit\Framework\TestCase {
 
 	public function testInteger() {
 		$int = new ELSWAK_Integer('3013593.2304');

@@ -1,6 +1,6 @@
 <?php
 class ELSWAK_HTTP_URLTest
-	extends PHPUnit_Framework_TestCase {
+	extends PHPUnit\Framework\TestCase {
 	
 	public function testConstructor() {
 		$url = new ELSWAK_HTTP_URL;

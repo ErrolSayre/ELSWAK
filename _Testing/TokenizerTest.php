@@ -1,6 +1,6 @@
 <?php
 class ELSWAK_TokenizerTest
-	extends PHPUnit_Framework_TestCase {
+	extends PHPUnit\Framework\TestCase {
 
 	public function testStandard() {
 		$tokenizer = ELSWAK_Tokenizer::standardTokenizer();

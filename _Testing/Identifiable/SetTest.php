@@ -1,6 +1,6 @@
 <?php
 class ELSWAK_Identifiable_SetTest
-	extends PHPUnit_Framework_TestCase {
+	extends PHPUnit\Framework\TestCase {
 
 	public function testSet() {
 		$set = new ELSWAK_Identifiable_Set;

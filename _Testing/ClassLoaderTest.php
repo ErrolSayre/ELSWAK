@@ -1,6 +1,6 @@
 <?php
 class ELSWAK_ClassLoaderTest
-	extends PHPUnit_Framework_TestCase {
+	extends PHPUnit\Framework\TestCase {
 	
 	public function testDefaultConstructor() {
 		$count = count(spl_autoload_functions());

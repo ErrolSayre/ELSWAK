@@ -1,6 +1,6 @@
 <?php
 class ELSWAK_BooleanTest
-	extends PHPUnit_Framework_TestCase {
+	extends PHPUnit\Framework\TestCase {
 	
 	public function testValues() {
 		$var = new ELSWAK_BooleanTest_Dummy;

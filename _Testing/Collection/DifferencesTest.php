@@ -1,6 +1,6 @@
 <?php
 class ELSWAK_Collection_DifferencesTest
-	extends PHPUnit_Framework_TestCase {
+	extends PHPUnit\Framework\TestCase {
 
 	public function testDifferences() {
 		$diff = new ELSWAK_Collection_Differences;

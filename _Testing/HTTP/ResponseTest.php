@@ -1,6 +1,6 @@
 <?php
 class ELSWAK_HTTP_ResponseTest
-	extends PHPUnit_Framework_TestCase {
+	extends PHPUnit\Framework\TestCase {
 
 	public function testResponse() {
 		// mock out the $_SEVER global

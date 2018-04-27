@@ -1,6 +1,6 @@
 <?php
 class ELSWAK_DictionaryTest
-	extends PHPUnit_Framework_TestCase {
+	extends PHPUnit\Framework\TestCase {
 	
 	public function testImport() {
 		$var = new ELSWAK_Dictionary(array(

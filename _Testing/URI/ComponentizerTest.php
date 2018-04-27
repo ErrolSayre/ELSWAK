@@ -1,6 +1,6 @@
 <?php
-class ELSWAK_URI_FactoryTest
-	extends PHPUnit_Framework_TestCase {
+class ELSWAK_URI_ComponentizerTest
+	extends PHPUnit\Framework\TestCase {
 
 	public function testURIComponentParsing() {
 		$componentizer = new ELSWAK_URI_Componentizer;

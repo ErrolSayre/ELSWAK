@@ -1,6 +1,6 @@
 <?php
 class ELSWAK_JSON_Data_CoderTest
-	extends PHPUnit_Framework_TestCase {
+	extends PHPUnit\Framework\TestCase {
 	
 	public function testConstructor() {
 		$coder = new ELSWAK_JSON_Data_Coder;

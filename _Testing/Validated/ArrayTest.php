@@ -1,6 +1,6 @@
 <?php
 class ELSWAK_Validated_ArrayTest
-	extends PHPUnit_Framework_TestCase {
+	extends PHPUnit\Framework\TestCase {
 
 	public function testArray() {
 		$var = new ELSWAK_Validated_Array;

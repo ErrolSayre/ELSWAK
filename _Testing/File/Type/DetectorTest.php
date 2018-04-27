@@ -1,6 +1,6 @@
 <?php
 class ELSWAK_File_Type_DetectorTest
-	extends PHPUnit_Framework_TestCase {
+	extends PHPUnit\Framework\TestCase {
 
 	public function testDetector() {
 		// construct a new detector
