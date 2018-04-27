@@ -61,6 +61,7 @@ class ELSWAK_URI_FactoryTest
 				'HTTPS' => 'on',
 				'SERVER_PORT' => 8443,
 				'PHP_SELF' => '/path/to/application/default.php',
+				'REQUEST_TIME' => 152481234.1234,
 			),
 		);
 		foreach ($uris as $expected => $data) {
@@ -70,12 +71,12 @@ class ELSWAK_URI_FactoryTest
 		}
 
 
-
 		$uris = array(
 			'http://asfd.qwer.com/path/to/application/arguments/to/app/with/target.format?a=b&c=d#anchor' => array(
 				'SERVER_NAME' => 'asfd.qwer.com',
 				'SERVER_PORT' => 80,
 				'REQUEST_URI' => '/path/to/application/arguments/to/app/with/target.format?a=b&c=d#anchor',
+				'REQUEST_TIME' => 152481234.1234,
 			),
 		);
 		foreach ($uris as $expected => $data) {
@@ -90,6 +91,7 @@ class ELSWAK_URI_FactoryTest
 			'HTTPS' => 'on',
 			'SERVER_PORT' => 8443,
 			'PHP_SELF' => '/path/to/application/default.php',
+			'REQUEST_TIME' => 152481234.1234,
 		);
 		$url = ELSWAK_URI_Factory::baseURLFromServerGlobal();
 		$this->assertEquals('https://asfd.qwer.com:8443', $url->url);
