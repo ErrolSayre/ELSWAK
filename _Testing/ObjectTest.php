@@ -9,6 +9,7 @@ class ELSWAK_ObjectTest
 			'name' => 'Leonidas McDermott',
 			'ssn' => 123456789,
 		));
+		$this->assertInstanceOf( 'ELSWAK_Object', $var );
 		return $var;
 	}
 	/**
@@ -56,7 +57,7 @@ class ELSWAK_ObjectTest
 	}
 	public function testVirtualPropertyGetter() {
 		$var = new ELSWAK_ObjectTest_Person;
-		$var->description();
+		$this->assertEquals( '  ()', $var->description() );
 	}
 	/**
 	 * @depends testConstructorWithImport
