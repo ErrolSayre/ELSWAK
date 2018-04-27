@@ -8,6 +8,8 @@ class ELSWAK_HTTP_ResponseTest
 		$_SERVER = array();
 		$_SERVER['HTTP_HOST'] = 'www.apple.com';
 		$_SERVER['PHP_SELF'] = '/imac/features/coolstuff/index.php';
+		$_SERVER['REQUEST_TIME'] = 1234567890.1234;
+		$_SERVER['SCRIPT_NAME'] = '';
 		
 		// create the response
 		$response = new ELSWAK_HTTP_Response;
