@@ -36,7 +36,7 @@ class ELSWAK_Phone_Number
 		// determine if the number is a 10 digit number
 		if (preg_match(self::TEN_DIGIT_REGEX, $number, $matches) == 1) {
 			// this is a 10+ digit number
-			$this->countryCode	= $matches[1]?	$matches[1]:	$matches[2]? 1:	'';
+			$this->countryCode	= $matches[1]?	$matches[1]:	($matches[2] ? 1:	'');
 			$this->areaCode		= $matches[2];
 			$this->localPrefix	= $matches[3];
 			$this->localSuffix	= $matches[4];
